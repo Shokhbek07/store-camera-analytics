@@ -1,0 +1,38 @@
+# One command: two RTSP cameras made from the clips, and the service reading both on CPU.
+#   ./scripts/download.sh && docker compose up --build
+# Outputs: runs/docker/ (per-minute CSV per source, alerts.jsonl). Live status: http://127.0.0.1:8080/
+# Every port is published on 127.0.0.1 only.
+services:
+  cameras:
+    image: bluenviron/mediamtx:1.21.3-ffmpeg
+    volumes:
+      - ./docker/mediamtx.yml:/mediamtx.yml:ro
+      - ./data/meva:/clips:ro
+    ports:
+      - "127.0.0.1:8554:8554"   # watch a camera: ffplay rtsp://127.0.0.1:8554/counter
+
+  storecam:
+    build: .
+    depends_on: [cameras]
+    command:
+      - run
+      - config.yaml
+      - --url
+      - counter=rtsp://cameras:8554/counter
+      - --url
+      - door=rtsp://cameras:8554/door
+      - --out
+      - /out
+      - --http
+      - "8080"
+      - --http-host
+      - 0.0.0.0
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./models:/app/models:ro
+      - ./runs/docker:/out
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      YOLO_CONFIG_DIR: /tmp/ultralytics   # keep Ultralytics' settings file out of the image
+    restart: unless-stopped

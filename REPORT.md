@@ -54,6 +54,13 @@ The first runs exposed the staff zone reading empty for a few seconds a minute w
 A small labeller was written (D9).
 Shokhbek hand-labelled both door clips and the first queue marks; Claude labelled the remaining queue marks from frames; the two labellers agree exactly on 4 of 11 shared marks, which shows how much the ground truth itself depends on the counting rule (E7).
 
+**2026-11-10, door fixes and speed.**
+Listing the door events side by side showed why departures were missed; a doorway region fixed most of it, checked on two clips not used for tuning (E9, E10).
+The speed benchmark was rerun once another project's containers had stopped loading the machine (E11a, E11b).
+
+**2026-11-10, Docker.**
+The compose setup first built an 18 GB image and showed RTSP packet loss over UDP; both were fixed, and in the container the detector reaches about half the target frame rate on CPU (E12).
+
 ## 4. What was built
 
 - `scripts/download.sh`: the five clips and the weights, checked by SHA-256 (D3).
@@ -64,6 +71,8 @@ Shokhbek hand-labelled both door clips and the first queue marks; Claude labelle
 - `src/storecam/service.py`: the main loop, a live JSON endpoint, face-pixelated annotated video (D10).
 - `config.yaml`: every source, line, zone and threshold.
 - `scripts/label.py` and `scripts/evaluate.py`: labelling and comparison with the labels.
+- `Dockerfile`, `docker-compose.yml`, `docker/mediamtx.yml`: one-command run with two looping RTSP cameras, detector on CPU (D13, E12).
+- `scripts/benchmark.py` and `scripts/review_sheet.py`: speed measurements and a sheet for checking labels.
 
 ## 5. Measurement
 

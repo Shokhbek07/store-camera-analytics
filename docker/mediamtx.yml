@@ -1,0 +1,15 @@
+# Two looping RTSP "cameras" made from the downloaded clips, for the compose demo.
+# The clips are already H.264, so ffmpeg only repackages them (-c copy) at their own speed (-re).
+rtspAddress: :8554
+rtmp: no
+hls: no
+webrtc: no
+srt: no
+api: no
+paths:
+  counter:
+    runOnInit: ffmpeg -hide_banner -loglevel error -re -stream_loop -1 -i /clips/counter_1650.avi -c copy -f rtsp rtsp://localhost:8554/counter
+    runOnInitRestart: yes
+  door:
+    runOnInit: ffmpeg -hide_banner -loglevel error -re -stream_loop -1 -i /clips/door_0307_1720.avi -c copy -f rtsp rtsp://localhost:8554/door
+    runOnInitRestart: yes

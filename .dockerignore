@@ -1,0 +1,11 @@
+.venv
+.git
+data
+models
+runs
+results
+labels
+docs
+scripts
+tests
+*.pt

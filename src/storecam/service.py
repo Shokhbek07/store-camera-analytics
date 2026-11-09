@@ -23,7 +23,7 @@ log = logging.getLogger("storecam")
 
 class Service:
     def __init__(self, cfg: Config, out_dir: Path | None = None, save_video: bool = False,
-                 http_port: int | None = None, max_seconds: float | None = None):
+                 http_port: int | None = None, max_seconds: float | None = None, http_host: str = "127.0.0.1"):
         self.cfg = cfg
         self.out = Path(out_dir or cfg.output_dir)
         self.out.mkdir(parents=True, exist_ok=True)
@@ -37,6 +37,7 @@ class Service:
         self.save_video = save_video
         self.writers: dict[str, cv2.VideoWriter] = {}
         self.http_port = http_port
+        self.http_host = http_host  # 0.0.0.0 only inside a container, published to the host's 127.0.0.1
         self.max_seconds = max_seconds
         self.detector: Detector | None = None
         self.batches = 0
@@ -63,9 +64,9 @@ class Service:
             def log_message(self, *args):
                 pass
 
-        server = ThreadingHTTPServer(("127.0.0.1", self.http_port), Handler)
+        server = ThreadingHTTPServer((self.http_host, self.http_port), Handler)
         threading.Thread(target=server.serve_forever, daemon=True, name="http").start()
-        log.info("live status on http://127.0.0.1:%d/", self.http_port)
+        log.info("live status on http://%s:%d/", self.http_host, self.http_port)
 
     # Main loop -----------------------------------------------------------------------
     def run(self) -> dict:

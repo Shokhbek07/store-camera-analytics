@@ -8,6 +8,7 @@ building a backlog, and a stalled or failed source never blocks the others.
 from __future__ import annotations
 
 import logging
+import os
 import threading
 import time
 from dataclasses import dataclass
@@ -18,6 +19,10 @@ import numpy as np
 from .config import Source
 
 log = logging.getLogger("storecam.sources")
+
+# RTSP over TCP: OpenCV's FFmpeg backend defaults to UDP, which loses packets on full-HD streams and
+# corrupts frames until the next keyframe (seen in the compose demo, E12). Set the variable to override.
+os.environ.setdefault("OPENCV_FFMPEG_CAPTURE_OPTIONS", "rtsp_transport;tcp")
 
 
 @dataclass

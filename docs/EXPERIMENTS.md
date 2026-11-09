@@ -279,3 +279,34 @@ File: `results/benchmark.json`.
 - Batching works on the GPU: per-image detector time falls from 9.8 ms alone to 8.1 ms in a batch of 2 and 7.3 ms in a batch of 4, so 4 streams give 131 FPS in total, enough for about 13 streams at 10 FPS on this laptop if decoding keeps up.
 - On CPU batching gives almost nothing (42.7 ms per image alone, 35 ms per image in a batch of 4), and total throughput stays at 23 to 28 FPS: two streams at 10 FPS fit on CPU alone, with little headroom.
 - Shared load matters a lot: the E11a run under other containers' CPU load reached about half to three quarters of these figures on the GPU and about a third on CPU.
+
+## E12. The docker compose setup, end to end (2026-11-10)
+
+`docker compose up --build` with the two clips served as looping RTSP cameras by MediaMTX (D13).
+Docker Desktop's Linux VM had 10 CPUs and 18.5 GB of memory; the detector runs on CPU there.
+
+**Image size.**
+The first build was 18.2 GB: skipping PyTorch in `uv sync` still installed its CUDA libraries, which are separate packages in the lock.
+Filtering those out and installing the CPU build of the locked PyTorch brought it to 1.7 GB of content (Docker Desktop reports 3.87 GB, counting compressed and unpacked layers); `uv pip check` in the build confirms nothing the lock needs is missing.
+
+**Decode errors over RTSP.**
+The first run logged a continuous stream of H.264 "missing reference picture" errors: OpenCV's FFmpeg backend pulls RTSP over UDP by default and full-HD frames lost packets.
+`sources.py` now defaults to RTSP over TCP (overridable through `OPENCV_FFMPEG_CAPTURE_OPTIONS`); afterwards errors appear only in the first seconds after connecting, when decoding starts between keyframes.
+
+**Speed in the container (CPU), 2 streams in real time, target 10 FPS each.**
+
+| Setting | Per stream FPS | Detector ms per batch |
+|---|---|---|
+| YOLO26s, default threads | 4.7 | |
+| YOLO26n, default threads, 90 s | 5.7, 5.3 | |
+| YOLO26s, 4 PyTorch threads, 60 s | 5.4, 5.2 | 167 |
+| YOLO26s, 6 PyTorch threads, 60 s | 5.2, 4.6 | 174 |
+
+The container reaches about half the target.
+The detector in the VM takes about twice as long per batch as on the host CPU (83 ms, E11b), and the nano model helps little, which points at decoding two full-HD streams plus detection on shared CPU, not at the model alone.
+The service stays correct at this rate: readers drop frames instead of falling behind, and each minute row reports `seconds_observed`.
+On this Mac the full-rate path is the native one (`uv run storecam run`, GPU, E11b); on a Linux server the image would be built on a CUDA base (REPORT section 7).
+
+**Reconnect.**
+Stopping the camera container for 15 s: both sources reported `connected: false`, retried with backoff at 1, 2 and 4 s, and resumed by themselves when it came back, while the service kept running.
+The minute row covering the outage shows `seconds_observed` 36 instead of 60.

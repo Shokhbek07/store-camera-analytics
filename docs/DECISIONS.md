@@ -193,3 +193,35 @@ Decided 2026-11-08.
 Docker Desktop was stopped on this machine, and starting it would also have restarted unrelated containers from another project.
 MediaMTX ships a standalone macOS binary, so the reconnect test (E5) ran it directly, listening only on 127.0.0.1.
 The one-command Docker setup is still planned; it will run the detector on CPU, because Docker on macOS cannot use the Apple GPU.
+
+## D13. One-command setup: docker compose with MediaMTX cameras, detector on CPU
+
+Decided 2026-11-10.
+
+The brief asks for one config file and one command or docker compose.
+`uv run storecam run` already is one command; compose adds a setup that needs only Docker and shows the live-stream path end to end.
+
+**Options considered for the test cameras.**
+
+- Read the files directly in the container: simplest, but it does not exercise RTSP or reconnect, which is the point of a live service.
+- MediaMTX plus a separate ffmpeg container publishing into it: works, but two containers and a start-order race.
+- **MediaMTX's own `-ffmpeg` image with `runOnInit`, chosen:** one container starts an ffmpeg per path that loops a clip into RTSP and restarts it if it dies.
+  The MEVA clips are already H.264, so ffmpeg repackages them with `-c copy` and spends almost no CPU.
+  Stopping this container is a ready-made reconnect test.
+
+**How the service gets the stream addresses without a second config.**
+Zones and lines must stay in the single `config.yaml`, so `storecam run` gained `--url NAME=URL`, which replaces one source's address and keeps its geometry.
+An environment-variable syntax inside the YAML was rejected as hidden magic for one use.
+
+**PyTorch in the image.**
+The default Linux PyTorch wheels bundle CUDA libraries of several gigabytes that a CPU container never uses.
+The image installs everything else from `uv.lock` and then the CPU build of the same locked PyTorch versions from PyTorch's own index.
+A GPU server would use a CUDA base image and the default wheels instead (REPORT section 7).
+
+**Why CPU.**
+Docker on macOS runs a Linux VM with no access to the Apple GPU, so in this setup the detector runs on CPU.
+In the container this reaches about 5 FPS per stream against the 10 FPS target (E12), so compose is the easy, portable demo and the native GPU run is the one that meets the target on this Mac.
+
+**Network.**
+Every published port is bound to 127.0.0.1, and the cameras are local files, so nothing leaves the machine.
+The status endpoint listens on 0.0.0.0 only inside the container (`--http-host`), published to the host's 127.0.0.1.

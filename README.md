@@ -4,7 +4,7 @@ Store camera analytics: people counting at a door, queue and counter monitoring,
 
 Work in progress for the Safia AI team case study (deadline 2026-11-12); the repository is pushed as the work goes so its history shows the process.
 
-Status, 2026-11-09: the service, door counting, zones, alerts, multi-stream reconnect and the evaluation script work; hand labels and the measured results are being completed.
+Status, 2026-11-10: the service, door counting, zones, alerts, multi-stream reconnect, the Docker setup and the evaluation are working and measured (results below); Shokhbek's review of Claude's queue labels is still to come.
 The full report, including the process and who did what, is `REPORT.md`; the options considered for every choice are in `docs/DECISIONS.md`, and every test run is in `docs/EXPERIMENTS.md`.
 
 Built with Claude Code as an AI coding assistant; the brief allows AI tools.
@@ -16,10 +16,23 @@ uv run storecam run                  # every source in config.yaml at real-time 
 uv run storecam run --offline        # every sampled frame, as fast as possible (evaluation)
 uv run storecam run --http 8765      # also serve live counts and open alerts as JSON
 uv run storecam run --save-video     # also write annotated video with faces pixelated
+uv run storecam run --url counter=rtsp://127.0.0.1:8554/counter   # swap a source's address, keep its zones
 uv run pytest                        # unit tests for the counting, zone and alert logic
 ```
 
 Outputs go to `runs/out/`: `<source>_minutes.csv` per source, `alerts.jsonl`, and `run_summary.json` with speeds.
+
+## Run with Docker
+
+```sh
+./scripts/download.sh          # the clips and weights are mounted, not baked into the image
+docker compose up --build
+```
+
+This starts two RTSP cameras (MediaMTX looping two clips) and the service reading both, writing to `runs/docker/`, with live status at http://127.0.0.1:8080/.
+Every port is bound to 127.0.0.1.
+Docker on macOS cannot use the Apple GPU, so here the detector runs on CPU at about 5 FPS per stream, half the target; the native run above uses the GPU (E12, D13).
+Stop the camera container (`docker compose stop cameras`, then `start`) to watch the service reconnect.
 
 ## Setup
 
