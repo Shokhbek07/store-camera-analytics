@@ -253,3 +253,29 @@ File: `results/benchmark_under_docker_load.json`.
 
 For comparison, E2 on a quiet machine measured YOLO26s at 91 FPS for one stream on MPS, and E4 measured 108 FPS for two streams; under this load they fell to 48 and 74.
 Even under load the real-time run held 9.8 of the 10 FPS target per stream.
+
+## E11b. Speed on a quiet machine (2026-11-10)
+
+Same `scripts/benchmark.py`, rerun after the other project's CI containers had finished.
+Machine state: load average 2.4 at the start and 4.7 at the end (the benchmark's own load); 13 containers of other projects were running but idle.
+Apple M4 Pro (14 CPU cores, 24 GB unified memory), macOS 15, YOLO26s (10.0 M parameters), 640 px input, FP32, source video 1920x1072 at 30 fps.
+File: `results/benchmark.json`.
+
+| Run | Total FPS | Per stream | Detector ms per batch | Mean batch | GPU memory |
+|---|---|---|---|---|---|
+| 2 streams, real time, 120 s (target 10 per stream) | 19.8 | 9.87, 9.87 | 16.7 | 1.05 | 1164 MB |
+| 1 stream, as fast as possible, MPS | 96.8 | 96.8 | 9.8 | 1.0 | 1181 MB |
+| 2 streams, as fast as possible, MPS | 119.1 | 59.6 each | 16.1 | 2.0 | 1181 MB |
+| 4 streams, as fast as possible, MPS | 131.0 | 32.8 each | 29.1 | 4.0 | 1197 MB |
+| 1 stream, CPU | 23.1 | 23.1 | 42.7 | 1.0 | |
+| 2 streams, CPU | 23.7 | 11.9 each | 83.3 | 2.0 | |
+| 4 streams, CPU | 27.8 | 7.0 each | 141.7 | 4.0 | |
+
+**What it shows.**
+
+- In real time each stream held 9.87 of its 10 FPS target; the readers dropped 15 sampled frames per stream in 120 s (about 1.3%), when a frame was replaced in the one-slot mailbox before the detector took it (D5).
+  Under load (E11a) the same run dropped 26 per stream.
+  The 1 dropped frame in the other runs is the frame read when the time limit stopped the run.
+- Batching works on the GPU: per-image detector time falls from 9.8 ms alone to 8.1 ms in a batch of 2 and 7.3 ms in a batch of 4, so 4 streams give 131 FPS in total, enough for about 13 streams at 10 FPS on this laptop if decoding keeps up.
+- On CPU batching gives almost nothing (42.7 ms per image alone, 35 ms per image in a batch of 4), and total throughput stays at 23 to 28 FPS: two streams at 10 FPS fit on CPU alone, with little headroom.
+- Shared load matters a lot: the E11a run under other containers' CPU load reached about half to three quarters of these figures on the GPU and about a third on CPU.

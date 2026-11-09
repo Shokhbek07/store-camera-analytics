@@ -13,8 +13,7 @@ On five licensed MEVA clips (D1), measured against hand labels:
 - Queue length: mean absolute error 1.18 people against Shokhbek's 11 marks, and 0.77, 0.30 and 0.00 against Claude's 30 marks on each of the three counter clips.
   The two labellers themselves differ by 0.82 on average on the marks they share, so the reference is not much sharper than the system.
 - Alerts: every expected queue alert was raised, but two of them were merged into one, and two alerts were wrong (people at a coffee table on the zone edge, and the attendant counted as a waiting customer).
-- Speed on an Apple M4 Pro: about 108 FPS in total for two streams processed as fast as possible, so the 10 FPS per stream target uses about a fifth of the machine (E4).
-  The clean rerun of the full speed benchmark is pending (E11a explains why the first run is not used).
+- Speed on an Apple M4 Pro GPU: two streams in real time held 9.87 of the 10 FPS target each; processed as fast as possible, 2 streams reach 119 FPS and 4 reach 131 FPS in total (E11b).
 
 The weakest parts are the departure side of the door (5 of 13 events matched in time) and telling staff from customers.
 
@@ -137,16 +136,21 @@ Machine: Apple M4 Pro (14 CPU cores, 24 GB unified memory), macOS 15, PyTorch on
 Model: YOLO26s, 10.0 million parameters, 640 px input, FP32 (the service uses FP16 only on CUDA; FP16 on MPS was not measured).
 Source video: 1920x1072 at 30 fps; 10 frames per second per source are analysed.
 
-| Measurement | Result | Source |
-|---|---|---|
-| One stream, as fast as possible, detector and tracker | 91 FPS | E2 |
-| Two streams together, as fast as possible, whole service | 108 FPS in total, 17.7 ms per batch of 2 | E4 |
-| Two streams in real time | 9.8 of the 10 FPS target per stream, no dropped frames | E11a (under load) |
-| GPU memory | about 1.2 GB | E11a |
-| Process memory | about 790 MB | E2 |
+| Run | Total FPS | Per stream | Detector ms per batch | GPU memory |
+|---|---|---|---|---|
+| 2 streams in real time, 120 s (target 10 per stream) | 19.8 | 9.87 each, 1.3% of sampled frames dropped | 16.7 | 1164 MB |
+| 1 stream, as fast as possible, GPU (MPS) | 96.8 | 96.8 | 9.8 | 1181 MB |
+| 2 streams, as fast as possible, GPU | 119.1 | 59.6 each | 16.1 | 1181 MB |
+| 4 streams, as fast as possible, GPU | 131.0 | 32.8 each | 29.1 | 1197 MB |
+| 1 stream, CPU only | 23.1 | 23.1 | 42.7 | |
+| 2 streams, CPU only | 23.7 | 11.9 each | 83.3 | |
+| 4 streams, CPU only | 27.8 | 7.0 each | 141.7 | |
 
-The full benchmark (`scripts/benchmark.py`: real time for 120 s, then 1, 2 and 4 streams on MPS and on CPU) was first run while another project's containers were using about 8 of the 14 cores; it is kept as E11a and is not used for the figures above except where noted.
-The clean rerun is pending.
+Process memory was about 790 MB for one stream (E2).
+The real-time pair uses about a sixth of what the GPU can do, and batching makes each extra stream cheaper (9.8 ms per image alone, 7.3 ms in a batch of 4), so this laptop could analyse about 13 streams at 10 FPS if decoding keeps up.
+On CPU alone two streams at 10 FPS just fit.
+These are from a quiet machine (E11b, `results/benchmark.json`).
+A first run under another project's CPU load reached about half to three quarters of these figures on the GPU and a third on CPU (E11a), which is worth knowing for any shared server.
 
 ## 6. Known failure cases
 

@@ -39,7 +39,7 @@ Measured on the MEVA clips below against hand labels; full tables, method and fa
 | Queue length MAE at 10 s marks | 1.18 (Shokhbek, 11 marks); 0.77, 0.30, 0.00 (Claude, 30 marks on each of 3 clips) |
 | Queue alerts | 3 of 3 expected found (two merged into one), 1 wrong |
 | Empty-counter alerts | none expected, 1 wrong |
-| Speed, Apple M4 Pro, MPS, YOLO26s 640 px FP32 | about 108 FPS total for 2 streams offline; 9.8 FPS per stream in real time against a 10 FPS target |
+| Speed, Apple M4 Pro GPU (MPS), YOLO26s 640 px FP32, 1164 MB GPU memory | 2 streams in real time: 9.87 FPS each against a 10 FPS target; as fast as possible: 97 / 119 / 131 FPS total for 1 / 2 / 4 streams; CPU only: 23 / 24 / 28 |
 
 ## Footage
 
