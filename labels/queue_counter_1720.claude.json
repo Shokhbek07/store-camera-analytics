@@ -1,0 +1,108 @@
+{
+ "video": "data/meva/counter_1720.avi",
+ "mode": "queue",
+ "labeller": "claude",
+ "method": "Labelled by Claude from frames extracted at each 10 s mark with the zones drawn on; rule: count every person whose feet (where they stand) are inside the queue polygon, judging hidden feet from the body; staff_present = someone behind the counter in the staff polygon.",
+ "labels": [
+  {
+   "t": 0,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 10,
+   "queue": 2,
+   "staff_present": true
+  },
+  {
+   "t": 20,
+   "queue": 4,
+   "staff_present": true
+  },
+  {
+   "t": 30,
+   "queue": 6,
+   "staff_present": true
+  },
+  {
+   "t": 40,
+   "queue": 6,
+   "staff_present": true
+  },
+  {
+   "t": 50,
+   "queue": 4,
+   "staff_present": true
+  },
+  {
+   "t": 60,
+   "queue": 5,
+   "staff_present": true
+  },
+  {
+   "t": 70,
+   "queue": 5,
+   "staff_present": true
+  },
+  {
+   "t": 80,
+   "queue": 5,
+   "staff_present": true
+  },
+  {
+   "t": 90,
+   "queue": 5,
+   "staff_present": true
+  },
+  {
+   "t": 100,
+   "queue": 5,
+   "staff_present": true
+  },
+  {
+   "t": 110,
+   "queue": 5,
+   "staff_present": true
+  },
+  {
+   "t": 120,
+   "queue": 5,
+   "staff_present": true
+  },
+  {
+   "t": 130,
+   "queue": 4,
+   "staff_present": true
+  },
+  {
+   "t": 140,
+   "queue": 4,
+   "staff_present": true
+  },
+  {
+   "t": 150,
+   "queue": 3,
+   "staff_present": true
+  },
+  {
+   "t": 160,
+   "queue": 3,
+   "staff_present": true
+  },
+  {
+   "t": 170,
+   "queue": 3,
+   "staff_present": true
+  },
+  {
+   "t": 180,
+   "queue": 3,
+   "staff_present": true
+  },
+  {
+   "t": 190,
+   "queue": 4,
+   "staff_present": true
+  }
+ ]
+}

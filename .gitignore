@@ -1,0 +1,10 @@
+data/
+models/
+runs/
+.venv/
+__pycache__/
+*.pt
+*.onnx
+# Self-signed certificates MediaMTX may generate when run from here
+*.crt
+*.key

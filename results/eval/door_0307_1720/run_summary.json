@@ -1,0 +1,81 @@
+{
+  "detector": {
+    "weights": "models/yolo26s.pt",
+    "imgsz": 640,
+    "device": "mps",
+    "precision": "FP32"
+  },
+  "process_fps_target": 10.0,
+  "elapsed_s": 28.31,
+  "batches": 3000,
+  "mean_batch_size": 1.0,
+  "detector_ms_per_batch": 9.27,
+  "total_fps": 105.98,
+  "sources": {
+    "door": {
+      "frames_processed": 3000,
+      "fps": 105.98,
+      "frames_decoded": 9001,
+      "frames_dropped": 0,
+      "reconnects": 0,
+      "crossings": [
+        {
+          "t": 4.2,
+          "track_id": 9,
+          "direction": "out"
+        },
+        {
+          "t": 12.6,
+          "track_id": 1,
+          "direction": "out"
+        },
+        {
+          "t": 40.9,
+          "track_id": 19,
+          "direction": "out"
+        },
+        {
+          "t": 41.4,
+          "track_id": 4,
+          "direction": "out"
+        },
+        {
+          "t": 41.4,
+          "track_id": 19,
+          "direction": "in"
+        },
+        {
+          "t": 41.5,
+          "track_id": 75,
+          "direction": "in"
+        },
+        {
+          "t": 41.8,
+          "track_id": 5,
+          "direction": "out"
+        },
+        {
+          "t": 43.2,
+          "track_id": 19,
+          "direction": "out"
+        },
+        {
+          "t": 44.4,
+          "track_id": 75,
+          "direction": "out"
+        },
+        {
+          "t": 58.7,
+          "track_id": 149,
+          "direction": "out"
+        },
+        {
+          "t": 129.3,
+          "track_id": 152,
+          "direction": "out"
+        }
+      ],
+      "seconds": []
+    }
+  }
+}

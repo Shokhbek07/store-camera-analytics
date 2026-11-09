@@ -1,0 +1,2 @@
+{"event": "start", "source": "counter", "kind": "empty_counter", "start": 155, "raised": 164, "peak": 2, "end": null, "ended_by": null, "start_wall": "2026-11-08T12:31:29+00:00", "end_wall": null}
+{"event": "end", "source": "counter", "kind": "empty_counter", "start": 155, "raised": 164, "peak": 2, "end": 165, "ended_by": "cleared", "start_wall": "2026-11-08T12:31:29+00:00", "end_wall": "2026-11-08T12:31:39+00:00"}

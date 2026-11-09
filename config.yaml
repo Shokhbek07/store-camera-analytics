@@ -1,0 +1,46 @@
+# storecam configuration: every line, zone and threshold lives here.
+# Coordinates are pixels in the source frame (MEVA cameras are 1920x1072).
+# Draw them over a frame with: uv run storecam preview config.yaml
+
+process_fps: 10        # frames analysed per second per source
+batch_wait_ms: 20      # the detector waits this long to batch frames from several sources
+output_dir: runs/out
+
+model:
+  weights: models/yolo26s.pt
+  imgsz: 640
+  conf: 0.25
+  device: auto         # cuda, mps or cpu; auto picks the first available
+
+tracker:               # ByteTrack
+  track_high_thresh: 0.25
+  track_low_thresh: 0.1
+  new_track_thresh: 0.25
+  match_thresh: 0.8
+  lost_seconds: 1.5
+
+sources:
+  - name: counter
+    url: data/meva/counter_1650.avi
+    realtime: true
+    zones:
+      # Customers line up from the front of the counter, curving right and back.
+      # The right edge stops short of the coffee table, the top edge short of the seating.
+      queue: [[345, 675], [1050, 645], [1395, 570], [1395, 1072], [345, 1072]]
+      # Behind the counter, where the attendant stands.
+      staff: [[0, 600], [180, 600], [300, 1072], [0, 1072]]
+    alerts:
+      queue: {min_people: 3, min_seconds: 10, clear_seconds: 5}
+      empty_counter: {min_seconds: 10, clear_seconds: 3, min_waiting: 1}
+
+  - name: door
+    url: data/meva/door_0307_1720.avi
+    realtime: true
+    door_lines:
+      # Inner edge of the entrance mats; IN is towards the camera.
+      - name: entrance
+        a: [660, 818]
+        b: [1440, 1035]
+        inside: [700, 1050]
+        band_px: 20
+        min_frames: 2

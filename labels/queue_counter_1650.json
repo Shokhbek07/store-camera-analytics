@@ -1,0 +1,61 @@
+{
+ "video": "data/meva/counter_1650.avi",
+ "mode": "queue",
+ "labels": [
+  {
+   "t": 10,
+   "queue": 3,
+   "staff_present": true
+  },
+  {
+   "t": 30,
+   "queue": 2,
+   "staff_present": true
+  },
+  {
+   "t": 50,
+   "queue": 2,
+   "staff_present": true
+  },
+  {
+   "t": 70,
+   "queue": 2,
+   "staff_present": true
+  },
+  {
+   "t": 90,
+   "queue": 2,
+   "staff_present": true
+  },
+  {
+   "t": 110,
+   "queue": 2,
+   "staff_present": true
+  },
+  {
+   "t": 130,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 150,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 170,
+   "queue": 2,
+   "staff_present": true
+  },
+  {
+   "t": 190,
+   "queue": 2,
+   "staff_present": true
+  },
+  {
+   "t": 210,
+   "queue": 1,
+   "staff_present": true
+  }
+ ]
+}

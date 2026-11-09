@@ -1,0 +1,176 @@
+{
+  "detector": {
+    "weights": "models/yolo26s.pt",
+    "imgsz": 640,
+    "device": "mps",
+    "precision": "FP32"
+  },
+  "process_fps_target": 10.0,
+  "elapsed_s": 32.11,
+  "batches": 3000,
+  "mean_batch_size": 1.0,
+  "detector_ms_per_batch": 10.5,
+  "total_fps": 93.44,
+  "sources": {
+    "door": {
+      "frames_processed": 3000,
+      "fps": 93.44,
+      "frames_decoded": 9002,
+      "frames_dropped": 0,
+      "reconnects": 0,
+      "crossings": [
+        {
+          "t": 9.1,
+          "track_id": 2,
+          "direction": "in"
+        },
+        {
+          "t": 10.7,
+          "track_id": 3,
+          "direction": "in"
+        },
+        {
+          "t": 12.4,
+          "track_id": 4,
+          "direction": "in"
+        },
+        {
+          "t": 13.1,
+          "track_id": 6,
+          "direction": "in"
+        },
+        {
+          "t": 18.3,
+          "track_id": 8,
+          "direction": "in"
+        },
+        {
+          "t": 18.5,
+          "track_id": 10,
+          "direction": "in"
+        },
+        {
+          "t": 22.5,
+          "track_id": 23,
+          "direction": "in"
+        },
+        {
+          "t": 39.1,
+          "track_id": 29,
+          "direction": "in"
+        },
+        {
+          "t": 40.0,
+          "track_id": 31,
+          "direction": "in"
+        },
+        {
+          "t": 128.9,
+          "track_id": 54,
+          "direction": "in"
+        },
+        {
+          "t": 132.8,
+          "track_id": 54,
+          "direction": "out"
+        },
+        {
+          "t": 134.4,
+          "track_id": 56,
+          "direction": "in"
+        },
+        {
+          "t": 141.7,
+          "track_id": 54,
+          "direction": "in"
+        },
+        {
+          "t": 189.1,
+          "track_id": 65,
+          "direction": "in"
+        },
+        {
+          "t": 189.1,
+          "track_id": 66,
+          "direction": "in"
+        },
+        {
+          "t": 209.2,
+          "track_id": 115,
+          "direction": "in"
+        },
+        {
+          "t": 210.8,
+          "track_id": 120,
+          "direction": "in"
+        },
+        {
+          "t": 211.5,
+          "track_id": 125,
+          "direction": "in"
+        },
+        {
+          "t": 232.0,
+          "track_id": 155,
+          "direction": "in"
+        },
+        {
+          "t": 234.8,
+          "track_id": 144,
+          "direction": "out"
+        },
+        {
+          "t": 235.3,
+          "track_id": 145,
+          "direction": "out"
+        },
+        {
+          "t": 236.6,
+          "track_id": 157,
+          "direction": "out"
+        },
+        {
+          "t": 245.9,
+          "track_id": 182,
+          "direction": "in"
+        },
+        {
+          "t": 248.0,
+          "track_id": 186,
+          "direction": "in"
+        },
+        {
+          "t": 285.7,
+          "track_id": 216,
+          "direction": "out"
+        },
+        {
+          "t": 286.2,
+          "track_id": 216,
+          "direction": "in"
+        },
+        {
+          "t": 295.7,
+          "track_id": 222,
+          "direction": "in"
+        },
+        {
+          "t": 297.4,
+          "track_id": 233,
+          "direction": "in"
+        },
+        {
+          "t": 297.5,
+          "track_id": 231,
+          "direction": "in"
+        },
+        {
+          "t": 297.8,
+          "track_id": 233,
+          "direction": "out"
+        }
+      ],
+      "seconds": []
+    }
+  }
+}
