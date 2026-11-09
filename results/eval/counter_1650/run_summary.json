@@ -1,20 +1,26 @@
 {
   "detector": {
     "weights": "models/yolo26s.pt",
+    "parameters_millions": 10.01,
     "imgsz": 640,
     "device": "mps",
-    "precision": "FP32"
+    "precision": "FP32",
+    "gpu_memory_mb": 174
+  },
+  "machine": {
+    "cpu": "Apple M4 Pro",
+    "platform": "macOS-15.7.7-arm64-arm-64bit"
   },
   "process_fps_target": 10.0,
-  "elapsed_s": 32.05,
+  "elapsed_s": 60.5,
   "batches": 3000,
   "mean_batch_size": 1.0,
-  "detector_ms_per_batch": 10.15,
-  "total_fps": 93.61,
+  "detector_ms_per_batch": 18.88,
+  "total_fps": 49.58,
   "sources": {
     "counter": {
       "frames_processed": 3000,
-      "fps": 93.61,
+      "fps": 49.58,
       "frames_decoded": 9002,
       "frames_dropped": 0,
       "reconnects": 0,

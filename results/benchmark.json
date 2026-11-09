@@ -1,0 +1,139 @@
+[
+ {
+  "streams": 2,
+  "device": "mps",
+  "realtime": true,
+  "imgsz": 640,
+  "precision": "FP32",
+  "gpu_memory_mb": 1197,
+  "total_fps": 19.56,
+  "mean_batch": 1.03,
+  "detector_ms_per_batch": 19.2,
+  "per_stream_fps": [
+   9.78,
+   9.78
+  ],
+  "dropped": [
+   26,
+   26
+  ]
+ },
+ {
+  "streams": 1,
+  "device": "mps",
+  "realtime": false,
+  "imgsz": 640,
+  "precision": "FP32",
+  "gpu_memory_mb": 1214,
+  "total_fps": 47.71,
+  "mean_batch": 1.0,
+  "detector_ms_per_batch": 19.68,
+  "per_stream_fps": [
+   47.71
+  ],
+  "dropped": [
+   1
+  ]
+ },
+ {
+  "streams": 2,
+  "device": "mps",
+  "realtime": false,
+  "imgsz": 640,
+  "precision": "FP32",
+  "gpu_memory_mb": 1214,
+  "total_fps": 73.61,
+  "mean_batch": 2.0,
+  "detector_ms_per_batch": 25.62,
+  "per_stream_fps": [
+   36.82,
+   36.79
+  ],
+  "dropped": [
+   1,
+   1
+  ]
+ },
+ {
+  "streams": 4,
+  "device": "mps",
+  "realtime": false,
+  "imgsz": 640,
+  "precision": "FP32",
+  "gpu_memory_mb": 1231,
+  "total_fps": 92.64,
+  "mean_batch": 4.0,
+  "detector_ms_per_batch": 40.44,
+  "per_stream_fps": [
+   23.17,
+   23.17,
+   23.15,
+   23.15
+  ],
+  "dropped": [
+   1,
+   1,
+   1,
+   1
+  ]
+ },
+ {
+  "streams": 1,
+  "device": "cpu",
+  "realtime": false,
+  "imgsz": 640,
+  "precision": "FP32",
+  "gpu_memory_mb": null,
+  "total_fps": 7.23,
+  "mean_batch": 1.0,
+  "detector_ms_per_batch": 137.37,
+  "per_stream_fps": [
+   7.23
+  ],
+  "dropped": [
+   1
+  ]
+ },
+ {
+  "streams": 2,
+  "device": "cpu",
+  "realtime": false,
+  "imgsz": 640,
+  "precision": "FP32",
+  "gpu_memory_mb": null,
+  "total_fps": 4.39,
+  "mean_batch": 1.99,
+  "detector_ms_per_batch": 449.64,
+  "per_stream_fps": [
+   2.21,
+   2.18
+  ],
+  "dropped": [
+   1,
+   1
+  ]
+ },
+ {
+  "streams": 4,
+  "device": "cpu",
+  "realtime": false,
+  "imgsz": 640,
+  "precision": "FP32",
+  "gpu_memory_mb": null,
+  "total_fps": 8.13,
+  "mean_batch": 3.96,
+  "detector_ms_per_batch": 484.29,
+  "per_stream_fps": [
+   2.05,
+   2.03,
+   2.03,
+   2.03
+  ],
+  "dropped": [
+   1,
+   1,
+   1,
+   1
+  ]
+ }
+]

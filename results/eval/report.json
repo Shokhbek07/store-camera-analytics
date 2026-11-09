@@ -5,26 +5,26 @@
    "labeller": "shokhbek",
    "hand_in": 22,
    "hand_out": 3,
-   "system_in": 24,
-   "system_out": 6,
-   "error_in": 2,
-   "error_out": 3,
-   "matched": 16,
-   "extra": 14,
-   "missed": 9
+   "system_in": 21,
+   "system_out": 4,
+   "error_in": -1,
+   "error_out": 1,
+   "matched": 19,
+   "extra": 6,
+   "missed": 6
   },
   {
    "clip": "door_0307_1720",
    "labeller": "shokhbek",
    "hand_in": 0,
    "hand_out": 13,
-   "system_in": 2,
-   "system_out": 9,
-   "error_in": 2,
-   "error_out": -4,
-   "matched": 3,
-   "extra": 8,
-   "missed": 10
+   "system_in": 0,
+   "system_out": 11,
+   "error_in": 0,
+   "error_out": -2,
+   "matched": 5,
+   "extra": 6,
+   "missed": 8
   }
  ],
  "queue": [

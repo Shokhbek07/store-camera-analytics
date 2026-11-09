@@ -230,3 +230,7 @@ Results file: `results/heldout_door.json`; the clips are in `data/meva/heldout/`
 
 The new settings are closer to the reference on both unseen clips, against either annotation team, so the E9 improvement is not only an artefact of tuning on the test clips.
 With references this rough, that is the claim the data supports, and no more.
+
+**Full evaluation rerun with the E9 settings (2026-11-10).**
+Door against the hand counts, events matched within 2 s: arrivals 21 in and 4 out against 22 and 3 (19 matched, 6 extra, 6 missed); departures 0 in and 11 out against 0 and 13 (5 matched, 6 extra, 8 missed).
+The counter results came out identical to E8, number for number, which also confirms that offline runs are deterministic.
