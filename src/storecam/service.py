@@ -151,8 +151,16 @@ class Service:
             w.release()
         for r in self.readers.values():
             r.join(timeout=2)
+        import platform
+        import subprocess
+        try:
+            cpu = subprocess.run(["sysctl", "-n", "machdep.cpu.brand_string"], capture_output=True, text=True,
+                                 timeout=5).stdout.strip() or platform.processor()
+        except (OSError, subprocess.SubprocessError):
+            cpu = platform.processor()
         summary = {
             "detector": self.detector.describe(),
+            "machine": {"cpu": cpu, "platform": platform.platform()},
             "process_fps_target": self.cfg.process_fps,
             "elapsed_s": round(elapsed, 2),
             "batches": self.batches,

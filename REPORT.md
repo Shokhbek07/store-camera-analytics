@@ -64,9 +64,39 @@ Pending: door counts against the hand counts, queue mean absolute error per labe
 
 Pending, with timestamps. Already seen: the whiteboard hiding lower bodies (E3), the attendant lost at the frame edge (E4), people at the coffee table on the zone edge (E3, E7), and possible stair traffic over the door line (E3).
 
-## 7. Scaling to about 50 cameras
+## 7. Scaling to about 50 cameras on one GPU server
 
-Pending.
+This section is a plan, not a measurement: no NVIDIA GPU was available, so only the Mac numbers in section 5 are measured.
+Figures from other sources are marked with where they come from.
+
+**The budget.**
+At 10 analysed frames per second per camera (D6), 50 cameras need 500 detections per second, plus 500 tracker updates and zone checks.
+The event logic is cheap; decoding and the detector are what cost.
+
+**Decoding breaks first.**
+H.264 and H.265 frames depend on earlier frames, so a stream must be decoded in full even if only every third frame is analysed: decode cost follows the camera's frame rate and resolution, not the analysis rate.
+50 full-HD streams at 25 to 30 fps is beyond what a T4-class card's hardware decoders are reported to handle together with detection (NVIDIA's developer forum reports DeepStream on a T4 falling below 30 FPS past about 30 1080p streams).
+So the first lever is the cameras: use each camera's secondary stream (typically 720p or lower) at 10 to 15 fps for analytics and keep the full stream for recording.
+Decode on the GPU's NVDEC engines (through GStreamer or NVIDIA DeepStream, or PyNvVideoCodec) so frames stay in GPU memory instead of being copied to the CPU and back.
+
+**Inference: TensorRT, FP16, batched.**
+Ultralytics lists YOLO26s at 2.5 ms per 640 px image on a T4 with TensorRT; 500 images per second would keep one T4 more than fully busy at batch 1, while batching raises throughput substantially.
+The service already batches the newest frame from every source (D5); at 50 sources the detector would take fixed batches of 16 to 32 with a short deadline.
+An L4- or A10-class card, or YOLO26n (1.7 ms on a T4, lower accuracy), gives headroom.
+Export with `model.export(format="engine", half=True)`; ONNX Runtime with the TensorRT execution provider is the more portable route.
+
+**The CPU side.**
+In this Python service each source is a thread; at 50 sources the GIL and CPU-side resizing become the limit before the GPU does.
+The fix is a few worker processes, each owning about a dozen cameras and one TensorRT engine (or all sharing an inference server such as Triton), with resizing and letterboxing done on the GPU.
+
+**Frame rate per camera.**
+10 analysed fps is enough for walking people with ByteTrack; queue and counter zones only need about 2 fps, because they are summarised per second, so cameras that watch only a counter can run lower and free capacity for door cameras.
+
+**What breaks, in order.**
+1. Decoding full-resolution streams at full frame rate.
+2. CPU-side copies, resizing and the Python GIL.
+3. GPU inference, once decoding and pre-processing are on the GPU.
+4. Operations: 50 reconnect loops, clock drift between cameras, and silent failures, which need per-camera health metrics (frames per second, reconnects, last frame time), alerting on a dead camera, and the frame-dropping policy this service already has so one slow camera cannot back up the others.
 
 ## 8. Who did what
 

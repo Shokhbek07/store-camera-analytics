@@ -39,8 +39,15 @@ class Detector:
         return [r.boxes.cpu().numpy() for r in results]
 
     def describe(self) -> dict:
-        return {"weights": self.cfg.weights, "imgsz": self.cfg.imgsz, "device": self.device,
-                "precision": "FP16" if self.half else "FP32"}
+        params = sum(p.numel() for p in self.model.model.parameters())
+        info = {"weights": self.cfg.weights, "parameters_millions": round(params / 1e6, 2), "imgsz": self.cfg.imgsz,
+                "device": self.device, "precision": "FP16" if self.half else "FP32"}
+        if self.device == "mps":
+            info["gpu_memory_mb"] = round(torch.mps.driver_allocated_memory() / 1e6)
+        elif self.device.startswith("cuda"):
+            info["gpu_memory_mb"] = round(torch.cuda.max_memory_reserved() / 1e6)
+            info["gpu"] = torch.cuda.get_device_name()
+        return info
 
 
 class Tracker:
