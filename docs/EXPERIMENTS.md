@@ -234,3 +234,22 @@ With references this rough, that is the claim the data supports, and no more.
 **Full evaluation rerun with the E9 settings (2026-11-10).**
 Door against the hand counts, events matched within 2 s: arrivals 21 in and 4 out against 22 and 3 (19 matched, 6 extra, 6 missed); departures 0 in and 11 out against 0 and 13 (5 matched, 6 extra, 8 missed).
 The counter results came out identical to E8, number for number, which also confirms that offline runs are deterministic.
+
+## E11a. Speed measured while other work was loading the machine (2026-11-10)
+
+`scripts/benchmark.py` ran while Docker Desktop was running another project's containers: four frontend CI containers and a backend, using about 8 of the 14 CPU cores and 6.4 GB of memory (load average 17).
+These numbers are kept because they show how much shared load matters, not as the service's speed; the clean run is E11b.
+File: `results/benchmark_under_docker_load.json`.
+
+| Run | Total FPS | Per stream | Detector ms per batch | GPU memory |
+|---|---|---|---|---|
+| 2 streams, real time (target 10 per stream) | 19.6 | 9.8, 9.8 | 19.2 | 1197 MB |
+| 1 stream, as fast as possible, MPS | 47.7 | 47.7 | 19.7 | 1214 MB |
+| 2 streams, as fast as possible, MPS | 73.6 | 36.8, 36.8 | 25.6 | 1214 MB |
+| 4 streams, as fast as possible, MPS | 92.6 | 23.2 each | 40.4 | 1231 MB |
+| 1 stream, CPU | 7.2 | 7.2 | 137 | |
+| 2 streams, CPU | 4.4 | 2.2 each | 450 | |
+| 4 streams, CPU | 8.1 | 2.0 each | 484 | |
+
+For comparison, E2 on a quiet machine measured YOLO26s at 91 FPS for one stream on MPS, and E4 measured 108 FPS for two streams; under this load they fell to 48 and 74.
+Even under load the real-time run held 9.8 of the 10 FPS target per stream.
