@@ -32,7 +32,8 @@ def main() -> None:
     report = json.loads(Path("results/eval/report.json").read_text())
     system = {(q["clip"], m["t"]): m["system"] for q in report["queue"] for m in q["per_mark"]}
     source = next(s for s in config.load("config.yaml").sources if s.name == "counter")
-    rows = ["| Clip | Time | Shokhbek | Claude | System | Claude's note | Your count |", "|---|---|---|---|---|---|---|"]
+    rows = ["| Clip | Time | Shokhbek | Claude | System | Claude's note | Your count |",
+            "|---|---|---|---|---|---|---|"]
     for clip in CLIPS:
         mine = labels(Path(f"labels/queue_{clip}.json"))
         claude = labels(Path(f"labels/queue_{clip}.claude.json"))
@@ -47,7 +48,8 @@ def main() -> None:
             if ok:
                 cv2.imwrite(str(OUT / f"{clip}_{t:03d}.jpg"), geometry(frame, source))
             note = "uncertain" if m.get("uncertain") else ""
-            rows.append(f"| {clip} | {t // 60}:{t % 60:02d} | {'' if sk is None else sk} | {m['queue']} | {sy} | {note} | |")
+            shown = "" if sk is None else sk
+            rows.append(f"| {clip} | {t // 60}:{t % 60:02d} | {shown} | {m['queue']} | {sy} | {note} | |")
         cap.release()
     (OUT / "review.md").write_text(
         "# Queue labels to review\n\n"
