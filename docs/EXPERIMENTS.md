@@ -137,7 +137,7 @@ Full output: `results/eval/report.json`.
 | door_0307_1720 (departures) | 0 | 13 | 2 | 9 | +2 | -4 | 3 | 8 | 10 |
 
 The totals are close on arrivals, but the event matching is poor: many system crossings do not fall within 2 s of a hand label.
-Part of that is timing (the hand label was pressed when the person crossed at the doors, while the system counts at the inner edge of the mats, a second or two later), and part is real error; E9 looks at the individual events.
+Some of it may be timing (a key press lagging the crossing, or the system confirming a side only after two frames beyond the dead band), and some is real error; E9 looks at the individual events to separate the two.
 On the departure clip the system misses 4 of 13 exits; the group of about eight people leaving together is the likely cause.
 
 **Queue, mean absolute error at the 10 s marks:**
