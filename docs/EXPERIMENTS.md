@@ -166,7 +166,7 @@ The two labellers agree exactly on 4 of their 11 shared marks (E7).
 - On counter_1650 the system's first alert (0 to 79 s) covers both expected alerts (0 to 30 s and 40 to 110 s): the dip at 30 s was bridged, so two expected alerts became one, and it ended about 30 s early.
   Its second alert (254 to 287 s, peak 4) is wrong: the labels show 1 or 2 people then, so the extra people are most likely the ones at the coffee table on the zone edge.
 - On counter_1735 the attendant really did leave the counter from about 155 to 165 s (checked every 2 s) and walked to the coffee table and back.
-  Nobody was waiting, but the system counted the attendant herself as a waiting customer while she crossed the queue zone, plus a passer-by, and raised an empty-counter alert at 164 s.
+  Nobody was waiting, but the system counted the attendant as a waiting customer while crossing the queue zone, plus a passer-by, and raised an empty-counter alert at 164 s.
   This is the staff versus customer problem the brief lists as a bonus.
 
 ## E9. Why the door counts were off, and what fixed them (2026-11-10)

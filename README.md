@@ -28,6 +28,19 @@ uv sync
 ./scripts/download.sh   # videos and weights, about 620 MB, checked by SHA-256
 ```
 
+## Results
+
+Measured on the MEVA clips below against hand labels; full tables, method and failure cases with timestamps are in `REPORT.md` sections 5 and 6.
+
+| What | Result |
+|---|---|
+| Door, arrival clip, hand vs system IN/OUT | 22/3 vs 21/4 (19 of 25 events matched within 2 s) |
+| Door, departure clip, hand vs system IN/OUT | 0/13 vs 0/11 (5 of 13 events matched within 2 s) |
+| Queue length MAE at 10 s marks | 1.18 (Shokhbek, 11 marks); 0.77, 0.30, 0.00 (Claude, 30 marks on each of 3 clips) |
+| Queue alerts | 3 of 3 expected found (two merged into one), 1 wrong |
+| Empty-counter alerts | none expected, 1 wrong |
+| Speed, Apple M4 Pro, MPS, YOLO26s 640 px FP32 | about 108 FPS total for 2 streams offline; 9.8 FPS per stream in real time against a 10 FPS target |
+
 ## Footage
 
 All footage comes from the MEVA dataset (Multiview Extended Video with Activities), recorded by Kitware, Inc. for the IARPA DIVA programme.

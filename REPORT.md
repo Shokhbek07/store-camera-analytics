@@ -1,12 +1,22 @@
 # Store camera analytics: report
 
 Safia AI team, ML Engineer case study, stage 2.
-This report is written as the work goes; sections marked "pending" are filled in when their measurements are done.
 Each claim points to its source: decisions are `D1` and onwards in `docs/DECISIONS.md`, experiments are `E1` and onwards in `docs/EXPERIMENTS.md`, and raw result files are in `results/`.
 
 ## 1. Summary
 
-Pending: written last, from the measured results.
+The service reads two video sources at once, detects people with YOLO26s, tracks them with ByteTrack, and writes per-minute CSV rows and alert events, all from one config file and one command.
+On five licensed MEVA clips (D1), measured against hand labels:
+
+- Door: 21 in and 4 out against 22 and 3 hand-counted on the arrival clip, and 0 in and 11 out against 0 and 13 on the departure clip.
+  On two clips not used for tuning the count error fell from 4 to 1 and from 6 to 3 (E10).
+- Queue length: mean absolute error 1.18 people against Shokhbek's 11 marks, and 0.77, 0.30 and 0.00 against Claude's 30 marks on each of the three counter clips.
+  The two labellers themselves differ by 0.82 on average on the marks they share, so the reference is not much sharper than the system.
+- Alerts: every expected queue alert was raised, but two of them were merged into one, and two alerts were wrong (people at a coffee table on the zone edge, and the attendant counted as a waiting customer).
+- Speed on an Apple M4 Pro: about 108 FPS in total for two streams processed as fast as possible, so the 10 FPS per stream target uses about a fifth of the machine (E4).
+  The clean rerun of the full speed benchmark is pending (E11a explains why the first run is not used).
+
+The weakest parts are the departure side of the door (5 of 13 events matched in time) and telling staff from customers.
 
 ## 2. The task and how it was approached
 
@@ -58,11 +68,108 @@ Shokhbek hand-labelled both door clips and the first queue marks; Claude labelle
 
 ## 5. Measurement
 
-Pending: door counts against the hand counts, queue mean absolute error per labeller, expected alerts found, missed and raised wrongly, and speed.
+All numbers come from `scripts/evaluate.py`, which runs the service offline on each clip (every sampled frame is processed, so results are repeatable) and writes `results/eval/report.json`.
+Who labelled what is recorded in each file under `labels/` and in E7.
+
+### 5.1 Door counts
+
+Hand counts by Shokhbek, from a key press each time someone crossed the inner edge of the entrance mats (D7, D9).
+A system event is "matched" when a hand event in the same direction lies within 2 s.
+
+| Clip | Hand IN/OUT | System IN/OUT | Matched within 2 s | Extra | Missed |
+|---|---|---|---|---|---|
+| `door_0309_1010` (arrivals) | 22 / 3 | 21 / 4 | 19 | 6 | 6 |
+| `door_0307_1720` (departures) | 0 / 13 | 0 / 11 | 5 | 6 | 8 |
+
+The totals are close, but on the departure clip they are close partly by luck: only 5 of the 13 departures are matched in time, and the rest are most likely the doorway-region counts, which land when the tracker drops a track rather than at the moment a person passes the door.
+System crossings also come 1 to 2.5 s before the key presses, the delay of a person pressing a key while watching; at 3 s the arrivals match 22 of 25 (E9).
+
+The settings were chosen on these two clips (E9), so the same settings were checked on two door clips not used for tuning, against MEVA's own annotations (E10):
+
+| Clip | MEVA IN/OUT | System IN/OUT |
+|---|---|---|
+| 2018-03-13 16:30 | 40 / 3 | 41 / 3 |
+| 2018-03-12 10:00 | 4 / 4 (UMD-IBM), 7 / 2 (CMU) | 7 / 4 |
+
+### 5.2 Queue length every 10 s
+
+The queue zone count is the median of the frames in each second (D4); the labels count customers waiting at or for the counter at each 10 s mark.
+
+| Clip | Labeller | Marks | MAE | Mean error (system minus hand) | Exactly right | Mean queue |
+|---|---|---|---|---|---|---|
+| `counter_1650` | Shokhbek | 11 (0:10 to 3:30) | 1.18 | +1.18 | 3 | 1.7 |
+| `counter_1650` | Claude | 30 (0:00 to 4:50) | 0.77 | +0.50 | 12 | 2.4 |
+| `counter_1720` | Claude | 30 | 0.30 | +0.23 | 23 | 3.6 |
+| `counter_1735` | Claude | 30 | 0.00 | 0.00 | 30 | 0.5 |
+
+The system never counts fewer people than Shokhbek; the extra people are mostly on the coffee-table edge of the zone and people walking through it.
+On the 11 marks both labellers share, they agree exactly on 4 and Claude counts 0.82 more on average; the difference is the counting rule: Claude counted everyone standing inside the zone outline, Shokhbek counted the people who were queuing (E7).
+So "queue length" depends on the counting rule almost as much as on the detector, and the 1.18 against Shokhbek is the more conservative figure.
+`counter_1735` is quiet (half a person on average), so its 0.00 shows that empty and near-empty scenes are handled, not that the hard case is solved.
+
+Whether staff was present agreed with the labels at 10 of 11, 27 of 30, 29 of 30 and 26 of 30 marks.
+
+### 5.3 Alerts
+
+Expected alerts were listed by Claude from the 10 s labels and frames (queue: at least 3 waiting for 10 s; empty counter: no staff for 10 s while someone waits).
+A system alert is "found" when it overlaps an expected one.
+
+| Clip | Kind | Expected | Raised | Found | Missed | Wrong |
+|---|---|---|---|---|---|---|
+| `counter_1650` | queue | 2 | 2 | 2 | 0 | 1 |
+| `counter_1650` | empty counter | 0 | 0 | 0 | 0 | 0 |
+| `counter_1720` | queue | 1 | 1 | 1 | 0 | 0 |
+| `counter_1720` | empty counter | 0 | 0 | 0 | 0 | 0 |
+| `counter_1735` | queue | 0 | 0 | 0 | 0 | 0 |
+| `counter_1735` | empty counter | 0 | 1 | 0 | 0 | 1 |
+
+- `counter_1650`: the expected queue alerts at 0:00 to 0:30 and 0:40 to 1:50 were both covered by one system alert from 0:00 to 1:19 (peak 6), which bridged the short dip and ended about 30 s early.
+  The second system alert, 4:14 to 4:47 (peak 4), is wrong: the labels show 1 or 2 people waiting.
+- `counter_1720`: one expected alert, 0:20 to 4:20; the system raised it from 0:09 to 4:10 (peak 7).
+- `counter_1735`: the attendant really did leave the counter from about 2:35 to 2:45, but nobody was waiting.
+  The system counted the attendant, crossing the queue zone, and a passer-by as waiting customers and raised an empty-counter alert at 2:44.
+
+There are no examples of a real empty-counter alert in this footage, so that alert is only tested by the unit tests and by this one false alarm.
+
+### 5.4 Speed
+
+Machine: Apple M4 Pro (14 CPU cores, 24 GB unified memory), macOS 15, PyTorch on the MPS GPU backend.
+Model: YOLO26s, 10.0 million parameters, 640 px input, FP32 (the service uses FP16 only on CUDA; FP16 on MPS was not measured).
+Source video: 1920x1072 at 30 fps; 10 frames per second per source are analysed.
+
+| Measurement | Result | Source |
+|---|---|---|
+| One stream, as fast as possible, detector and tracker | 91 FPS | E2 |
+| Two streams together, as fast as possible, whole service | 108 FPS in total, 17.7 ms per batch of 2 | E4 |
+| Two streams in real time | 9.8 of the 10 FPS target per stream, no dropped frames | E11a (under load) |
+| GPU memory | about 1.2 GB | E11a |
+| Process memory | about 790 MB | E2 |
+
+The full benchmark (`scripts/benchmark.py`: real time for 120 s, then 1, 2 and 4 streams on MPS and on CPU) was first run while another project's containers were using about 8 of the 14 cores; it is kept as E11a and is not used for the figures above except where noted.
+The clean rerun is pending.
 
 ## 6. Known failure cases
 
-Pending, with timestamps. Already seen: the whiteboard hiding lower bodies (E3), the attendant lost at the frame edge (E4), people at the coffee table on the zone edge (E3, E7), and possible stair traffic over the door line (E3).
+Times are positions in the clip (minutes:seconds).
+
+1. **Attendant lost at the left edge of the counter view.**
+   The attendant often stands at the frame edge or bends below the counter, so the staff zone reads empty: `counter_1650` at 0:09 to 0:14, 1:06 to 1:09, 3:50 to 3:51 and 4:28 to 4:35, and `counter_1720` at 1:04 to 1:05 and 2:29 to 2:31.
+   The 10 s alert delay absorbs these, but the per-minute "empty counter seconds" column overstates the time the counter was unattended.
+2. **Staff counted as customers.**
+   When the attendant leaves the counter they can walk through the queue zone and be counted as a waiting customer (`counter_1735`, 2:35 to 2:45, which raised a wrong empty-counter alert).
+   Telling staff from customers needs either a staff-only path rule or an appearance cue (uniform), which was not built.
+3. **People at the coffee table on the zone edge.**
+   People standing at the coffee table to the right of the counter are inside or on the edge of the queue zone; this is the main source of the over-count in 5.2 and of the wrong queue alert on `counter_1650` at 4:14 to 4:47.
+4. **Whiteboard hiding lower bodies.**
+   In the counter view a whiteboard in the foreground cuts boxes off at its top edge, so foot points sit too high and people behind it can fall outside the zone (E3).
+5. **Flip-flops at the door line.**
+   When the door or another person hides part of a box, the foot point jumps across the line: for example track 216 at 4:45.7 and 4:46.2, and track 19 at 0:40.9 to 0:43.2, on the door clips (E9).
+   The 40 px band and 4-frame confirmation removed most of these, but not all.
+6. **A group that waits on the mats before leaving.**
+   On `door_0307_1720` about nine people gathered on the mats (the outside of the line) before 0:20 and left through the doors between 0:41 and 0:54.
+   They crossed the line long before they left; the doorway region now counts them when they vanish in the doorway, but those counts land at the moment the tracker drops them, not when they actually leave (E9).
+7. **Stair traffic.**
+   The left end of the door line reaches over the stair landing, so people walking between the downstairs and upstairs flights can be counted as door traffic (E3; noticed by Shokhbek while labelling).
 
 ## 7. Scaling to about 50 cameras on one GPU server
 
@@ -101,5 +208,5 @@ The fix is a few worker processes, each owning about a dozen cameras and one Ten
 ## 8. Who did what
 
 Shokhbek chose the direction at each step, labelled both door clips and the first queue marks by hand, and reviews the labels and results.
-Claude Code (an AI coding assistant, which the brief allows) wrote the code and documents, ran the experiments, and labels the remaining queue marks and the expected alerts from extracted frames (in progress).
+Claude Code (an AI coding assistant, which the brief allows) wrote the code and documents, ran the experiments, and labelled the remaining queue marks and the expected alerts from extracted frames.
 Which labels came from whom is recorded in the label files themselves and in E7.
