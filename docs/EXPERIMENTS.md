@@ -168,3 +168,49 @@ The two labellers agree exactly on 4 of their 11 shared marks (E7).
 - On counter_1735 the attendant really did leave the counter from about 155 to 165 s (checked every 2 s) and walked to the coffee table and back.
   Nobody was waiting, but the system counted the attendant herself as a waiting customer while she crossed the queue zone, plus a passer-by, and raised an empty-counter alert at 164 s.
   This is the staff versus customer problem the brief lists as a bonus.
+
+## E9. Why the door counts were off, and what fixed them (2026-11-10)
+
+**Looking at the events.**
+Listing the hand and system crossings side by side for both door clips showed three separate problems:
+
+1. Timing: on the arrival clip the system's crossings come 1 to 2.5 s before the matching key press, which fits the reaction time of pressing a key while watching.
+   With a 2 s matching window, correct crossings were scored as both "extra" and "missed"; from here on matching is reported at 2 s and 3 s.
+2. Flip-flops: one track counted out and in again within half a second (for example track 216 at 285.7 s and 286.2 s, track 19 at 40.9 s, 41.4 s and 43.2 s), when the door or another person cut off part of the box and the foot point jumped across the 20 px band.
+3. The departing group: frames every 2 s showed the group of about nine gathering on the mats before 20 s, which is already the outside of the line (D7), and leaving through the doors between 41 s and 54 s.
+   They had crossed the line long before they left, so their departure crossed nothing.
+
+**Variants tried** (`scripts/sweep_door.py`, both door clips, same hand counts; full output `results/sweep_door.json`).
+"Count error" is the sum over both clips of |system IN minus hand IN| plus |system OUT minus hand OUT|.
+
+| Variant | Count error | Arrivals IN/OUT (hand 22/3) | Departures IN/OUT (hand 0/13) | Matched at 3 s, arrivals | Matched at 3 s, departures |
+|---|---|---|---|---|---|
+| baseline (mats line, band 20, 2 frames) | 11 | 24/6 | 2/9 | 19 (+11, -6) | 3 (+8, -10) |
+| band 40 | 9 | 21/4 | 0/6 | 19 (+6, -6) | 2 (+4, -11) |
+| 4 frames | 8 | 22/5 | 1/8 | 20 (+7, -5) | 3 (+6, -10) |
+| band 40, 4 frames | 11 | 21/4 | 0/4 | 22 (+3, -3) | 2 (+2, -11) |
+| 960 px input | 8 | 22/5 | 1/8 | 19 (+8, -6) | 3 (+6, -10) |
+| 960 px, band 40, 4 frames | 9 | 22/4 | 0/5 | 19 (+7, -6) | 2 (+3, -11) |
+| 15 fps, band 40, 6 frames | 12 | 21/4 | 0/3 | 22 (+3, -3) | 2 (+1, -11) |
+| line on the door threshold | 22 | 6/2 | 5/13 | 7 (+1, -18) | 6 (+12, -7) |
+| threshold, band 10 | 19 | 11/3 | 6/15 | 9 (+5, -16) | 7 (+14, -6) |
+| threshold, 3 frames | 23 | 5/2 | 5/13 | 6 (+1, -19) | 6 (+12, -7) |
+| threshold, 960 px | 20 | 9/3 | 5/15 | 8 (+4, -17) | 8 (+12, -5) |
+| mats line + doorway region | 8 | 24/6 | 2/12 | 19 (+11, -6) | 4 (+10, -9) |
+| **mats line + doorway region, band 40, 4 frames** | **4** | **21/4** | **0/11** | **22 (+3, -3)** | **7 (+4, -6)** |
+| mats line + doorway region, 4 frames | 4 | 22/5 | 1/12 | 20 (+7, -5) | 5 (+8, -8) |
+| mats line + doorway region, 960 px | 5 | 22/5 | 1/11 | 19 (+8, -6) | 5 (+7, -8) |
+
+**What the table says.**
+
+- A wider band and more frames remove most flip-flops (extra arrivals events fall from 11 to 3) but do nothing for the departing group.
+- Moving the line to the door threshold fixes departures (13 out against 13) and breaks arrivals (6 in against 22): an arriving person is first seen in the doorway, already on the line, so never has a confirmed outside side.
+  A single line cannot serve both directions on this camera.
+- The 960 px input changes little here; the misses are not small or faint people.
+- The fix that works is to keep the mats line and add a doorway region (`door_region`, `LineCounter` in `src/storecam/events.py`, with six new unit tests): a track first seen in the doorway starts on the outside, and a track that vanishes in the doorway without ever having been counted is counted OUT when the tracker drops it.
+  With the wider band and four frames it cuts the count error from 11 to 4 and the unmatched events on arrivals from 17 to 6.
+
+**Adopted:** mats line, doorway region, band 40 px, 4 frames, now in `config.yaml`.
+
+**Caveat:** this was chosen on the same two clips it is measured on, so these numbers are optimistic.
+A check on two door clips not used for tuning follows in E10.

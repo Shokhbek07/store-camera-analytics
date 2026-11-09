@@ -42,10 +42,17 @@ class LineCounter:
     line, within the line's extent, for `min_frames` consecutive frames. A crossing is counted
     when the confirmed side changes. A person who stops on the line, walks along it, or steps
     onto it and turns back never confirms the other side, so is never counted.
+
+    An optional `door_region` covers the doorway itself, on the outside of the line, where
+    people appear when they come in and vanish when they leave (E9). A track first seen there
+    starts on the outside, so walking in past the line counts IN even though it was never seen
+    beyond the band outside. A track that vanishes there without ever having been counted, and
+    was not born there, is counted OUT when the tracker drops it: someone who waited on the
+    outside side of the line and then left through the door.
     """
 
     def __init__(self, a: Point, b: Point, inside: Point, band: float = 20.0, min_frames: int = 2,
-                 extent_margin: float = 0.1):
+                 extent_margin: float = 0.1, door_region: list[Point] | None = None):
         self.a, self.b = a, b
         dx, dy = b[0] - a[0], b[1] - a[1]
         self.length = math.hypot(dx, dy)
@@ -62,8 +69,20 @@ class LineCounter:
         self.margin = extent_margin * self.length
         self.side: dict[int, int] = {}  # confirmed side: +1 inside, -1 outside
         self.pending: dict[int, tuple[int, int]] = {}  # candidate side and frames seen
+        self.door_region = door_region
+        self.last: dict[int, tuple[Point, float]] = {}  # last foot point and time per track
+        self.born_in_door: set[int] = set()
+        self.counted: set[int] = set()
         self.n_in = 0
         self.n_out = 0
+
+    def _count(self, tid: int, direction: str, t: float) -> Crossing:
+        if direction == "in":
+            self.n_in += 1
+        else:
+            self.n_out += 1
+        self.counted.add(tid)
+        return Crossing(tid, direction, t)
 
     def signed_distance(self, p: Point) -> tuple[float, float]:
         """(distance along the normal, position along the line from a)."""
@@ -73,6 +92,10 @@ class LineCounter:
     def update(self, tracks: dict[int, Point], t: float) -> list[Crossing]:
         events = []
         for tid, p in tracks.items():
+            if tid not in self.last and self.door_region and point_in_polygon(p, self.door_region):
+                self.born_in_door.add(tid)
+                self.side[tid] = -1
+            self.last[tid] = (p, t)
             d, s = self.signed_distance(p)
             within = -self.margin <= s <= self.length + self.margin
             if not within or abs(d) <= self.band:
@@ -87,24 +110,30 @@ class LineCounter:
             old = self.side.get(tid)
             self.side[tid] = cand
             if old is not None and old != cand:
-                direction = "in" if cand > 0 else "out"
-                if direction == "in":
-                    self.n_in += 1
-                else:
-                    self.n_out += 1
-                events.append(Crossing(tid, direction, t))
+                events.append(self._count(tid, "in" if cand > 0 else "out", t))
         return events
 
-    def forget(self, alive: set[int]) -> None:
-        """Drop state for tracks the tracker has removed."""
+    def forget(self, alive: set[int]) -> list[Crossing]:
+        """Drop state for tracks the tracker has removed; may count an exit through the door."""
+        events = []
+        for tid in [tid for tid in self.last if tid not in alive]:
+            p, t = self.last.pop(tid)
+            if (self.door_region and tid not in self.counted and tid not in self.born_in_door
+                    and point_in_polygon(p, self.door_region)):
+                events.append(self._count(tid, "out", t))
+            self.counted.discard(tid)
+            self.born_in_door.discard(tid)
         for d in (self.side, self.pending):
             for tid in list(d):
                 if tid not in alive:
                     del d[tid]
+        return events
 
     def reset(self) -> None:
-        self.side.clear()
-        self.pending.clear()
+        for d in (self.side, self.pending, self.last):
+            d.clear()
+        self.born_in_door.clear()
+        self.counted.clear()
 
 
 @dataclass

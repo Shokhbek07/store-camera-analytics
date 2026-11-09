@@ -37,6 +37,9 @@ class DoorLine(Strict):
     inside: Point  # any point on the inside of the door; sets the IN direction
     band_px: float = Field(20, ge=0)  # dead band on each side of the line
     min_frames: int = Field(2, ge=1)  # frames beyond the band before a side counts
+    # Optional doorway polygon on the outside of the line: tracks born there start outside, and
+    # tracks that vanish there without having been counted count as OUT (E9).
+    door_region: list[Point] | None = None
 
 
 class Zones(Strict):

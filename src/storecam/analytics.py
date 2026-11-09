@@ -39,7 +39,8 @@ class MinuteRow:
 class SourceAnalytics:
     def __init__(self, source: Source, out_dir: Path, alerts_file):
         self.src = source
-        self.lines = [LineCounter(dl.a, dl.b, dl.inside, dl.band_px, dl.min_frames) for dl in source.door_lines]
+        self.lines = [LineCounter(dl.a, dl.b, dl.inside, dl.band_px, dl.min_frames, door_region=dl.door_region)
+                      for dl in source.door_lines]
         z = source.zones
         self.zones = ZoneSampler(z.queue, z.staff) if z.queue else None
         qa, ea = source.alerts.queue, source.alerts.empty_counter
@@ -91,16 +92,15 @@ class SourceAnalytics:
         self.last_t = t
         feet = {tid: ((x1 + x2) / 2, y2) for tid, (x1, y1, x2, y2) in tracks.items()}
         for line in self.lines:
-            for c in line.update(feet, t):
-                row = self._row_for(t)
+            for c in line.update(feet, t) + line.forget(alive):
+                row = self._row_for(c.t)
                 if c.direction == "in":
                     row.n_in += 1
                     self.live["in"] += 1
                 else:
                     row.n_out += 1
                     self.live["out"] += 1
-                self.crossings.append({"t": round(t, 2), "track_id": c.track_id, "direction": c.direction})
-            line.forget(alive)
+                self.crossings.append({"t": round(c.t, 2), "track_id": c.track_id, "direction": c.direction})
         if self.zones is not None:
             for sample in self.zones.update(list(feet.values()), t):
                 self._on_second(sample)

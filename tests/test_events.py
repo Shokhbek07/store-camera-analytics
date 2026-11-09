@@ -121,3 +121,47 @@ def test_open_alert_closed_at_stream_end():
         a.update(t, True, 1)
     ((kind, alert),) = a.finish(4)
     assert (kind, alert.end, alert.ended_by) == ("end", 4, "stream_end")
+
+
+# Door region: the doorway beyond the line (smaller y), where people appear and vanish.
+DOOR = [(0, 40), (200, 40), (200, 70), (0, 70)]
+
+
+def test_track_born_in_doorway_counts_in_without_outside_history():
+    c = LineCounter(**LINE, door_region=DOOR)
+    # First seen in the doorway (y=60, beyond the band on the outside), then walks in.
+    assert run(c, [60, 80, 100, 120, 130]) == ["in"]
+
+
+def test_born_in_doorway_without_region_needs_outside_frames():
+    c = LineCounter(**LINE)
+    assert run(c, [85, 100, 120, 130]) == []
+    c2 = LineCounter(**LINE, door_region=[(0, 80), (200, 80), (200, 89), (0, 89)])
+    assert run(c2, [85, 100, 120, 130]) == ["in"]
+
+
+def test_waiting_outside_then_vanishing_in_doorway_counts_out():
+    c = LineCounter(**LINE, door_region=DOOR)
+    # Seen only on the outside side (a group waiting on the mats), then walks out of view.
+    for i, y in enumerate([80, 78, 75, 65, 55]):
+        c.update({1: (100, y)}, t=i)
+    (ev,) = c.forget(alive=set())
+    assert (ev.direction, ev.t, c.n_out) == ("out", 4, 1)
+
+
+def test_already_counted_exit_is_not_counted_again_on_vanishing():
+    c = LineCounter(**LINE, door_region=DOOR)
+    assert run(c, [130, 120, 100, 80, 70, 60, 50]) == ["out"]
+    assert c.forget(alive=set()) == []
+
+
+def test_track_born_and_vanishing_in_doorway_is_not_counted():
+    c = LineCounter(**LINE, door_region=DOOR)
+    run(c, [50, 55, 60, 55])
+    assert c.forget(alive=set()) == []
+
+
+def test_vanishing_away_from_doorway_is_not_counted():
+    c = LineCounter(**LINE, door_region=DOOR)
+    run(c, [80, 78, 75])
+    assert c.forget(alive=set()) == []

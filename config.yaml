@@ -37,10 +37,13 @@ sources:
     url: data/meva/door_0307_1720.avi
     realtime: true
     door_lines:
-      # Inner edge of the entrance mats; IN is towards the camera.
+      # Inner edge of the entrance mats; IN is towards the camera (D7).
+      # The doorway region handles people who appear in the doorway or wait on the mats and
+      # then leave through the door (E9); band and frames were widened in the same experiment.
       - name: entrance
         a: [660, 818]
         b: [1440, 1035]
         inside: [700, 1050]
-        band_px: 20
-        min_frames: 2
+        band_px: 40
+        min_frames: 4
+        door_region: [[880, 560], [1450, 746], [1450, 926], [880, 740]]
