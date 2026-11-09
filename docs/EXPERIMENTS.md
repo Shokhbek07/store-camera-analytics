@@ -214,3 +214,19 @@ Listing the hand and system crossings side by side for both door clips showed th
 
 **Caveat:** this was chosen on the same two clips it is measured on, so these numbers are optimistic.
 A check on two door clips not used for tuning follows in E10.
+
+## E10. The new door settings on two clips not used for tuning (2026-11-10)
+
+E9 chose its settings on the same two clips it measured, so they were checked on two other G420 clips, chosen before running anything: the busiest arrival clip left in MEVA's labels (2018-03-13 16:30) and a clip with traffic both ways (2018-03-12 10:00).
+Neither was hand-labelled by us, so the reference is MEVA's own annotations ("person enters/exits through structure"), which are activity labels with their own definition.
+On 2018-03-12 10:00 the two MEVA annotation teams disagree with each other (4 in and 4 out against 7 in and 2 out), which shows how rough this reference is.
+Results file: `results/heldout_door.json`; the clips are in `data/meva/heldout/` and are not part of `scripts/download.sh`.
+
+| Clip | MEVA labels, IN/OUT | Before (E8 settings) | After (E9 settings) | Count error before | Count error after |
+|---|---|---|---|---|---|
+| 2018-03-13 16:30 | 40/3 (UMD-IBM) | 44/3 | 41/3 | 4 | 1 |
+| 2018-03-12 10:00 | 4/4 (UMD-IBM) | 10/4 | 7/4 | 6 | 3 |
+| 2018-03-12 10:00 | 7/2 (CMU) | 10/4 | 7/4 | 5 | 2 |
+
+The new settings are closer to the reference on both unseen clips, against either annotation team, so the E9 improvement is not only an artefact of tuning on the test clips.
+With references this rough, that is the claim the data supports, and no more.

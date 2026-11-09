@@ -1,0 +1,26 @@
+[
+ {
+  "clip": "2018-03-12.10-00-00.10-05-00.school.G420.r13",
+  "settings": "before (E8 settings)",
+  "in": 10,
+  "out": 4
+ },
+ {
+  "clip": "2018-03-12.10-00-00.10-05-00.school.G420.r13",
+  "settings": "after (E9 settings)",
+  "in": 7,
+  "out": 4
+ },
+ {
+  "clip": "2018-03-13.16-30-01.16-35-01.school.G420.r13",
+  "settings": "before (E8 settings)",
+  "in": 44,
+  "out": 3
+ },
+ {
+  "clip": "2018-03-13.16-30-01.16-35-01.school.G420.r13",
+  "settings": "after (E9 settings)",
+  "in": 41,
+  "out": 3
+ }
+]
