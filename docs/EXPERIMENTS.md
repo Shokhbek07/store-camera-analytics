@@ -123,3 +123,48 @@ The first two are built for boxes and need a server; the task needs only key pre
 **Agreement on the 11 marks both labelled:** exact on 4 of 11; Claude's count is higher on the other 7 by 1 or 2, a mean of +0.82 people.
 Looking at the frames, the difference is the rule: Claude counted everyone standing inside the outline, including people standing back from the counter and people at the zone's right edge near the coffee table, while Shokhbek counted the people who were queuing.
 This is the same ambiguity the system faces, and it is reported rather than resolved by choosing the labels that suit the system.
+
+## E8. First comparison with the labels (2026-11-09)
+
+`scripts/evaluate.py` with the configuration as committed on 2026-11-08 (YOLO26s, 640 px, 10 fps analysed, zones and line from E3).
+Full output: `results/eval/report.json`.
+
+**Door, against Shokhbek's hand counts:**
+
+| Clip | Hand IN | Hand OUT | System IN | System OUT | Error IN | Error OUT | Events matched within 2 s | Extra | Missed |
+|---|---|---|---|---|---|---|---|---|---|
+| door_0309_1010 (arrivals) | 22 | 3 | 24 | 6 | +2 | +3 | 16 | 14 | 9 |
+| door_0307_1720 (departures) | 0 | 13 | 2 | 9 | +2 | -4 | 3 | 8 | 10 |
+
+The totals are close on arrivals, but the event matching is poor: many system crossings do not fall within 2 s of a hand label.
+Part of that is timing (the hand label was pressed when the person crossed at the doors, while the system counts at the inner edge of the mats, a second or two later), and part is real error; E9 looks at the individual events.
+On the departure clip the system misses 4 of 13 exits; the group of about eight people leaving together is the likely cause.
+
+**Queue, mean absolute error at the 10 s marks:**
+
+| Clip | Labeller | Marks | MAE | Bias (system minus label) | Exact | Mean labelled queue |
+|---|---|---|---|---|---|---|
+| counter_1650 | Shokhbek | 11 | 1.18 | +1.18 | 3 | 1.73 |
+| counter_1650 | Claude | 30 | 0.77 | +0.50 | 12 | 2.40 |
+| counter_1720 | Claude | 30 | 0.30 | +0.23 | 23 | 3.63 |
+| counter_1735 | Claude | 30 | 0.00 | 0.00 | 30 | 0.47 |
+
+The system never counts fewer people than Shokhbek on his marks; it counts everyone standing in the zone, while he counted people who were queuing.
+Against Claude's labels, which follow the geometric rule, the error is lower, and it is lowest on the quiet clip.
+The two labellers agree exactly on 4 of their 11 shared marks (E7).
+
+**Alerts, against the expected alerts Claude listed from the 10 s labels:**
+
+| Clip | Kind | Expected | System | Found | Missed | Wrong |
+|---|---|---|---|---|---|---|
+| counter_1650 | queue | 2 | 2 | 2 | 0 | 1 |
+| counter_1720 | queue | 1 | 1 | 1 | 0 | 0 |
+| counter_1735 | queue | 0 | 0 | 0 | 0 | 0 |
+| counter_1650, 1720 | empty counter | 0 | 0 | 0 | 0 | 0 |
+| counter_1735 | empty counter | 0 | 1 | 0 | 0 | 1 |
+
+- On counter_1650 the system's first alert (0 to 79 s) covers both expected alerts (0 to 30 s and 40 to 110 s): the dip at 30 s was bridged, so two expected alerts became one, and it ended about 30 s early.
+  Its second alert (254 to 287 s, peak 4) is wrong: the labels show 1 or 2 people then, so the extra people are most likely the ones at the coffee table on the zone edge.
+- On counter_1735 the attendant really did leave the counter from about 155 to 165 s (checked every 2 s) and walked to the coffee table and back.
+  Nobody was waiting, but the system counted the attendant herself as a waiting customer while she crossed the queue zone, plus a passer-by, and raised an empty-counter alert at 164 s.
+  This is the staff versus customer problem the brief lists as a bonus.

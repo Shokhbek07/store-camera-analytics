@@ -103,6 +103,56 @@
    "t": 190,
    "queue": 4,
    "staff_present": true
+  },
+  {
+   "t": 200,
+   "queue": 3,
+   "staff_present": true
+  },
+  {
+   "t": 210,
+   "queue": 3,
+   "staff_present": true
+  },
+  {
+   "t": 220,
+   "queue": 4,
+   "staff_present": true
+  },
+  {
+   "t": 230,
+   "queue": 3,
+   "staff_present": true
+  },
+  {
+   "t": 240,
+   "queue": 3,
+   "staff_present": true
+  },
+  {
+   "t": 250,
+   "queue": 3,
+   "staff_present": true
+  },
+  {
+   "t": 260,
+   "queue": 2,
+   "staff_present": true
+  },
+  {
+   "t": 270,
+   "queue": 2,
+   "staff_present": true
+  },
+  {
+   "t": 280,
+   "queue": 3,
+   "staff_present": true
+  },
+  {
+   "t": 290,
+   "queue": 1,
+   "staff_present": true
   }
  ]
 }

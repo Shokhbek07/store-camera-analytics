@@ -1,0 +1,7 @@
+{
+ "video": "data/meva/counter_1735.avi",
+ "mode": "alerts",
+ "labeller": "claude",
+ "method": "Expected alerts listed by Claude. Queue: from the 10 s queue labels, every run of at least two consecutive marks with 3 or more people (so at least 10 s), starting at the first mark and ending at the first mark below 3; this is accurate only to 10 s. Empty counter: the frames where the attendant is away were checked every 2 s; an alert is expected only if someone other than staff waits in the queue zone for 10 s while she is away.",
+ "labels": []
+}

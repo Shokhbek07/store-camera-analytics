@@ -1,0 +1,163 @@
+{
+ "video": "data/meva/counter_1735.avi",
+ "mode": "queue",
+ "labeller": "claude",
+ "method": "Labelled by Claude from frames extracted at each 10 s mark with the zones drawn on; rule: count every person whose feet (where they stand) are inside the queue polygon, judging hidden feet from the body; staff_present = the attendant is behind the counter. The attendant is often only partly visible at the left frame edge; marks where that was hard to judge carry uncertain=true.",
+ "labels": [
+  {
+   "t": 0,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 10,
+   "queue": 1,
+   "staff_present": true,
+   "uncertain": true
+  },
+  {
+   "t": 20,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 30,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 40,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 50,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 60,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 70,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 80,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 90,
+   "queue": 0,
+   "staff_present": true,
+   "uncertain": true
+  },
+  {
+   "t": 100,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 110,
+   "queue": 0,
+   "staff_present": true,
+   "uncertain": true
+  },
+  {
+   "t": 120,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 130,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 140,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 150,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 160,
+   "queue": 1,
+   "staff_present": false
+  },
+  {
+   "t": 170,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 180,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 190,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 200,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 210,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 220,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 230,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 240,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 250,
+   "queue": 1,
+   "staff_present": false,
+   "uncertain": true
+  },
+  {
+   "t": 260,
+   "queue": 1,
+   "staff_present": true
+  },
+  {
+   "t": 270,
+   "queue": 0,
+   "staff_present": true
+  },
+  {
+   "t": 280,
+   "queue": 1,
+   "staff_present": false,
+   "uncertain": true
+  },
+  {
+   "t": 290,
+   "queue": 0,
+   "staff_present": true
+  }
+ ]
+}
