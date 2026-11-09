@@ -5,7 +5,7 @@ Store camera analytics: people counting at a door, queue and counter monitoring,
 Work in progress for the Safia AI team case study (deadline 2026-11-12); the repository is pushed as the work goes so its history shows the process.
 
 Status, 2026-11-09: the service, door counting, zones, alerts, multi-stream reconnect and the evaluation script work; hand labels and the measured results are being completed.
-Design decisions and the alternatives checked for each are in `docs/DECISIONS.md`.
+The full report, including the process and who did what, is `REPORT.md`; the options considered for every choice are in `docs/DECISIONS.md`, and every test run is in `docs/EXPERIMENTS.md`.
 
 Built with Claude Code as an AI coding assistant; the brief allows AI tools.
 

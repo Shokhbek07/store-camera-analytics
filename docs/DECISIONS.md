@@ -115,3 +115,81 @@ On a lost stream the reader reopens it with exponential backoff, and the source'
 **Evidence (2026-11-08):** the counter clip served over RTSP by MediaMTX on 127.0.0.1 and the door clip as a real-time file, 75 seconds.
 The RTSP publisher was killed at 25 s and restarted at 40 s.
 The counter reconnected by itself (1 reconnect) while the door stream kept running at 9.8 FPS against a 10 FPS target throughout.
+
+## D6. Analyse 10 frames per second per source
+
+Decided 2026-11-08; to be checked against the labels.
+
+The cameras record 30 fps, but people walking in a lobby move only a few pixels between consecutive frames, and ByteTrack keeps identities at much lower rates.
+Analysing every third frame cuts detector load by two thirds, which is what makes several streams per GPU possible, and the same setting is the main lever in the 50-camera scaling note.
+
+**Alternatives:** 30 fps (every frame) gives the tracker the easiest job but triples the cost; 5 fps halves it again, but a person crossing the door band in under half a second could then fail the two-frame confirmation (D4).
+The rate is `process_fps` in the config.
+
+## D7. Door line on the inner edge of the entrance mats
+
+Decided 2026-11-08.
+
+**Options:**
+
+- A line on the door threshold.
+  People leaving pass through the doors and vanish within a moment, so there would be too few frames on the outside of the line to confirm a crossing.
+- Counting tracks that start or end in a door region instead of line crossings.
+  Robust when the outside is invisible, but the brief asks for line crossings, and track starts and ends are exactly where ID switches happen.
+- A line on the inner edge of the mats (chosen).
+  Both sides are visible: the mat area in front of the doors is "outside" and the lobby towards the camera and stairs is "inside", each deep enough for the two-frame confirmation.
+
+**Known risk:** people waiting on the mats stand on the "outside" side, and the left end of the line reaches over the stair landing (E3).
+
+## D8. A person's position is the bottom centre of their box
+
+Decided 2026-11-08.
+
+Zones and lines are drawn on the floor, so the point that should be tested is where the person stands, which is the bottom centre of the box for an upright person.
+The box centre would put tall people and people near the camera into zones they are only leaning over.
+
+**Known failure:** when the lower body is hidden (the whiteboard in the counter view, the bottom edge of the frame) the box ends early and the foot point is too high (E3).
+
+## D9. Labelling: a small labeller of our own, and who labels what
+
+Decided 2026-11-08, amended 2026-11-09.
+
+**Tool:** CVAT and Label Studio are built for drawing boxes and need a server; FEVA (a fast event-annotation tool) was found but is general-purpose.
+The task needs key presses at door crossings and one number every 10 s, so `scripts/label.py` was written in about a hundred lines.
+It draws the same line and zones as the service, so hand labels and system output refer to the same geometry.
+
+**Who labels:** the brief asks for hand counts.
+Shokhbek labelled both door clips and the first queue marks himself.
+To finish in time, Claude labelled the remaining queue marks and the expected alerts from extracted frames, with a written counting rule, in separate files (`labels/*.claude.json`).
+Results are reported per labeller, and the agreement between the two on the marks both labelled is reported too (E7), so a reader can see how much the ground truth itself varies.
+
+**Alternative rejected:** using only Claude's labels, or MEVA's own annotations, as ground truth.
+Claude's labels come from the same side as the system.
+MEVA's annotations are activity labels made for activity recognition ("person enters through structure"), not counts against our door line, and they already differ from the hand count on the departure clip (15 exits labelled by MEVA, 13 by hand).
+
+## D10. Privacy: pixelate the top of every person box
+
+Decided 2026-11-08.
+
+Every published frame or video is written with the top 30% of each person box pixelated (`draw.blur_heads`).
+
+**Alternatives:** a dedicated face detector (for example OpenCV's YuNet) blurs faces more tightly, but misses faces turned away or small, adds a model to download, and in a top-down view faces are often not frontal.
+The person boxes already exist, so blurring the head region costs nothing.
+**Limit:** a person the detector misses is not blurred, so published media are checked by eye before they are committed.
+
+## D11. Alert thresholds: queue of 3 for 10 s, empty counter for 10 s
+
+Decided 2026-11-08; to be checked against the expected alerts.
+
+The footage has queues of 1 to 7 people in 5-minute clips, so thresholds sized for a real bakery (for example 5 people for 2 minutes) would never fire and the alert logic could not be measured.
+A queue alert at 3 or more people for 10 s and an empty-counter alert after 10 s with at least one person waiting give a handful of real events per clip.
+`clear_seconds` (5 s for the queue, 3 s for the counter) keeps an alert open through short gaps such as a person stepping out of the zone for a moment.
+All of these are per source in the config.
+
+## D12. RTSP test with MediaMTX's own binary, not Docker, on this Mac
+
+Decided 2026-11-08.
+
+Docker Desktop was stopped on this machine, and starting it would also have restarted unrelated containers from another project.
+MediaMTX ships a standalone macOS binary, so the reconnect test (E5) ran it directly, listening only on 127.0.0.1.
+The one-command Docker setup is still planned; it will run the detector on CPU, because Docker on macOS cannot use the Apple GPU.
