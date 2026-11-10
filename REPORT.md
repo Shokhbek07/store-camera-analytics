@@ -249,6 +249,17 @@ The fix is a few worker processes, each owning about a dozen cameras and one Ten
 
 ## 8. Who did what
 
-Shokhbek chose the direction at each step, labelled both door clips and the first queue marks by hand, and reviews the labels and results.
+Shokhbek directed the work and made the calls that were his to make.
 Claude Code (an AI coding assistant, which the brief allows) wrote the code and documents, ran the experiments, and labelled the remaining queue marks and the expected alerts from extracted frames.
+Where Shokhbek took part, from the record of the work (dates in Tashkent time):
+
+- **Process.** Before any code he asked for more research and for what the work would cost, then set the rule that every choice is made only after searching for better alternatives (2026-11-08); that is why each decision in `docs/DECISIONS.md` lists the options considered.
+  He asked that the report explain the options and the reasons for each choice, as in the earlier case study, and that progress be pushed as it goes so the history shows the process (2026-11-09).
+- **Ground truth.** He hand-labelled both door clips with `scripts/label.py` and 11 queue marks of `counter_1650` (2026-11-08).
+  While labelling he raised people walking between the downstairs and upstairs flights, which became failure case 7.
+- **Measurement.** He pointed out that other heavy jobs on the machine might be distorting the speed results, and later that the load had dropped, which led to the clean rerun in E11b (2026-11-10).
+- **Scope.** Once the requirements were met he asked to keep researching improvements (2026-11-10), which led to the staff rule (D14), the ONNX Runtime export (D15), the live page (D16) and the queue fix (D17).
+- **Decisions before leaving the machine (2026-11-11).** He chose to review Claude's queue labels himself, to have the speed comparison run under load if the machine never became quiet, to have Docker use the ONNX export if it proved much faster on CPU, and to keep improving in the meantime.
+- **Review.** Claude's queue labels have not been reviewed by Shokhbek yet; what his review changes will be recorded here.
+
 Which labels came from whom is recorded in the label files themselves and in E7.
