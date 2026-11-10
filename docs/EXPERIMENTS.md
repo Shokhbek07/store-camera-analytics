@@ -488,4 +488,5 @@ New tracks still need 0.25 (`new_track_thresh`), so low-confidence boxes can onl
 
 The low-confidence stage changed little: a few short gaps in staff presence closed, but no labelled mark changed, and one departure fewer was counted.
 `model.conf` stays at 0.25.
-The attendant's longer gaps (6 to 9 s, failure case 1) are most likely detections missed altogether at the frame edge and behind the counter, since feeding in the low-confidence boxes did not close them; this was not checked frame by frame.
+The attendant's longer gaps (6 to 9 s, failure case 1) are detections missed altogether: listing the saved tracks during the gaps (`counter_1650` 0:09 to 0:14 and 4:28 to 4:35, `counter_1735` 0:02 to 0:10 and 1:45 to 1:50, `counter_1720` 2:29 to 2:31) shows no box in the staff zone at all, and each gap ends when the attendant's box reappears at the very edge of the frame (left edge at x -14 to 5, partly outside the picture), usually under a new track ID.
+Since even boxes down to 0.1 confidence did not fill these gaps, the limit is the camera view, which cuts the attendant off, not a threshold.
