@@ -487,4 +487,5 @@ New tracks still need 0.25 (`new_track_thresh`), so low-confidence boxes can onl
 | Door, departure clip | 11 out, 5 matched | 10 out, 4 matched |
 
 The low-confidence stage changed little: a few short gaps in staff presence closed, but no labelled mark changed, and one departure fewer was counted.
-`model.conf` stays at 0.25; the attendant's longer gaps (6 to 9 s, failure case 1) are missed detections at the frame edge and behind the counter, not low-confidence ones.
+`model.conf` stays at 0.25.
+The attendant's longer gaps (6 to 9 s, failure case 1) are most likely detections missed altogether at the frame edge and behind the counter, since feeding in the low-confidence boxes did not close them; this was not checked frame by frame.
