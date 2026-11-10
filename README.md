@@ -9,6 +9,14 @@ The full report, including the process and who did what, is `REPORT.md`; the opt
 
 Built with Claude Code as an AI coding assistant; the brief allows AI tools.
 
+## What it looks like
+
+Counter (left: staff zone in green, queue zone in blue) and entrance (red line: door line, the dot marks the inside); 12 s of each at 5 frames per second, from `storecam run --save-video`.
+Faces are pixelated by the service itself (top 30% of each person box, D10); a person the detector misses in a frame is not pixelated in that frame.
+
+![Counter view with tracked people, zones and live counts](docs/media/counter.gif)
+![Entrance view with tracked people and the door line](docs/media/door.gif)
+
 ## Run
 
 ```sh
@@ -38,7 +46,7 @@ Stop the camera container (`docker compose stop cameras`, then `start`) to watch
 
 ```sh
 uv sync
-./scripts/download.sh   # videos and weights, about 620 MB, checked by SHA-256
+./scripts/download.sh   # videos and weights, about 620 MB, checked by SHA-256; the MEVA bucket is slow (about 50 min here), and the script resumes after a dropped connection
 ```
 
 ## Results

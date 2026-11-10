@@ -8,7 +8,10 @@ cd "$(dirname "$0")/.."
 MEVA=https://mevadata-public-01.s3.amazonaws.com/drops-123-r13
 WEIGHTS=https://github.com/ultralytics/assets/releases/download/v8.4.0
 
-sha() { shasum -a 256 "$1" 2>/dev/null | cut -c1-64 || sha256sum "$1" | cut -c1-64; }
+sha() {
+    if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | cut -c1-64
+    else shasum -a 256 "$1" | cut -c1-64; fi
+}
 
 # fetch URL DEST SHA256
 fetch() {
@@ -18,12 +21,18 @@ fetch() {
     fi
     mkdir -p "$(dirname "$2")"
     echo "fetch   $2"
-    curl -fsSL --retry 3 -o "$2.part" "$1"
-    if [ "$(sha "$2.part")" != "$3" ]; then
-        echo "checksum mismatch for $2" >&2
-        rm -f "$2.part"
-        exit 1
-    fi
+    # The MEVA bucket can be slow and drop connections: resume the partial file (-C -), give up on
+    # a connection that stalls below 10 kB/s for 60 s, and try again, up to 20 times.
+    n=0
+    until [ -f "$2.part" ] && [ "$(sha "$2.part")" = "$3" ]; do
+        n=$((n + 1))
+        if [ "$n" -gt 20 ]; then
+            echo "giving up on $2 (checksum mismatch or no connection); delete $2.part to start again" >&2
+            exit 1
+        fi
+        [ "$n" -gt 1 ] && echo "        retry $n, resuming at $(wc -c < "$2.part" 2>/dev/null | tr -d ' ' || echo 0) bytes"
+        curl -fsSL -C - --speed-limit 10000 --speed-time 60 -o "$2.part" "$1" || sleep 3
+    done
     mv "$2.part" "$2"
 }
 

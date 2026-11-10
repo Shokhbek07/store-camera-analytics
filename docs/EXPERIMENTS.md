@@ -310,3 +310,14 @@ On this Mac the full-rate path is the native one (`uv run storecam run`, GPU, E1
 **Reconnect.**
 Stopping the camera container for 15 s: both sources reported `connected: false`, retried with backoff at 1, 2 and 4 s, and resumed by themselves when it came back, while the service kept running.
 The minute row covering the outage shows `seconds_observed` 36 instead of 60.
+
+## E13. A reviewer's path from a clean clone (2026-11-10)
+
+The public repository was cloned into an empty folder and the README followed step by step.
+
+- `uv sync` and `uv run pytest`: installed, 26 tests passed.
+- `./scripts/download.sh`: the first attempt failed after 24 minutes with `curl: (56) Recv failure: Operation timed out`, part of the way into the third clip; the MEVA bucket served about 0.3 MB/s and then stalled.
+  The script had `--retry 3` but restarted from zero and treated the stall as fatal.
+  It now resumes the partial file (`curl -C -`), drops a connection that stays below 10 kB/s for 60 s, and tries up to 20 times; the rest of the download then completed in 29 minutes with every checksum matching.
+  The same review found that the Linux fallback to `sha256sum` never ran (the pipe hid `shasum`'s failure); it now picks whichever tool exists.
+- `uv run python scripts/evaluate.py`: the regenerated `results/eval/report.json` is identical to the committed one, so the reported door, queue and alert numbers reproduce from a clean clone.
