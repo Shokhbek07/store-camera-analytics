@@ -11,6 +11,7 @@ dependencies = [
     "lap>=0.5.14",
     "onnx>=1.23.2",
     "onnxruntime>=1.31.1",
+    "onnxslim>=0.1.99",
     "pydantic>=2.14.3",
     "pyyaml>=6.0.3",
     "ultralytics>=8.4.207",
@@ -27,9 +28,6 @@ build-backend = "uv_build"
 dev = [
     "pytest>=9.2.0",
     "ruff>=0.17.4",
-]
-export = [
-    "onnxslim>=0.1.99",
 ]
 
 [tool.ruff]

@@ -8,7 +8,7 @@ Usage:
   uv run python scripts/compare_detectors.py [--pairs 40] [--variants a,b,...] [--out FILE]
   uv run python scripts/compare_detectors.py --ort-threads      # ONNX Runtime CPU speed by thread count
   uv run python scripts/compare_detectors.py --coreml-units     # CoreML compute units, model only
-Needs the exports from scripts/export_onnx.py.
+Needs the exports from `storecam export-onnx`.
 """
 
 from __future__ import annotations

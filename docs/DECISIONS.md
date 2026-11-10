@@ -262,7 +262,7 @@ The brief offers "TensorRT or ONNX Runtime export, with FPS and accuracy against
 - **ONNX Runtime, chosen:** one exported file runs on any CPU, on the Apple GPU through the CoreML execution provider, and on NVIDIA through the CUDA or TensorRT providers.
 
 **How it works.**
-`scripts/export_onnx.py` writes two exports with Ultralytics: one with any batch and image size, and one fixed at 384x640 (a 16:9 frame at 640 wide, padded as PyTorch pads it) and batch 2.
+`storecam export-onnx` (`src/storecam/export.py`, first written as `scripts/export_onnx.py`) writes two exports with Ultralytics: one with any batch and image size, and one fixed at 384x640 (a 16:9 frame at 640 wide, padded as PyTorch pads it) and batch 2.
 Both keep the head and the outside NMS that the PyTorch run uses, so detections can match exactly.
 Setting `model.weights` to an `.onnx` file is the only change; `Detector` then runs it through ONNX Runtime and `run_summary.json` records the runtime and execution provider.
 On the Mac GPU, Ultralytics asks CoreML for its older NeuralNetwork format, which computed in FP16, changed a few boxes and was slower (E15); `Detector` rebuilds that session as an FP32 MLProgram on CPU and GPU.

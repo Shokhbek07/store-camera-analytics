@@ -81,7 +81,7 @@ The last wrong queue alert turned out to come from a seated man on the zone's ed
 - `scripts/download.sh`: the five clips and the weights, checked by SHA-256 (D3).
 - `src/storecam/sources.py`: one reader thread per source; real-time pacing for files, reconnect with exponential backoff for streams (D5).
 - `src/storecam/detect.py`: YOLO26s batched across sources, one ByteTrack per source (D2); PyTorch weights or an ONNX export run by ONNX Runtime (D15).
-- `scripts/export_onnx.py`: the ONNX exports (D15, E15).
+- `src/storecam/export.py` (`storecam export-onnx`): the ONNX exports (D15, E15).
 - `src/storecam/events.py`: door line counting, per-second zone sampling, duplicate boxes, alerts (D4, D17).
 - `src/storecam/staff.py` and `scripts/calibrate_staff.py`: staff versus customer by uniform colour and time in the staff zone (D14).
 - `src/storecam/analytics.py`: per-minute CSV per source and alerts as JSON lines.

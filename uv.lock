@@ -1659,6 +1659,7 @@ dependencies = [
     { name = "lap" },
     { name = "onnx" },
     { name = "onnxruntime" },
+    { name = "onnxslim" },
     { name = "pydantic" },
     { name = "pyyaml" },
     { name = "ultralytics" },
@@ -1669,15 +1670,13 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
 ]
-export = [
-    { name = "onnxslim" },
-]
 
 [package.metadata]
 requires-dist = [
     { name = "lap", specifier = ">=0.5.14" },
     { name = "onnx", specifier = ">=1.23.2" },
     { name = "onnxruntime", specifier = ">=1.31.1" },
+    { name = "onnxslim", specifier = ">=0.1.99" },
     { name = "pydantic", specifier = ">=2.14.3" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "ultralytics", specifier = ">=8.4.207" },
@@ -1688,7 +1687,6 @@ dev = [
     { name = "pytest", specifier = ">=9.2.0" },
     { name = "ruff", specifier = ">=0.17.4" },
 ]
-export = [{ name = "onnxslim", specifier = ">=0.1.99" }]
 
 [[package]]
 name = "sympy"

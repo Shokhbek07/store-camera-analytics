@@ -22,14 +22,24 @@ def main() -> None:
     run.add_argument("--offline", action="store_true",
                      help="process every sampled frame as fast as possible instead of at real-time speed")
     run.add_argument("--max-seconds", type=float, help="stop after this many seconds")
+    run.add_argument("--weights", help="replace model.weights from the config, e.g. an ONNX export")
     prev = sub.add_parser("preview", help="draw each source's lines and zones on its first frame")
     prev.add_argument("config", nargs="?", default="config.yaml")
     prev.add_argument("--out", default="runs/preview")
     for sp in (run, prev):
         sp.add_argument("--url", action="append", default=[], metavar="NAME=URL",
                         help="replace a source's url, keeping its zones and lines (repeatable)")
+    exp = sub.add_parser("export-onnx", help="export the detector to ONNX for ONNX Runtime (D15)")
+    exp.add_argument("--weights", default="models/yolo26s.pt")
+    exp.add_argument("--batch", type=int, default=2, help="fixed batch of the 384x640 export (the number of streams)")
+    exp.add_argument("--if-missing", action="store_true", help="skip files that already exist")
     args = p.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+
+    if args.cmd == "export-onnx":
+        from .export import export_onnx
+        export_onnx(Path(args.weights), args.batch, args.if_missing)
+        return
 
     from . import config
     cfg = config.load(args.config)
@@ -41,6 +51,8 @@ def main() -> None:
         by_name[name].url = url
     if args.cmd == "run":
         from .service import Service
+        if args.weights:
+            cfg.model.weights = args.weights
         if args.offline:
             for s in cfg.sources:
                 s.realtime = False

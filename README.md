@@ -48,7 +48,7 @@ Outputs go to `runs/out/`: `<source>_minutes.csv` per source, `alerts.jsonl`, an
 uv run python scripts/evaluate.py --rerun     # runs every clip offline, compares with labels/, writes results/eval/report.json
 uv run python scripts/benchmark.py            # speed: 2 streams in real time, then 1, 2 and 4 streams on GPU and CPU
 uv run python scripts/calibrate_staff.py counter data/meva/counter_1650.avi   # the staff uniform colour in config.yaml
-uv run --group export python scripts/export_onnx.py && uv run python scripts/compare_detectors.py   # ONNX Runtime against PyTorch (E15)
+uv run storecam export-onnx && uv run python scripts/compare_detectors.py   # ONNX Runtime against PyTorch (E15)
 ```
 
 Without `--rerun`, `evaluate.py` reuses the run summaries already in `results/eval/` and only recomputes the comparison.
@@ -69,10 +69,10 @@ Stop the camera container (`docker compose stop cameras`, then `start`) to watch
 ## Run with ONNX Runtime (bonus)
 
 ```sh
-uv run --group export python scripts/export_onnx.py   # writes models/yolo26s_dynamic.onnx and models/yolo26s_384x640_b2.onnx
+uv run storecam export-onnx   # writes models/yolo26s_dynamic.onnx and models/yolo26s_384x640_b2.onnx
 ```
 
-Then set `model.weights` in `config.yaml` to one of them; nothing else changes.
+Then set `model.weights` in `config.yaml` to one of them, or pass `--weights` to `storecam run`; nothing else changes.
 On a Mac the fixed-size export runs on the GPU through CoreML (as FP32), elsewhere on CPU; on all five clips it gave exactly the PyTorch results (E15, D15).
 
 ## Results

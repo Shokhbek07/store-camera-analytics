@@ -380,7 +380,7 @@ The attendant's track broke two seconds after leaving the counter; the new track
 **Question:** does an ONNX export of the detector give the same results as PyTorch, and is it faster (a bonus in the brief)?
 
 **Setup.**
-Ultralytics 8.4.207 exported YOLO26s with onnx 1.23.2 (opset 18) and onnxslim 0.1.99; ONNX Runtime 1.31.1 ran it (`scripts/export_onnx.py`, D15).
+Ultralytics 8.4.207 exported YOLO26s with onnx 1.23.2 (opset 18) and onnxslim 0.1.99; ONNX Runtime 1.31.1 ran it (then `scripts/export_onnx.py`, now `storecam export-onnx`, D15).
 Both exports keep the same head and outside NMS as the PyTorch run.
 Detector-only timings below use 40 pairs of real frames (one counter frame and one door frame per batch, as in the service), after warm-up, through the service's own `Detector`, so letterboxing and NMS are included.
 They come from a first version of `scripts/compare_detectors.py`; the raw outputs are in `results/onnx/`.
