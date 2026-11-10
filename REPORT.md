@@ -12,7 +12,9 @@ On five licensed MEVA clips (D1), measured against hand labels:
   On two clips not used for tuning the count error fell from 4 to 1 and from 6 to 3 (E10).
 - Queue length: mean absolute error 1.18 people against Shokhbek's 11 marks, and 0.77, 0.30 and 0.00 against Claude's 30 marks on each of the three counter clips.
   The two labellers themselves differ by 0.82 on average on the marks they share, so the reference is not much sharper than the system.
-- Alerts: every expected queue alert was raised, but two of them were merged into one, and two alerts were wrong (people at a coffee table on the zone edge, and the attendant counted as a waiting customer).
+- Alerts: every expected queue alert was raised, but two of them were merged into one, and one alert was wrong (people at a coffee table on the zone edge).
+  A second wrong alert, the attendant counted as a waiting customer, was removed by telling staff from customers by uniform colour and time behind the counter (bonus, D14), narrowly and with limits explained in E14.
+- Reproducible: a clean clone, the download script and `scripts/evaluate.py --rerun` give the same numbers (E13).
 - Speed on an Apple M4 Pro GPU: two streams in real time held 9.87 of the 10 FPS target each; processed as fast as possible, 2 streams reach 119 FPS and 4 reach 131 FPS in total (E11b).
 
 The weakest parts are the departure side of the door (5 of 13 events matched in time) and telling staff from customers.
@@ -61,12 +63,17 @@ The speed benchmark was rerun once another project's containers had stopped load
 **2026-11-10, Docker.**
 The compose setup first built an 18 GB image and showed RTSP packet loss over UDP; both were fixed, and in the container the detector reaches about half the target frame rate on CPU (E12).
 
+**2026-11-10, clean clone and staff versus customer.**
+Following the README from a clean clone found a download that could not resume and a reproducibility check that had reused cached runs; both were fixed and the numbers reproduced from scratch (E13).
+Uniform colour alone mostly removed customers in light coats from the queue; adding "has spent time behind the counter" kept the one real case and removed the wrong exclusions (E14, D14).
+
 ## 4. What was built
 
 - `scripts/download.sh`: the five clips and the weights, checked by SHA-256 (D3).
 - `src/storecam/sources.py`: one reader thread per source; real-time pacing for files, reconnect with exponential backoff for streams (D5).
 - `src/storecam/detect.py`: YOLO26s batched across sources, one ByteTrack per source (D2).
 - `src/storecam/events.py`: door line counting, per-second zone sampling, alerts (D4).
+- `src/storecam/staff.py` and `scripts/calibrate_staff.py`: staff versus customer by uniform colour and time in the staff zone (D14).
 - `src/storecam/analytics.py`: per-minute CSV per source and alerts as JSON lines.
 - `src/storecam/service.py`: the main loop, a live JSON endpoint, face-pixelated annotated video (D10).
 - `config.yaml`: every source, line, zone and threshold.
@@ -129,15 +136,16 @@ A system alert is "found" when it overlaps an expected one.
 | `counter_1720` | queue | 1 | 1 | 1 | 0 | 0 |
 | `counter_1720` | empty counter | 0 | 0 | 0 | 0 | 0 |
 | `counter_1735` | queue | 0 | 0 | 0 | 0 | 0 |
-| `counter_1735` | empty counter | 0 | 1 | 0 | 0 | 1 |
+| `counter_1735` | empty counter | 0 | 0 | 0 | 0 | 0 |
 
 - `counter_1650`: the expected queue alerts at 0:00 to 0:30 and 0:40 to 1:50 were both covered by one system alert from 0:00 to 1:19 (peak 6), which bridged the short dip and ended about 30 s early.
   The second system alert, 4:14 to 4:47 (peak 4), is wrong: the labels show 1 or 2 people waiting.
 - `counter_1720`: one expected alert, 0:20 to 4:20; the system raised it from 0:09 to 4:10 (peak 7).
 - `counter_1735`: the attendant really did leave the counter from about 2:35 to 2:45, but nobody was waiting.
-  The system counted the attendant, crossing the queue zone, and a passer-by as waiting customers and raised an empty-counter alert at 2:44.
+  Without the staff rule (D14) the system counted the attendant, crossing the queue zone, and a passer-by as waiting customers and raised a wrong empty-counter alert at 2:44.
+  With it, the attendant is left out of the queue for the first two seconds, which keeps the condition under its 10 s threshold; the attendant's track then broke and the new track counted as a customer again, so this fix is narrow (E14).
 
-There are no examples of a real empty-counter alert in this footage, so that alert is only tested by the unit tests and by this one false alarm.
+There are no examples of a real empty-counter alert in this footage, so that alert is only tested by the unit tests and by this one near-miss.
 
 ### 5.4 Speed
 
@@ -169,8 +177,8 @@ Times are positions in the clip (minutes:seconds).
    The attendant often stands at the frame edge or bends below the counter, so the staff zone reads empty: `counter_1650` at 0:09 to 0:14, 1:06 to 1:09, 3:50 to 3:51 and 4:28 to 4:35, and `counter_1720` at 1:04 to 1:05 and 2:29 to 2:31.
    The 10 s alert delay absorbs these, but the per-minute "empty counter seconds" column overstates the time the counter was unattended.
 2. **Staff counted as customers.**
-   When the attendant leaves the counter they can walk through the queue zone and be counted as a waiting customer (`counter_1735`, 2:35 to 2:45, which raised a wrong empty-counter alert).
-   Telling staff from customers needs either a staff-only path rule or an appearance cue (uniform), which was not built.
+   When the attendant leaves the counter they can walk through the queue zone and be counted as a waiting customer (`counter_1735`, 2:35 to 2:45, which raised a wrong empty-counter alert before D14).
+   The staff rule (uniform colour plus time behind the counter) catches this only while the attendant keeps the track ID they had at the counter: here the ID changed after two seconds, and at 4:34 a switch the other way left a customer out of the queue for one second (E14).
 3. **People at the coffee table on the zone edge.**
    People standing at the coffee table to the right of the counter are inside or on the edge of the queue zone; this is the main source of the over-count in 5.2 and of the wrong queue alert on `counter_1650` at 4:14 to 4:47.
 4. **Whiteboard hiding lower bodies.**

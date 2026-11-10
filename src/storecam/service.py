@@ -119,7 +119,7 @@ class Service:
             self.sessions[name] = f.session
         tracker = self.trackers[name]
         tracks = tracker.update(boxes, f.image)
-        self.analytics[name].update(f.t, f.wall, tracks, tracker.alive_ids())
+        self.analytics[name].update(f.t, f.wall, tracks, tracker.alive_ids(), f.image)
         self.processed[name] += 1
         if self.save_video:
             self._write_frame(f, tracks)
@@ -128,10 +128,12 @@ class Service:
         src = next(s for s in self.cfg.sources if s.name == f.source)
         img = draw.blur_heads(f.image.copy(), _boxes(tracks))
         img = draw.geometry(img, src)
+        staff_ids = self.analytics[f.source].staff_ids
         for tid, (x1, y1, x2, y2) in tracks.items():
-            cv2.rectangle(img, (int(x1), int(y1)), (int(x2), int(y2)), (0, 220, 255), 2)
-            cv2.putText(img, str(tid), (int(x1), int(y1) - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 220, 255), 2)
-            cv2.circle(img, (int((x1 + x2) / 2), int(y2)), 6, (0, 220, 255), -1)
+            colour, label = ((60, 200, 60), f"{tid} staff") if tid in staff_ids else ((0, 220, 255), str(tid))
+            cv2.rectangle(img, (int(x1), int(y1)), (int(x2), int(y2)), colour, 2)
+            cv2.putText(img, label, (int(x1), int(y1) - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.8, colour, 2)
+            cv2.circle(img, (int((x1 + x2) / 2), int(y2)), 6, colour, -1)
         live = self.analytics[f.source].live
         text = f"t={f.t:6.1f}s in={live['in']} out={live['out']} queue={live['queue']} staff={live['staff_present']}"
         cv2.rectangle(img, (0, 0), (img.shape[1], 48), (0, 0, 0), -1)

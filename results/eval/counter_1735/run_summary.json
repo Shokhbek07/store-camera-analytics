@@ -12,15 +12,15 @@
     "platform": "macOS-15.7.7-arm64-arm-64bit"
   },
   "process_fps_target": 10.0,
-  "elapsed_s": 54.61,
+  "elapsed_s": 35.89,
   "batches": 3000,
   "mean_batch_size": 1.0,
-  "detector_ms_per_batch": 16.82,
-  "total_fps": 54.94,
+  "detector_ms_per_batch": 10.22,
+  "total_fps": 83.58,
   "sources": {
     "counter": {
       "frames_processed": 3000,
-      "fps": 54.94,
+      "fps": 83.58,
       "frames_decoded": 9001,
       "frames_dropped": 0,
       "reconnects": 0,
@@ -803,12 +803,12 @@
         ],
         [
           155,
-          1,
+          0,
           false
         ],
         [
           156,
-          1,
+          0,
           false
         ],
         [
@@ -1398,7 +1398,7 @@
         ],
         [
           274,
-          1,
+          0,
           false
         ],
         [

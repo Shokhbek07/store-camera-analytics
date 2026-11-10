@@ -32,6 +32,13 @@ sources:
     alerts:
       queue: {min_people: 3, min_seconds: 10, clear_seconds: 5}
       empty_counter: {min_seconds: 10, clear_seconds: 3, min_waiting: 1}
+    # The attendant's clothing, measured on counter_1650 with scripts/calibrate_staff.py (D14).
+    # People wearing it who have also spent a second in the staff zone are not counted in the
+    # queue. Remove this block to count everyone.
+    staff_appearance:
+      lab: [113, 129, 141]
+      max_distance: 12
+      min_zone_seconds: 1.0
 
   - name: door
     url: data/meva/door_0307_1720.avi

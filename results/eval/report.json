@@ -881,17 +881,11 @@
    "labeller": "claude",
    "kind": "empty_counter",
    "expected": 0,
-   "system": 1,
+   "system": 0,
    "found": 0,
    "missed": 0,
-   "wrong": 1,
-   "system_intervals": [
-    [
-     155,
-     165,
-     2
-    ]
-   ],
+   "wrong": 0,
+   "system_intervals": [],
    "hand_intervals": []
   }
  ],

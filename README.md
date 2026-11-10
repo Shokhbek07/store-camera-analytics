@@ -13,6 +13,7 @@ Built with Claude Code as an AI coding assistant; the brief allows AI tools.
 
 Counter (left: staff zone in green, queue zone in blue) and entrance (red line: door line, the dot marks the inside); 12 s of each at 5 frames per second, from `storecam run --save-video`.
 Faces are pixelated by the service itself (top 30% of each person box, D10); a person the detector misses in a frame is not pixelated in that frame.
+People the service judges to be staff are drawn in green (D14).
 
 ![Counter view with tracked people, zones and live counts](docs/media/counter.gif)
 ![Entrance view with tracked people and the door line](docs/media/door.gif)
@@ -29,6 +30,17 @@ uv run pytest                        # unit tests for the counting, zone and ale
 ```
 
 Outputs go to `runs/out/`: `<source>_minutes.csv` per source, `alerts.jsonl`, and `run_summary.json` with speeds.
+
+## Reproduce the measurements
+
+```sh
+uv run python scripts/evaluate.py --rerun     # runs every clip offline, compares with labels/, writes results/eval/report.json
+uv run python scripts/benchmark.py            # speed: 2 streams in real time, then 1, 2 and 4 streams on GPU and CPU
+uv run python scripts/calibrate_staff.py counter data/meva/counter_1650.avi   # the staff uniform colour in config.yaml
+```
+
+Without `--rerun`, `evaluate.py` reuses the run summaries already in `results/eval/` and only recomputes the comparison.
+Offline runs are deterministic on one machine, so the report comes out identical (E13).
 
 ## Run with Docker
 
@@ -59,7 +71,8 @@ Measured on the MEVA clips below against hand labels; full tables, method and fa
 | Door, departure clip, hand vs system IN/OUT | 0/13 vs 0/11 (5 of 13 events matched within 2 s) |
 | Queue length MAE at 10 s marks | 1.18 (Shokhbek, 11 marks); 0.77, 0.30, 0.00 (Claude, 30 marks on each of 3 clips) |
 | Queue alerts | 3 of 3 expected found (two merged into one), 1 wrong |
-| Empty-counter alerts | none expected, 1 wrong |
+| Staff versus customer (bonus) | uniform colour plus time behind the counter; left the attendant out of the queue when they walked through it, with one 1 s mistake after an ID switch (E14) |
+| Empty-counter alerts | none expected, 0 wrong with the staff rule (1 wrong without it) |
 | Speed, Apple M4 Pro GPU (MPS), YOLO26s 640 px FP32, 1164 MB GPU memory | 2 streams in real time: 9.87 FPS each against a 10 FPS target; as fast as possible: 97 / 119 / 131 FPS total for 1 / 2 / 4 streams; CPU only: 23 / 24 / 28 |
 
 ## Footage

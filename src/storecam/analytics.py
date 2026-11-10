@@ -11,6 +11,7 @@ from pathlib import Path
 
 from .config import Source
 from .events import Alert, AlertTracker, LineCounter, SecondSample, ZoneSampler
+from .staff import StaffClassifier
 
 CSV_FIELDS = ["source", "minute", "minute_start_video_s", "minute_start_wall", "in", "out", "queue_avg",
               "queue_max", "empty_counter_s", "empty_counter_waiting_s", "seconds_observed"]
@@ -43,6 +44,9 @@ class SourceAnalytics:
                       for dl in source.door_lines]
         z = source.zones
         self.zones = ZoneSampler(z.queue, z.staff) if z.queue else None
+        sa = source.staff_appearance
+        self.staff = (StaffClassifier(sa.lab, sa.max_distance, z.staff, sa.min_zone_seconds)
+                      if sa and z.queue and z.staff else None)
         qa, ea = source.alerts.queue, source.alerts.empty_counter
         self.queue_alert = AlertTracker("queue", qa.min_seconds, qa.clear_seconds) if z.queue else None
         self.empty_alert = (AlertTracker("empty_counter", ea.min_seconds, ea.clear_seconds)
@@ -50,7 +54,7 @@ class SourceAnalytics:
         self.alerts_file = alerts_file
         self.csv_path = out_dir / f"{source.name}_minutes.csv"
         self._csv = self.csv_path.open("w", newline="")
-        self._writer = csv.DictWriter(self._csv, fieldnames=CSV_FIELDS)
+        self._writer = csv.DictWriter(self._csv, fieldnames=CSV_FIELDS, lineterminator="\n")
         self._writer.writeheader()
         self.rows: dict[int, MinuteRow] = {}  # minutes not yet written
         self.wall_at_t0: float | None = None
@@ -58,6 +62,7 @@ class SourceAnalytics:
         self.crossings: list[dict] = []
         self.seconds: list[SecondSample] = []
         self.live = {"in": 0, "out": 0, "queue": 0, "staff_present": None}
+        self.staff_ids: set[int] = set()  # tracks judged to be staff in the latest frame
 
     # --------------------------------------------------------------------------------
     def _row_for(self, t: float) -> MinuteRow:
@@ -86,7 +91,8 @@ class SourceAnalytics:
         for line in self.lines:
             line.reset()
 
-    def update(self, t: float, wall: float, tracks: dict[int, tuple], alive: set[int]) -> None:
+    def update(self, t: float, wall: float, tracks: dict[int, tuple], alive: set[int],
+               image=None) -> None:
         if self.wall_at_t0 is None:
             self.wall_at_t0 = wall - t
         self.last_t = t
@@ -102,7 +108,11 @@ class SourceAnalytics:
                     self.live["out"] += 1
                 self.crossings.append({"t": round(c.t, 2), "track_id": c.track_id, "direction": c.direction})
         if self.zones is not None:
-            for sample in self.zones.update(list(feet.values()), t):
+            if self.staff is not None and image is not None:
+                self.staff_ids = self.staff.update(image, tracks, t)
+                self.staff.forget(alive)
+            is_staff = [tid in self.staff_ids for tid in feet]
+            for sample in self.zones.update(list(feet.values()), t, is_staff):
                 self._on_second(sample)
         self._row_for(t)  # a minute with no events still gets a row
         self._write_rows(t)

@@ -77,6 +77,13 @@ class Reconnect(Strict):
     max_delay_s: float = 30.0
 
 
+class StaffAppearance(Strict):
+    """Uniform colour that marks staff; measure it with scripts/calibrate_staff.py."""
+    lab: tuple[float, float, float]  # OpenCV Lab, 0..255 per channel
+    max_distance: float = Field(12, gt=0)
+    min_zone_seconds: float = Field(1.0, ge=0)  # time a track must have spent in the staff zone
+
+
 class Source(Strict):
     name: str
     url: str  # file path, rtsp:// or http(s):// URL
@@ -85,6 +92,7 @@ class Source(Strict):
     door_lines: list[DoorLine] = []
     zones: Zones = Zones()
     alerts: Alerts = Alerts()
+    staff_appearance: StaffAppearance | None = None  # if set, people in the uniform are not counted in the queue
     reconnect: Reconnect = Reconnect()
 
 

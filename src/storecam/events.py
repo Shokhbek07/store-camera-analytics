@@ -157,13 +157,15 @@ class ZoneSampler:
         self.current: int | None = None
         self.frames: list[tuple[int, bool]] = []
 
-    def update(self, feet: list[Point], t: float) -> list[SecondSample]:
+    def update(self, feet: list[Point], t: float, is_staff: list[bool] | None = None) -> list[SecondSample]:
+        """`is_staff[i]` marks feet[i] as staff, which is then left out of the queue count."""
         sec = int(math.floor(t))
         out = []
         if self.current is not None and sec != self.current:
             out.append(self._flush())
         self.current = sec
-        q = sum(1 for p in feet if point_in_polygon(p, self.queue_poly))
+        staff_flags = is_staff or [False] * len(feet)
+        q = sum(1 for p, st in zip(feet, staff_flags, strict=True) if not st and point_in_polygon(p, self.queue_poly))
         s = self.staff_poly is not None and any(point_in_polygon(p, self.staff_poly) for p in feet)
         self.frames.append((q, s))
         return out

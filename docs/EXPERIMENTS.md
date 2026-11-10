@@ -320,4 +320,57 @@ The public repository was cloned into an empty folder and the README followed st
   The script had `--retry 3` but restarted from zero and treated the stall as fatal.
   It now resumes the partial file (`curl -C -`), drops a connection that stays below 10 kB/s for 60 s, and tries up to 20 times; the rest of the download then completed in 29 minutes with every checksum matching.
   The same review found that the Linux fallback to `sha256sum` never ran (the pipe hid `shasum`'s failure); it now picks whichever tool exists.
-- `uv run python scripts/evaluate.py`: the regenerated `results/eval/report.json` is identical to the committed one, so the reported door, queue and alert numbers reproduce from a clean clone.
+- `uv run python scripts/evaluate.py`: the regenerated `results/eval/report.json` was identical to the committed one.
+  This first check proved less than it seemed: the committed `results/eval/` already holds each clip's `run_summary.json`, and `evaluate.py` reuses them unless given `--rerun`, so the service never ran.
+  Found the same day while testing E14, and repeated with `--rerun`: the service processed all five clips from scratch in the clean clone and `report.json` came out identical again; in the CSV files only the wall-clock timestamps differ.
+  So the reported numbers do reproduce from a clean clone, and offline runs are deterministic on this machine.
+
+## E14. Staff versus customer by uniform colour (2026-11-10)
+
+**Question:** can the service tell the attendant from customers, so staff are not counted in the queue (a bonus in the brief)?
+The measured reason to try: on `counter_1735` the attendant, walking through the queue zone, was counted as a waiting customer and caused the one wrong empty-counter alert (E7).
+
+**Looking first.**
+Crops of people in the staff zone and in the queue zone on all three counter clips showed the same attendant throughout (the clips are from one afternoon), always in a beige sweater and beige trousers, while nearly all customers wore dark winter coats.
+MEVA has no store uniform, so the attendant's clothing stands in for one.
+
+**Tracking history alone (rejected).**
+Treating any track that has been in the staff zone as staff fails on this footage: the attendant's track breaks often (20 different track IDs in the staff zone on `counter_1735`), and on `counter_1650` a track that was in the staff zone for 2.2 s (most likely a customer at the end of the counter) then stood in the queue for 54 s.
+
+**Colour separation.**
+The median torso colour (CIE Lab, middle of the box) of people in the staff zone on `counter_1650` gives the reference (`scripts/calibrate_staff.py`, Lab 113, 129, 141).
+Share of boxes within distance 12 of it, sampled once per second:
+
+| Clip | Staff zone | Queue zone |
+|---|---|---|
+| counter_1650 (reference taken here) | 89% | 1% |
+| counter_1720 | 86% | 1% |
+| counter_1735 | 83% | 4% |
+
+**Colour alone (rejected after looking).**
+With a majority vote over each track's last 20 frames, the wrong alert on `counter_1735` disappeared and the queue error on `counter_1720` fell from 0.30 to 0.27.
+But the frames where someone was left out of the queue showed that most of them were customers in beige, olive, white or light grey coats: about 2 of the 11 inspected exclusions were the attendant.
+The 0.27 on `counter_1720` came from customers wrongly removed, so it was not a real gain.
+
+**Colour plus time in the staff zone (adopted).**
+A track counts as staff only if most of its recent torso colours match the uniform and it has spent at least 1 s in the staff zone during its life.
+Replayed on saved colours, this removed every exclusion on `counter_1650` and `counter_1720`; on `counter_1735` it kept the attendant leaving the counter (track 1445, 154.7 to 157.0 s) and one 1 s mistake at 274.5 s, where the attendant's track appears to have switched to a customer in pink at the end of the counter.
+
+Full evaluation with it (`--rerun`):
+
+| Measure | Before | After |
+|---|---|---|
+| Queue MAE, counter_1650 (Shokhbek / Claude) | 1.18 / 0.77 | 1.18 / 0.77 |
+| Queue MAE, counter_1720 / counter_1735 | 0.30 / 0.00 | 0.30 / 0.00 |
+| Expected alerts found / missed | 3 / 0 | 3 / 0 |
+| Wrong alerts | 2 | 1 |
+| Seconds whose queue count changed | | 3, all on counter_1735 (155, 156, 274) |
+
+The wrong empty-counter alert on `counter_1735` is gone, but narrowly.
+The attendant's track broke two seconds after leaving the counter; the new track had no staff-zone time yet, so the attendant counted as a waiting customer again on the way back, and the alert only fell below its 10 s threshold because two seconds were removed.
+
+**Limits.**
+- It depends on the tracker keeping one ID per person: a track that switches from staff to a customer carries the staff vote for about a second, and a staff member who gets a new ID away from the counter counts as a customer.
+- A customer who wears the uniform colour and steps behind the counter for a second would be treated as staff.
+- The reference colour is per store and per uniform; it was measured on one clip and checked on two others from the same afternoon and camera, not under other lighting.
+- It tells roles apart by clothing and place only, and never identifies anyone.

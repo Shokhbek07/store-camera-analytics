@@ -225,3 +225,24 @@ In the container this reaches about 5 FPS per stream against the 10 FPS target (
 **Network.**
 Every published port is bound to 127.0.0.1, and the cameras are local files, so nothing leaves the machine.
 The status endpoint listens on 0.0.0.0 only inside the container (`--http-host`), published to the host's 127.0.0.1.
+
+## D14. Staff versus customer: uniform colour plus time in the staff zone
+
+Decided 2026-11-10, from E14.
+
+The brief offers this as a bonus ("for example by uniform colour or apron") and it addresses a measured error: the attendant counted as a waiting customer.
+
+**Options considered.**
+
+- Tracking history only (a track that has been behind the counter is staff): fails here because the attendant's track breaks often and customers at the end of the counter step into the staff zone (E14).
+- Uniform colour only: separates well per box, but customers in similar light clothes were left out of the queue more often than the attendant (E14).
+- A trained staff/customer classifier or a re-identification embedding: needs labelled crops for each store, adds a model to run per person, and a person embedding moves towards recognising individuals, which the brief rules out.
+- **Uniform colour plus time in the staff zone, chosen:** both are cheap, explainable, and configured per camera; together they removed every wrong exclusion seen on two clips while keeping the attendant leaving the counter.
+
+**How it works.**
+`src/storecam/staff.py`: the median Lab colour of the torso part of each box is compared with `staff_appearance.lab`; a track is staff when most of its last 20 colours match and it has spent `min_zone_seconds` in the staff zone.
+Staff are left out of the queue count; whether someone is in the staff zone is still decided by anyone standing there, as the brief defines it.
+The reference colour comes from `scripts/calibrate_staff.py`, which measures people in the staff zone, so no colour is picked by hand.
+Removing `staff_appearance` from the config turns it off.
+
+**Limits** are listed in E14; the main one is that it inherits every ID switch of the tracker.
