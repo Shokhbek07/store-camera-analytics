@@ -22,6 +22,13 @@ The live page (`--http`), refreshed every second (D16):
 
 ![Live page with one card per camera: in, out, queue, staff at the counter and an open queue alert](docs/media/live_page.png)
 
+## Setup
+
+```sh
+uv sync
+./scripts/download.sh   # videos and weights, about 620 MB, checked by SHA-256; the MEVA bucket is slow (about 50 min here), and the script resumes after a dropped connection
+```
+
 ## Run
 
 ```sh
@@ -30,7 +37,7 @@ uv run storecam run --offline        # every sampled frame, as fast as possible 
 uv run storecam run --http 8765      # also serve a live page at http://127.0.0.1:8765/ (JSON at /status.json)
 uv run storecam run --save-video     # also write annotated video with faces pixelated
 uv run storecam run --url counter=rtsp://127.0.0.1:8554/counter   # swap a source's address, keep its zones
-uv run pytest                        # unit tests for the counting, zone and alert logic
+uv run pytest                        # unit tests for counting, zones, alerts, staff and the live endpoint
 ```
 
 Outputs go to `runs/out/`: `<source>_minutes.csv` per source, `alerts.jsonl`, and `run_summary.json` with speeds.
@@ -68,13 +75,6 @@ uv run --group export python scripts/export_onnx.py   # writes models/yolo26s_dy
 Then set `model.weights` in `config.yaml` to one of them; nothing else changes.
 On a Mac the fixed-size export runs on the GPU through CoreML (as FP32), elsewhere on CPU; on all five clips it gave exactly the PyTorch results (E15, D15).
 
-## Setup
-
-```sh
-uv sync
-./scripts/download.sh   # videos and weights, about 620 MB, checked by SHA-256; the MEVA bucket is slow (about 50 min here), and the script resumes after a dropped connection
-```
-
 ## Results
 
 Measured on the MEVA clips below against hand labels; full tables, method and failure cases with timestamps are in `REPORT.md` sections 5 and 6.
@@ -89,6 +89,28 @@ Measured on the MEVA clips below against hand labels; full tables, method and fa
 | ONNX Runtime export (bonus) | identical results to PyTorch on all five clips; detector 15.6 ms against 17.8 ms per pair of frames on the Mac GPU, and about 3.4 times faster than PyTorch on CPU in Docker, both from single runs on a machine that was not quiet (E15); the full benchmark is still to be repeated |
 | Empty-counter alerts | none expected, 0 wrong with the staff rule (1 wrong without it) |
 | Speed, Apple M4 Pro GPU (MPS), YOLO26s 640 px FP32, 1164 MB GPU memory | 2 streams in real time: 9.87 FPS each against a 10 FPS target; as fast as possible: 97 / 119 / 131 FPS total for 1 / 2 / 4 streams; CPU only: 23 / 24 / 28 |
+
+## Known failure cases
+
+Times are positions in the clip; the full list with causes is `REPORT.md` section 6.
+
+- **Attendant lost at the edge of the counter view** (`counter_1650` 0:09 to 0:14, 1:06 to 1:09, 4:28 to 4:35; `counter_1720` 1:04, 2:29): the staff zone reads empty, so the per-minute "empty counter seconds" overstate; the 10 s alert delay absorbs it.
+- **Staff counted as a customer after an ID switch** (`counter_1735` 2:35 to 2:45, and a customer left out for 1 s at 4:34): the staff rule only holds while the tracker keeps one ID per person (E14).
+- **People on the queue zone's edges** (`counter_1650` 4:10 to 4:48): a seated man on the edge raised a wrong queue alert until the edge was moved in front of the chairs (E16); chairs move, so zones need checking when furniture does.
+- **Departures in a crowd** (`door_0307_1720`): people who waited on the mats were counted 30 to 40 s early (0:03, 0:04, 0:13), and of a group leaving at 0:42 to 0:54 fewer were counted, and earlier, as the tracker lost them in the doorway (E9).
+- **Flip-flops at the door line** (track 216 at 4:45.7, track 19 at 0:40.9 to 0:43.2): a partly hidden box moves the foot point across the line; the 40 px band and 4-frame confirmation remove most, not all.
+- **A whiteboard hides lower bodies** in the counter view, so foot points sit too high, and **stair traffic** at the left end of the door line can be counted as door traffic.
+
+## Scaling to about 50 cameras
+
+A plan, not a measurement (no NVIDIA GPU here); details and sources in `REPORT.md` section 7.
+
+- 50 cameras at 10 analysed fps is 500 detections per second; the event logic is cheap, decoding and detection are not.
+- Decoding breaks first, since every frame must be decoded even when a third are analysed: use each camera's secondary stream (720p or lower, 10 to 15 fps) and decode on the GPU (NVDEC through DeepStream or GStreamer) so frames stay on the GPU.
+- Inference: a TensorRT FP16 engine (or ONNX Runtime with its TensorRT provider, D15), fixed batches of 16 to 32 from the newest frame of every camera, as the service already batches (D5).
+- The CPU side: a few worker processes of about a dozen cameras each, rather than one Python process with 50 threads, with resizing on the GPU.
+- Counter-only cameras need about 2 fps, since zones are summarised per second, which frees capacity for door cameras.
+- Operations: per-camera health (fps, reconnects, last frame time) and an alert on a dead camera; the service already drops frames rather than letting one slow camera back up the others.
 
 ## Footage
 
