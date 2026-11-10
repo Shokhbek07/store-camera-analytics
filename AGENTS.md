@@ -37,8 +37,9 @@ Local-only files (ignored by git): `runs/review/review.md` (29 queue marks waiti
 
 ## Next steps, in order
 
+Door departures were looked at again on 2026-11-11 and left as they are: the misses are tracking in a crowd at the doorway and people waiting on the mats, 960 px did not help (E9), and with one departure clip any new rule would be tuned on the clip it is measured on (REPORT 5.1).
+
 1. On a quiet machine (check `uptime` and other projects' containers first, never stop them): `scripts/benchmark.py` for the PyTorch weights and with `--weights models/yolo26s_384x640_b2.onnx --out results/benchmark_onnx.json`, plus the detector-only container comparison; update E15, REPORT 5.4 and the README row, and settle the open question in D15 (ONNX by default in Docker).
-2. Possibly door departures: only 5 of 13 hand-labelled departures are matched on door_0307_1720.
-3. Shokhbek reviews `runs/review/review.md`; then update the labels and results, and say in REPORT.md what the review changed.
-4. A final read-through of README.md and REPORT.md against `results/`.
-5. Draft the submission email for Shokhbek to send; the agent never sends it.
+2. Shokhbek reviews `runs/review/review.md`; then update the labels and results, and say in REPORT.md what the review changed.
+3. A final read-through of README.md and REPORT.md against `results/`.
+4. Draft the submission email for Shokhbek to send; the agent never sends it.

@@ -104,7 +104,9 @@ A system event is "matched" when a hand event in the same direction lies within 
 | `door_0309_1010` (arrivals) | 22 / 3 | 21 / 4 | 19 | 6 | 6 |
 | `door_0307_1720` (departures) | 0 / 13 | 0 / 11 | 5 | 6 | 8 |
 
-The totals are close, but on the departure clip they are close partly by luck: only 5 of the 13 departures are matched in time, and the rest are most likely the doorway-region counts, which land when the tracker drops a track rather than at the moment a person passes the door.
+The totals are close, but on the departure clip they are close partly by luck: only 5 of the 13 departures are matched within 2 s, and widening the window to 5 or 10 s still matches only 8 (the same matching as `evaluate.py` with the window changed).
+Three system counts come 30 to 40 s early (0:03, 0:04 and 0:13), from people who stepped onto the mats and waited there before leaving (failure case 6).
+The group that left between 0:42 and 0:54 was counted at 0:39 to 0:46 and 0:56, fewer and earlier than the hand count, as the tracker lost people in the crowd at the doorway; a 960 px input did not change this (E9).
 System crossings also come 1 to 2.5 s before the key presses, the delay of a person pressing a key while watching; at 3 s the arrivals match 22 of 25 (E9).
 
 The settings were chosen on these two clips (E9), so the same settings were checked on two door clips not used for tuning, against MEVA's own annotations (E10):
