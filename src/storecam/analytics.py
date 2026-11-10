@@ -10,7 +10,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from .config import Source
-from .events import Alert, AlertTracker, LineCounter, SecondSample, ZoneSampler
+from .events import Alert, AlertTracker, LineCounter, SecondSample, ZoneSampler, duplicate_boxes
 from .staff import StaffClassifier
 
 CSV_FIELDS = ["source", "minute", "minute_start_video_s", "minute_start_wall", "in", "out", "queue_avg",
@@ -111,8 +111,9 @@ class SourceAnalytics:
             if self.staff is not None and image is not None:
                 self.staff_ids = self.staff.update(image, tracks, t)
                 self.staff.forget(alive)
-            is_staff = [tid in self.staff_ids for tid in feet]
-            for sample in self.zones.update(list(feet.values()), t, is_staff):
+            dups = duplicate_boxes(tracks)
+            skip = [tid in self.staff_ids or tid in dups for tid in feet]
+            for sample in self.zones.update(list(feet.values()), t, skip):
                 self._on_second(sample)
         self._row_for(t)  # a minute with no events still gets a row
         self._write_rows(t)

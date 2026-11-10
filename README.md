@@ -83,8 +83,8 @@ Measured on the MEVA clips below against hand labels; full tables, method and fa
 |---|---|
 | Door, arrival clip, hand vs system IN/OUT | 22/3 vs 21/4 (19 of 25 events matched within 2 s) |
 | Door, departure clip, hand vs system IN/OUT | 0/13 vs 0/11 (5 of 13 events matched within 2 s) |
-| Queue length MAE at 10 s marks | 1.18 (Shokhbek, 11 marks); 0.77, 0.30, 0.00 (Claude, 30 marks on each of 3 clips) |
-| Queue alerts | 3 of 3 expected found (two merged into one), 1 wrong |
+| Queue length MAE at 10 s marks | 1.00 (Shokhbek, 11 marks); 0.37, 0.17, 0.00 (Claude, 30 marks on each of 3 clips) |
+| Queue alerts | 3 of 3 expected found (two merged into one), 0 wrong; the last wrong one, a seated man on the zone's edge, was removed by redrawing that edge, chosen on the same clips (E16) |
 | Staff versus customer (bonus) | uniform colour plus time behind the counter; left the attendant out of the queue when they walked through it, with one 1 s mistake after an ID switch (E14) |
 | ONNX Runtime export (bonus) | identical results to PyTorch on all five clips; detector 15.6 ms against 17.8 ms per pair of frames on the Mac GPU, and about 3.4 times faster than PyTorch on CPU in Docker, both from single runs on a machine that was not quiet (E15); the full benchmark is still to be repeated |
 | Empty-counter alerts | none expected, 0 wrong with the staff rule (1 wrong without it) |

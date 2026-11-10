@@ -67,6 +67,6 @@ def test_forget_drops_history_of_dead_tracks():
 
 def test_zone_sampler_leaves_staff_out_of_the_queue_count():
     z = ZoneSampler(QUEUE_ZONE, STAFF_ZONE)
-    z.update([(200, 150), (250, 150), (50, 150)], 0.0, is_staff=[True, False, True])
+    z.update([(200, 150), (250, 150), (50, 150)], 0.0, skip=[True, False, True])
     (sample,) = z.update([], 1.0)
     assert (sample.queue, sample.staff_present) == (1, True)

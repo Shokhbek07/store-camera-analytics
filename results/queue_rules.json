@@ -1,0 +1,507 @@
+[
+ {
+  "zone": "edge 675 (before E16)",
+  "rule": "none",
+  "mae": {
+   "counter_1650 shokhbek": 1.18,
+   "counter_1650 claude": 0.77,
+   "counter_1720 claude": 0.3,
+   "counter_1735 claude": 0.0
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 1,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     79,
+     6
+    ],
+    [
+     254,
+     287,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     9,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 675 (before E16)",
+  "rule": "at least 2 s in the zone",
+  "mae": {
+   "counter_1650 shokhbek": 0.82,
+   "counter_1650 claude": 0.7,
+   "counter_1720 claude": 0.43,
+   "counter_1735 claude": 0.07
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 1,
+  "intervals": {
+   "counter_1650": [
+    [
+     2,
+     75,
+     4
+    ],
+    [
+     254,
+     287,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     14,
+     250,
+     6
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 675 (before E16)",
+  "rule": "at least 3 s in the zone",
+  "mae": {
+   "counter_1650 shokhbek": 0.73,
+   "counter_1650 claude": 0.73,
+   "counter_1720 claude": 0.4,
+   "counter_1735 claude": 0.1
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 1,
+  "intervals": {
+   "counter_1650": [
+    [
+     3,
+     75,
+     4
+    ],
+    [
+     254,
+     287,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     23,
+     250,
+     6
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 675 (before E16)",
+  "rule": "at least 5 s in the zone",
+  "mae": {
+   "counter_1650 shokhbek": 0.82,
+   "counter_1650 claude": 0.8,
+   "counter_1720 claude": 0.63,
+   "counter_1735 claude": 0.13
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 1,
+  "intervals": {
+   "counter_1650": [
+    [
+     5,
+     59,
+     4
+    ],
+    [
+     254,
+     287,
+     3
+    ]
+   ],
+   "counter_1720": [
+    [
+     25,
+     143,
+     6
+    ],
+    [
+     148,
+     173,
+     4
+    ],
+    [
+     178,
+     194,
+     4
+    ],
+    [
+     199,
+     225,
+     4
+    ],
+    [
+     231,
+     250,
+     3
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 675 (before E16)",
+  "rule": "standing still (< 0.3 box heights/s)",
+  "mae": {
+   "counter_1650 shokhbek": 0.82,
+   "counter_1650 claude": 0.73,
+   "counter_1720 claude": 0.37,
+   "counter_1735 claude": 0.1
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 1,
+  "intervals": {
+   "counter_1650": [
+    [
+     2,
+     59,
+     4
+    ],
+    [
+     270,
+     287,
+     3
+    ]
+   ],
+   "counter_1720": [
+    [
+     22,
+     248,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 675 (before E16)",
+  "rule": "standing still (< 0.5 box heights/s)",
+  "mae": {
+   "counter_1650 shokhbek": 1.0,
+   "counter_1650 claude": 0.83,
+   "counter_1720 claude": 0.3,
+   "counter_1735 claude": 0.07
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 1,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     79,
+     4
+    ],
+    [
+     254,
+     287,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     9,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 675 (before E16)",
+  "rule": "duplicate boxes left out",
+  "mae": {
+   "counter_1650 shokhbek": 1.09,
+   "counter_1650 claude": 0.67,
+   "counter_1720 claude": 0.23,
+   "counter_1735 claude": 0.0
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 1,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     79,
+     6
+    ],
+    [
+     254,
+     287,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     9,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 700",
+  "rule": "none",
+  "mae": {
+   "counter_1650 shokhbek": 1.18,
+   "counter_1650 claude": 0.67,
+   "counter_1720 claude": 0.33,
+   "counter_1735 claude": 0.0
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     76,
+     5
+    ]
+   ],
+   "counter_1720": [
+    [
+     9,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 700",
+  "rule": "duplicate boxes left out",
+  "mae": {
+   "counter_1650 shokhbek": 1.09,
+   "counter_1650 claude": 0.57,
+   "counter_1720 claude": 0.27,
+   "counter_1735 claude": 0.0
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     76,
+     5
+    ]
+   ],
+   "counter_1720": [
+    [
+     9,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 720",
+  "rule": "none",
+  "mae": {
+   "counter_1650 shokhbek": 1.18,
+   "counter_1650 claude": 0.57,
+   "counter_1720 claude": 0.27,
+   "counter_1735 claude": 0.0
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     76,
+     5
+    ]
+   ],
+   "counter_1720": [
+    [
+     9,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 720",
+  "rule": "duplicate boxes left out",
+  "mae": {
+   "counter_1650 shokhbek": 1.09,
+   "counter_1650 claude": 0.47,
+   "counter_1720 claude": 0.2,
+   "counter_1735 claude": 0.0
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     76,
+     5
+    ]
+   ],
+   "counter_1720": [
+    [
+     9,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 730/725, in front of the chairs (chosen)",
+  "rule": "none",
+  "mae": {
+   "counter_1650 shokhbek": 1.09,
+   "counter_1650 claude": 0.47,
+   "counter_1720 claude": 0.2,
+   "counter_1735 claude": 0.0
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     76,
+     5
+    ]
+   ],
+   "counter_1720": [
+    [
+     11,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 730/725, in front of the chairs (chosen)",
+  "rule": "duplicate boxes left out",
+  "mae": {
+   "counter_1650 shokhbek": 1.0,
+   "counter_1650 claude": 0.37,
+   "counter_1720 claude": 0.17,
+   "counter_1735 claude": 0.0
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     76,
+     5
+    ]
+   ],
+   "counter_1720": [
+    [
+     11,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 750/740",
+  "rule": "none",
+  "mae": {
+   "counter_1650 shokhbek": 1.09,
+   "counter_1650 claude": 0.43,
+   "counter_1720 claude": 0.23,
+   "counter_1735 claude": 0.0
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     76,
+     5
+    ]
+   ],
+   "counter_1720": [
+    [
+     11,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 750/740",
+  "rule": "duplicate boxes left out",
+  "mae": {
+   "counter_1650 shokhbek": 1.0,
+   "counter_1650 claude": 0.33,
+   "counter_1720 claude": 0.2,
+   "counter_1735 claude": 0.0
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     76,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     11,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ }
+]

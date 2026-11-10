@@ -32,6 +32,7 @@ Python 3.12 managed with `uv`.
 
 All required parts of the brief are done, measured and pushed.
 Bonuses done: batched inference across streams, staff versus customer (D14, E14), the ONNX Runtime export (D15, E15) and the live page (D16).
+The last wrong queue alert was removed by moving the queue zone's top edge in front of the chairs and leaving duplicate boxes out of the queue count (D17, E16); `scripts/queue_rules.py` replays saved tracks to try queue rules quickly.
 `scripts/evaluate.py` reuses saved runs unless given `--rerun`; always pass `--rerun` after changing code or config.
 Local-only files (ignored by git): `runs/review/review.md` (29 queue marks waiting for Shokhbek's review, rebuilt by `scripts/review_sheet.py`), `runs/staff_analysis/` (the scratch analysis behind E14) and `runs/onnx/` (the ONNX evaluation run behind E15).
 

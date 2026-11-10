@@ -406,6 +406,7 @@ This was not investigated further, since the Mac runs the detector on its GPU.
 **Accuracy on the full evaluation.**
 `scripts/evaluate.py --rerun` with the 384x640 batch-2 export on CoreML (MLProgram) gave exactly the PyTorch results on all five clips: the same door crossings at the same times, the same per-minute rows, the same alerts and the same evaluation report, mark by mark.
 Only the wall-clock timestamps differ, because they record when the run happened.
+Both runs used the configuration before the queue changes of E16.
 
 **Inside the Docker container (Linux, ARM, 10 CPUs, CPU only).**
 The same detector-only test with 20 frame pairs, while another project's test container used about 2.7 cores (load average 22), so these numbers are only good for comparing the three rows with each other:
@@ -419,3 +420,50 @@ The same detector-only test with 20 frame pairs, while another project's test co
 In the container ONNX Runtime was about 3.4 times faster than PyTorch, the opposite of the Mac CPU result.
 
 **Still to do:** the full `scripts/benchmark.py` comparison (two real-time streams, and throughput with 1, 2 and 4 streams) for both runtimes, on a quiet machine, and the container measurement again under no load.
+
+## E16. The last wrong queue alert, and duplicate boxes (2026-11-11)
+
+**Question:** what causes the one remaining wrong alert (`counter_1650`, queue, 4:14 to 4:47, labels show 1 or 2 waiting) and can it be removed without hurting the queue counts?
+
+**Looking first.**
+Frames at 4:16, 4:24, 4:32 and 4:42 with the zones and each person's queue membership drawn showed three things: a man seated at a table behind the queue whose foot point lay on the zone's top edge, a woman walking about between the counter and the coffee table, and at 4:32 two boxes on one woman (a full box and an upper-body box inside it).
+Listing the tracks counted between 4:10 and 4:50 settled it: track 976, the seated man, was inside the zone for 33.5 of the 40 s, with his foot point 0 to 44 px below an edge at about y 669, so he was counted throughout.
+The report had blamed the coffee table; that was wrong and is corrected.
+
+**Replay instead of rerunning detection.**
+`scripts/queue_rules.py` saves every track box with its torso colour once, then replays them through the service's own staff rule, per-second sampling and queue alert for each candidate.
+On the committed configuration it reproduced the full evaluation's errors and alerts exactly, with 890 of 900 seconds identical.
+Queue MAE against Shokhbek's 11 marks (S) and Claude's 30 marks per clip (C), and queue alerts over the three clips (raw output: `results/queue_rules.json`):
+
+| Zone top edge (left part) | Rule | S 1650 | C 1650 | C 1720 | C 1735 | Alerts found / wrong |
+|---|---|---|---|---|---|---|
+| y 675 (before) | none | 1.18 | 0.77 | 0.30 | 0.00 | 3 of 3 / 1 |
+| y 675 | at least 2 s in the zone | 0.82 | 0.70 | 0.43 | 0.07 | 3 of 3 / 1 |
+| y 675 | at least 3 s in the zone | 0.73 | 0.73 | 0.40 | 0.10 | 3 of 3 / 1 |
+| y 675 | at least 5 s in the zone | 0.82 | 0.80 | 0.63 | 0.13 | 3 of 3 / 1 |
+| y 675 | standing still, under 0.3 box heights/s | 0.82 | 0.73 | 0.37 | 0.10 | 3 of 3 / 1 |
+| y 675 | standing still, under 0.5 box heights/s | 1.00 | 0.83 | 0.30 | 0.07 | 3 of 3 / 1 |
+| y 675 | duplicate boxes left out | 1.09 | 0.67 | 0.23 | 0.00 | 3 of 3 / 1 |
+| y 700 | none | 1.18 | 0.67 | 0.33 | 0.00 | 3 of 3 / 0 |
+| y 720 | none | 1.18 | 0.57 | 0.27 | 0.00 | 3 of 3 / 0 |
+| y 730 to 725, in front of the chairs | none | 1.09 | 0.47 | 0.20 | 0.00 | 3 of 3 / 0 |
+| y 730 to 725, in front of the chairs | duplicate boxes left out | 1.00 | 0.37 | 0.17 | 0.00 | 3 of 3 / 0 |
+| y 750 to 740 | duplicate boxes left out | 1.00 | 0.33 | 0.20 | 0.00 | 3 of 3 / 0 |
+
+No rule about time or movement removed the alert, since the seated man stayed and sat still; every lowered edge did.
+Time in the zone helped against Shokhbek's marks but hurt against Claude's on the quieter clips, which is the labellers' different counting rules again (E7) rather than a clear gain.
+The edge was put in front of the chairs nearest the counter (their legs reach about y 715 on `counter_1720`) rather than at the best-scoring line, and duplicate boxes are left out (D17).
+
+**Full evaluation (`scripts/evaluate.py --rerun`).**
+
+| Measure | Before | After |
+|---|---|---|
+| Queue MAE, `counter_1650`, Shokhbek / Claude | 1.18 / 0.77 | 1.00 / 0.37 |
+| Queue MAE, `counter_1720` / `counter_1735`, Claude | 0.30 / 0.00 | 0.17 / 0.00 |
+| Marks exactly right, `counter_1650`, Shokhbek / Claude | 3 / 12 | 4 / 20 |
+| Queue alerts found / wrong | 3 of 3 / 1 | 3 of 3 / 0 |
+| Door counts | | unchanged |
+
+The first `counter_1650` alert now runs 0:00 to 1:16 (peak 5) instead of 1:19 (peak 6), and the `counter_1720` alert starts at 0:11 instead of 0:09; both still cover the expected alerts.
+
+**Limits** are in D17: both changes were chosen on the clips they are measured on, and chairs move.

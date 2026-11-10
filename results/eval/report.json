@@ -32,9 +32,9 @@
    "clip": "counter_1650",
    "labeller": "shokhbek",
    "marks": 11,
-   "mae": 1.182,
-   "bias": 1.182,
-   "exact": 3,
+   "mae": 1.0,
+   "bias": 1.0,
+   "exact": 4,
    "hand_mean": 1.73,
    "staff_agreement": 10,
    "per_mark": [
@@ -48,7 +48,7 @@
     {
      "t": 30,
      "hand": 2,
-     "system": 4,
+     "system": 3,
      "hand_staff": true,
      "system_staff": true
     },
@@ -97,7 +97,7 @@
     {
      "t": 170,
      "hand": 2,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
@@ -121,16 +121,16 @@
    "clip": "counter_1650",
    "labeller": "claude",
    "marks": 30,
-   "mae": 0.767,
-   "bias": 0.5,
-   "exact": 12,
+   "mae": 0.367,
+   "bias": 0.1,
+   "exact": 20,
    "hand_mean": 2.4,
    "staff_agreement": 27,
    "per_mark": [
     {
      "t": 0,
      "hand": 4,
-     "system": 6,
+     "system": 5,
      "hand_staff": true,
      "system_staff": true
     },
@@ -151,7 +151,7 @@
     {
      "t": 30,
      "hand": 2,
-     "system": 4,
+     "system": 3,
      "hand_staff": true,
      "system_staff": true
     },
@@ -249,14 +249,14 @@
     {
      "t": 170,
      "hand": 2,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 180,
      "hand": 2,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
@@ -284,49 +284,49 @@
     {
      "t": 220,
      "hand": 2,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 230,
      "hand": 1,
-     "system": 2,
+     "system": 1,
      "hand_staff": true,
      "system_staff": false
     },
     {
      "t": 240,
      "hand": 1,
-     "system": 3,
+     "system": 1,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 250,
      "hand": 1,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 260,
      "hand": 2,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 270,
      "hand": 2,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": false
     },
     {
      "t": 280,
      "hand": 2,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
@@ -343,37 +343,37 @@
    "clip": "counter_1720",
    "labeller": "claude",
    "marks": 30,
-   "mae": 0.3,
-   "bias": 0.233,
-   "exact": 23,
+   "mae": 0.167,
+   "bias": -0.1,
+   "exact": 25,
    "hand_mean": 3.63,
    "staff_agreement": 29,
    "per_mark": [
     {
      "t": 0,
      "hand": 1,
-     "system": 2,
+     "system": 1,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 10,
      "hand": 2,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 20,
      "hand": 4,
-     "system": 5,
+     "system": 4,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 30,
      "hand": 6,
-     "system": 6,
+     "system": 5,
      "hand_staff": true,
      "system_staff": true
     },
@@ -408,7 +408,7 @@
     {
      "t": 80,
      "hand": 5,
-     "system": 5,
+     "system": 4,
      "hand_staff": true,
      "system_staff": true
     },
@@ -443,7 +443,7 @@
     {
      "t": 130,
      "hand": 4,
-     "system": 7,
+     "system": 4,
      "hand_staff": true,
      "system_staff": true
     },
@@ -464,14 +464,14 @@
     {
      "t": 160,
      "hand": 3,
-     "system": 4,
+     "system": 3,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 170,
      "hand": 3,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
@@ -790,20 +790,15 @@
    "labeller": "claude",
    "kind": "queue",
    "expected": 2,
-   "system": 2,
+   "system": 1,
    "found": 2,
    "missed": 0,
-   "wrong": 1,
+   "wrong": 0,
    "system_intervals": [
     [
      0,
-     79,
-     6
-    ],
-    [
-     254,
-     287,
-     4
+     76,
+     5
     ]
    ],
    "hand_intervals": [
@@ -840,7 +835,7 @@
    "wrong": 0,
    "system_intervals": [
     [
-     9,
+     11,
      250,
      7
     ]

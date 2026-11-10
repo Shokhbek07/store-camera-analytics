@@ -1,4 +1,4 @@
-from storecam.events import AlertTracker, LineCounter, ZoneSampler, point_in_polygon
+from storecam.events import AlertTracker, LineCounter, ZoneSampler, duplicate_boxes, point_in_polygon
 
 # A horizontal door line from (0, 100) to (200, 100); inside is below it (larger y).
 LINE = dict(a=(0, 100), b=(200, 100), inside=(100, 150), band=10, min_frames=2)
@@ -165,3 +165,17 @@ def test_vanishing_away_from_doorway_is_not_counted():
     c = LineCounter(**LINE, door_region=DOOR)
     run(c, [80, 78, 75])
     assert c.forget(alive=set()) == []
+
+
+def test_upper_body_box_inside_a_full_box_is_a_duplicate():
+    full, upper = (100, 100, 200, 400), (105, 100, 195, 250)
+    assert duplicate_boxes({1: full, 2: upper}) == {2}
+
+
+def test_person_behind_who_shows_above_is_not_a_duplicate():
+    front, behind = (100, 200, 200, 500), (110, 120, 190, 380)  # head and shoulders above the front person
+    assert duplicate_boxes({1: front, 2: behind}) == set()
+
+
+def test_two_people_side_by_side_are_not_duplicates():
+    assert duplicate_boxes({1: (100, 100, 200, 400), 2: (190, 110, 290, 410)}) == set()

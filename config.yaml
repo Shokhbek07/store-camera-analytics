@@ -25,8 +25,9 @@ sources:
     realtime: true
     zones:
       # Customers line up from the front of the counter, curving right and back.
-      # The right edge stops short of the coffee table, the top edge short of the seating.
-      queue: [[345, 675], [1050, 645], [1395, 570], [1395, 1072], [345, 1072]]
+      # The right edge stops short of the coffee table; the top edge runs just in front of the
+      # chairs nearest the counter, so people seated there are not counted (E16).
+      queue: [[345, 730], [620, 725], [1050, 645], [1395, 570], [1395, 1072], [345, 1072]]
       # Behind the counter, where the attendant stands.
       staff: [[0, 600], [180, 600], [300, 1072], [0, 1072]]
     alerts:

@@ -143,6 +143,31 @@ class SecondSample:
     staff_present: bool
 
 
+DUPLICATE_INSIDE = 0.85  # share of a box inside another for it to count as a duplicate (E16)
+
+
+def duplicate_boxes(boxes: dict[int, tuple[float, float, float, float]]) -> set[int]:
+    """Ids of boxes that are most likely part of another person's box.
+
+    The detector sometimes reports one person twice: a full box and a smaller upper-body box
+    inside it, which overlap too little for non-maximum suppression to merge (E16). A box counts
+    as a duplicate when at least DUPLICATE_INSIDE of it lies inside a larger box that reaches
+    lower in the frame. A person standing behind someone usually shows above them, so is kept.
+    """
+    dup = set()
+    for i, a in boxes.items():
+        area = (a[2] - a[0]) * (a[3] - a[1])
+        for j, b in boxes.items():
+            if i == j or a[3] >= b[3] or area > (b[2] - b[0]) * (b[3] - b[1]):
+                continue
+            iw = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
+            ih = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
+            if iw * ih >= DUPLICATE_INSIDE * area:
+                dup.add(i)
+                break
+    return dup
+
+
 class ZoneSampler:
     """Reduces per-frame zone counts to one value per whole second.
 
@@ -157,15 +182,15 @@ class ZoneSampler:
         self.current: int | None = None
         self.frames: list[tuple[int, bool]] = []
 
-    def update(self, feet: list[Point], t: float, is_staff: list[bool] | None = None) -> list[SecondSample]:
-        """`is_staff[i]` marks feet[i] as staff, which is then left out of the queue count."""
+    def update(self, feet: list[Point], t: float, skip: list[bool] | None = None) -> list[SecondSample]:
+        """`skip[i]` leaves feet[i] out of the queue count: staff (D14) or a duplicate box (E16)."""
         sec = int(math.floor(t))
         out = []
         if self.current is not None and sec != self.current:
             out.append(self._flush())
         self.current = sec
-        staff_flags = is_staff or [False] * len(feet)
-        q = sum(1 for p, st in zip(feet, staff_flags, strict=True) if not st and point_in_polygon(p, self.queue_poly))
+        skip = skip or [False] * len(feet)
+        q = sum(1 for p, sk in zip(feet, skip, strict=True) if not sk and point_in_polygon(p, self.queue_poly))
         s = self.staff_poly is not None and any(point_in_polygon(p, self.staff_poly) for p in feet)
         self.frames.append((q, s))
         return out

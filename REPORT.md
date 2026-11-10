@@ -10,10 +10,11 @@ On five licensed MEVA clips (D1), measured against hand labels:
 
 - Door: 21 in and 4 out against 22 and 3 hand-counted on the arrival clip, and 0 in and 11 out against 0 and 13 on the departure clip.
   On two clips not used for tuning the count error fell from 4 to 1 and from 6 to 3 (E10).
-- Queue length: mean absolute error 1.18 people against Shokhbek's 11 marks, and 0.77, 0.30 and 0.00 against Claude's 30 marks on each of the three counter clips.
+- Queue length: mean absolute error 1.00 people against Shokhbek's 11 marks, and 0.37, 0.17 and 0.00 against Claude's 30 marks on each of the three counter clips.
   The two labellers themselves differ by 0.82 on average on the marks they share, so the reference is not much sharper than the system.
-- Alerts: every expected queue alert was raised, but two of them were merged into one, and one alert was wrong (people at a coffee table on the zone edge).
-  A second wrong alert, the attendant counted as a waiting customer, was removed by telling staff from customers by uniform colour and time behind the counter (bonus, D14), narrowly and with limits explained in E14.
+- Alerts: every expected queue alert was raised (two of them merged into one) and no alert is wrong.
+  A wrong queue alert came from a man seated at a table with his feet on the queue zone's edge; moving the edge in front of the chairs and counting one box per person removed it and halved the queue error against Claude's marks (E16, D17), chosen on the same clips, so with that caveat.
+  A wrong empty-counter alert, the attendant counted as a waiting customer, was removed by telling staff from customers by uniform colour and time behind the counter (bonus, D14), narrowly and with limits explained in E14.
 - Reproducible: a clean clone, the download script and `scripts/evaluate.py --rerun` give the same numbers (E13).
 - Speed on an Apple M4 Pro GPU: two streams in real time held 9.87 of the 10 FPS target each; processed as fast as possible, 2 streams reach 119 FPS and 4 reach 131 FPS in total (E11b).
 - An ONNX Runtime export of the detector (bonus) gave exactly the PyTorch results on all five clips and ran the detector about 12% faster on the Mac GPU through CoreML; on CPU in the Docker container it was about 3.4 times faster than PyTorch, measured under load (E15, D15).
@@ -73,6 +74,7 @@ Uniform colour alone mostly removed customers in light coats from the queue; add
 The CoreML set-up that Ultralytics chooses computed in FP16, changed a few boxes and was slower than PyTorch; switching it to an FP32 MLProgram made the ONNX export both exact and faster (E15, D15).
 On the Mac CPU ONNX Runtime was slower than PyTorch, but in the Linux container it was about 3.4 times faster, which matters because the container has no GPU.
 The live page went on the existing endpoint as one self-contained page (D16).
+The last wrong queue alert turned out to come from a seated man on the zone's edge, not the coffee table as the report had said; replaying saved tracks through candidate rules showed that only moving the edge removed it, and that leaving duplicate boxes out improved every labeller's error (E16, D17).
 
 ## 4. What was built
 
@@ -80,7 +82,7 @@ The live page went on the existing endpoint as one self-contained page (D16).
 - `src/storecam/sources.py`: one reader thread per source; real-time pacing for files, reconnect with exponential backoff for streams (D5).
 - `src/storecam/detect.py`: YOLO26s batched across sources, one ByteTrack per source (D2); PyTorch weights or an ONNX export run by ONNX Runtime (D15).
 - `scripts/export_onnx.py`: the ONNX exports (D15, E15).
-- `src/storecam/events.py`: door line counting, per-second zone sampling, alerts (D4).
+- `src/storecam/events.py`: door line counting, per-second zone sampling, duplicate boxes, alerts (D4, D17).
 - `src/storecam/staff.py` and `scripts/calibrate_staff.py`: staff versus customer by uniform colour and time in the staff zone (D14).
 - `src/storecam/analytics.py`: per-minute CSV per source and alerts as JSON lines.
 - `src/storecam/service.py`: the main loop, the live page and JSON endpoint (`src/storecam/web.py`, D16), face-pixelated annotated video (D10).
@@ -88,6 +90,7 @@ The live page went on the existing endpoint as one self-contained page (D16).
 - `scripts/label.py` and `scripts/evaluate.py`: labelling and comparison with the labels.
 - `Dockerfile`, `docker-compose.yml`, `docker/mediamtx.yml`: one-command run with two looping RTSP cameras, detector on CPU (D13, E12).
 - `scripts/benchmark.py` and `scripts/review_sheet.py`: speed measurements and a sheet for checking labels.
+- `scripts/queue_rules.py`: replays saved tracks through candidate queue rules and zones (E16).
 
 ## 5. Measurement
 
@@ -122,14 +125,15 @@ The queue zone count is the median of the frames in each second (D4); the labels
 
 | Clip | Labeller | Marks | MAE | Mean error (system minus hand) | Exactly right | Mean queue |
 |---|---|---|---|---|---|---|
-| `counter_1650` | Shokhbek | 11 (0:10 to 3:30) | 1.18 | +1.18 | 3 | 1.7 |
-| `counter_1650` | Claude | 30 (0:00 to 4:50) | 0.77 | +0.50 | 12 | 2.4 |
-| `counter_1720` | Claude | 30 | 0.30 | +0.23 | 23 | 3.6 |
+| `counter_1650` | Shokhbek | 11 (0:10 to 3:30) | 1.00 | +1.00 | 4 | 1.7 |
+| `counter_1650` | Claude | 30 (0:00 to 4:50) | 0.37 | +0.10 | 20 | 2.4 |
+| `counter_1720` | Claude | 30 | 0.17 | -0.10 | 25 | 3.6 |
 | `counter_1735` | Claude | 30 | 0.00 | 0.00 | 30 | 0.5 |
 
-The system never counts fewer people than Shokhbek; the extra people are mostly on the coffee-table edge of the zone and people walking through it.
+The system never counts fewer people than Shokhbek.
+Before E16 the extra people were mostly on the zone's edges (a man seated at a table on the top edge, people at the coffee table) or walking through it, and one person was sometimes counted twice through a duplicate box; moving the top edge in front of the chairs and leaving duplicate boxes out halved the error against Claude's marks (E16, D17).
 On the 11 marks both labellers share, they agree exactly on 4 and Claude counts 0.82 more on average; the difference is the counting rule: Claude counted everyone standing inside the zone outline, Shokhbek counted the people who were queuing (E7).
-So "queue length" depends on the counting rule almost as much as on the detector, and the 1.18 against Shokhbek is the more conservative figure.
+So "queue length" depends on the counting rule almost as much as on the detector, and the 1.00 against Shokhbek is the more conservative figure.
 `counter_1735` is quiet (half a person on average), so its 0.00 shows that empty and near-empty scenes are handled, not that the hard case is solved.
 
 Whether staff was present agreed with the labels at 10 of 11, 27 of 30, 29 of 30 and 26 of 30 marks.
@@ -141,16 +145,16 @@ A system alert is "found" when it overlaps an expected one.
 
 | Clip | Kind | Expected | Raised | Found | Missed | Wrong |
 |---|---|---|---|---|---|---|
-| `counter_1650` | queue | 2 | 2 | 2 | 0 | 1 |
+| `counter_1650` | queue | 2 | 1 | 2 | 0 | 0 |
 | `counter_1650` | empty counter | 0 | 0 | 0 | 0 | 0 |
 | `counter_1720` | queue | 1 | 1 | 1 | 0 | 0 |
 | `counter_1720` | empty counter | 0 | 0 | 0 | 0 | 0 |
 | `counter_1735` | queue | 0 | 0 | 0 | 0 | 0 |
 | `counter_1735` | empty counter | 0 | 0 | 0 | 0 | 0 |
 
-- `counter_1650`: the expected queue alerts at 0:00 to 0:30 and 0:40 to 1:50 were both covered by one system alert from 0:00 to 1:19 (peak 6), which bridged the short dip and ended about 30 s early.
-  The second system alert, 4:14 to 4:47 (peak 4), is wrong: the labels show 1 or 2 people waiting.
-- `counter_1720`: one expected alert, 0:20 to 4:20; the system raised it from 0:09 to 4:10 (peak 7).
+- `counter_1650`: the expected queue alerts at 0:00 to 0:30 and 0:40 to 1:50 were both covered by one system alert from 0:00 to 1:16 (peak 5), which bridged the short dip and ended about 34 s early.
+  Before E16 a second system alert, 4:14 to 4:47 (peak 4), was wrong: the labels show 1 or 2 people waiting, and a man seated at a table with his feet on the zone's top edge was counted throughout; the edge now runs in front of the chairs (D17).
+- `counter_1720`: one expected alert, 0:20 to 4:20; the system raised it from 0:11 to 4:10 (peak 7).
 - `counter_1735`: the attendant really did leave the counter from about 2:35 to 2:45, but nobody was waiting.
   Without the staff rule (D14) the system counted the attendant, crossing the queue zone, and a passer-by as waiting customers and raised a wrong empty-counter alert at 2:44.
   With it, the attendant is left out of the queue for the first two seconds, which keeps the condition under its 10 s threshold; the attendant's track then broke and the new track counted as a customer again, so this fix is narrow (E14).
@@ -194,8 +198,10 @@ Times are positions in the clip (minutes:seconds).
 2. **Staff counted as customers.**
    When the attendant leaves the counter they can walk through the queue zone and be counted as a waiting customer (`counter_1735`, 2:35 to 2:45, which raised a wrong empty-counter alert before D14).
    The staff rule (uniform colour plus time behind the counter) catches this only while the attendant keeps the track ID they had at the counter: here the ID changed after two seconds, and at 4:34 a switch the other way left a customer out of the queue for one second (E14).
-3. **People at the coffee table on the zone edge.**
-   People standing at the coffee table to the right of the counter are inside or on the edge of the queue zone; this is the main source of the over-count in 5.2 and of the wrong queue alert on `counter_1650` at 4:14 to 4:47.
+3. **People on the zone's edges.**
+   People seated at the tables behind the queue and people at the coffee table to the right of the counter are on or near the queue zone's edges.
+   A man seated at a table with his feet on the top edge was counted from 4:10 to 4:48 on `counter_1650` and raised a wrong queue alert at 4:14 to 4:47; an earlier version of this report blamed the coffee table, which the track listing in E16 showed was wrong.
+   The top edge now runs in front of the chairs (D17), but chairs move, so a zone drawn once can drift out of date.
 4. **Whiteboard hiding lower bodies.**
    In the counter view a whiteboard in the foreground cuts boxes off at its top edge, so foot points sit too high and people behind it can fall outside the zone (E3).
 5. **Flip-flops at the door line.**

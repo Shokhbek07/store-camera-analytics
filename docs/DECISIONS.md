@@ -288,3 +288,26 @@ The service already served live counts as JSON (D5).
 
 The page builds its content with text nodes only, so source names and values from the config cannot inject markup.
 The server still binds to 127.0.0.1 unless `--http-host` says otherwise (D13).
+
+## D17. Who counts in the queue: a zone edge in front of the chairs, and one box per person
+
+Decided 2026-11-11, from E16.
+
+The last wrong queue alert (`counter_1650`, 4:14 to 4:47) came from a man seated at a table behind the queue, whose foot point lay on the zone's top edge, not from the coffee table as first assumed (E16).
+
+**Options considered.**
+
+- Count only people who have been in the zone for some seconds: matched Shokhbek's stricter counting better (MAE 1.18 to 0.73 at 3 s) but was worse against Claude's marks on the other two clips and did not remove the alert, because the seated man stayed for half a minute.
+- Count only people standing still: also kept the seated man, and walking customers are part of a moving queue.
+- A queue as a chain of people starting at the counter: more principled for long queues, but needs spacing thresholds that change with perspective; not tried in the time left.
+- A separate "ignore" polygon over the seating: the same effect as moving the zone edge, with one more config field.
+- **Move the zone's top edge to just in front of the chairs nearest the counter, chosen:** zones are drawn per camera at set-up by looking at the scene, and the config already said the edge should stop short of the seating; it did not.
+  The edge was placed from the scene (the nearest chair legs reach about y 715 on `counter_1720`), and every edge from y 700 to 750 removed the alert, so the result does not hang on a few pixels.
+- **Also leave duplicate boxes out of the queue count, chosen:** the detector sometimes adds an upper-body box inside a person's full box, which non-maximum suppression keeps because the two overlap too little, so one person counted twice.
+  A box at least 85% inside a larger box that reaches lower is treated as part of it (`duplicate_boxes` in `src/storecam/events.py`); this improved every labeller's error on every clip.
+  It is applied to the queue count only, so door counting is unchanged.
+
+**Limits.**
+Both were chosen on the clips they are measured on; the edge is justified by the furniture and the duplicate rule by what it removes, but there is no held-out counter clip.
+Chairs move, so a zone drawn once can drift out of date and should be checked when the furniture changes.
+A person almost completely hidden behind another, with the visible part inside the front person's box, would be treated as a duplicate.

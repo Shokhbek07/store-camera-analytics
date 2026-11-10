@@ -1,10 +1,11 @@
 {
   "detector": {
     "weights": "models/yolo26s.pt",
-    "parameters_millions": 10.01,
     "imgsz": 640,
     "device": "mps",
     "precision": "FP32",
+    "runtime": "pytorch 2.15.0",
+    "parameters_millions": 10.01,
     "gpu_memory_mb": 174
   },
   "machine": {
@@ -12,15 +13,15 @@
     "platform": "macOS-15.7.7-arm64-arm-64bit"
   },
   "process_fps_target": 10.0,
-  "elapsed_s": 29.27,
+  "elapsed_s": 67.13,
   "batches": 3000,
   "mean_batch_size": 1.0,
-  "detector_ms_per_batch": 9.55,
-  "total_fps": 102.49,
+  "detector_ms_per_batch": 21.84,
+  "total_fps": 44.69,
   "sources": {
     "door": {
       "frames_processed": 3000,
-      "fps": 102.49,
+      "fps": 44.69,
       "frames_decoded": 9001,
       "frames_dropped": 0,
       "reconnects": 0,

@@ -1,4 +1,2 @@
-{"event": "start", "source": "counter", "kind": "queue", "start": 0, "raised": 9, "peak": 6, "end": null, "ended_by": null, "start_wall": "2026-11-10T11:45:00+00:00", "end_wall": null}
-{"event": "end", "source": "counter", "kind": "queue", "start": 0, "raised": 9, "peak": 6, "end": 79, "ended_by": "cleared", "start_wall": "2026-11-10T11:45:00+00:00", "end_wall": "2026-11-10T11:46:19+00:00"}
-{"event": "start", "source": "counter", "kind": "queue", "start": 254, "raised": 263, "peak": 3, "end": null, "ended_by": null, "start_wall": "2026-11-10T11:49:14+00:00", "end_wall": null}
-{"event": "end", "source": "counter", "kind": "queue", "start": 254, "raised": 263, "peak": 4, "end": 287, "ended_by": "cleared", "start_wall": "2026-11-10T11:49:14+00:00", "end_wall": "2026-11-10T11:49:47+00:00"}
+{"event": "start", "source": "counter", "kind": "queue", "start": 0, "raised": 9, "peak": 5, "end": null, "ended_by": null, "start_wall": "2026-11-10T22:22:48+00:00", "end_wall": null}
+{"event": "end", "source": "counter", "kind": "queue", "start": 0, "raised": 9, "peak": 5, "end": 76, "ended_by": "cleared", "start_wall": "2026-11-10T22:22:48+00:00", "end_wall": "2026-11-10T22:24:04+00:00"}
