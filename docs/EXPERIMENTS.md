@@ -467,3 +467,24 @@ The edge was put in front of the chairs nearest the counter (their legs reach ab
 The first `counter_1650` alert now runs 0:00 to 1:16 (peak 5) instead of 1:19 (peak 6), and the `counter_1720` alert starts at 0:11 instead of 0:09; both still cover the expected alerts.
 
 **Limits** are in D17: both changes were chosen on the clips they are measured on, and chairs move.
+
+## E17. Feeding ByteTrack its low-confidence detections (2026-11-11)
+
+**Question:** the detector drops boxes below 0.25 confidence, but ByteTrack's second matching stage uses exactly the boxes between 0.1 and 0.25 (`track_low_thresh` to `track_high_thresh`) to keep existing tracks alive through partial occlusion, and Ultralytics' own tracking mode lowers the detector threshold to 0.1 for this reason.
+So that stage received nothing.
+Would lowering `model.conf` to 0.1 keep the attendant and people in crowds tracked better?
+New tracks still need 0.25 (`new_track_thresh`), so low-confidence boxes can only extend existing tracks.
+
+**Result** (`scripts/evaluate.py --rerun` with `model.conf: 0.1`, everything else as after E16; raw report: `results/e17_detector_conf_0.1_report.json`):
+
+| Measure | conf 0.25 | conf 0.1 |
+|---|---|---|
+| Queue MAE, all labellers and clips | 1.00 / 0.37 / 0.17 / 0.00 | the same |
+| Queue alerts found / wrong | 3 of 3 / 0 | the same (first alert ends 1 s earlier) |
+| Staff presence agreeing with the labels | 10, 27, 29, 26 | the same |
+| Seconds without staff, `counter_1650` / `1720` / `1735` | 20 / 5 / 81 | 20 / 2 / 74 |
+| Door, arrival clip | 21 in, 4 out, 19 matched | the same |
+| Door, departure clip | 11 out, 5 matched | 10 out, 4 matched |
+
+The low-confidence stage changed little: a few short gaps in staff presence closed, but no labelled mark changed, and one departure fewer was counted.
+`model.conf` stays at 0.25; the attendant's longer gaps (6 to 9 s, failure case 1) are missed detections at the frame edge and behind the counter, not low-confidence ones.
