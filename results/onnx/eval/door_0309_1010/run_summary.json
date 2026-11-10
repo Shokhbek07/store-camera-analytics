@@ -1,0 +1,161 @@
+{
+  "detector": {
+    "weights": "models/yolo26s_384x640_b2.onnx",
+    "imgsz": [
+      384,
+      640
+    ],
+    "device": "mps",
+    "precision": "FP32",
+    "runtime": "onnxruntime 1.31.1",
+    "execution_provider": "CoreMLExecutionProvider",
+    "export_batch": 2
+  },
+  "machine": {
+    "cpu": "Apple M4 Pro",
+    "platform": "macOS-15.7.7-arm64-arm-64bit"
+  },
+  "process_fps_target": 10.0,
+  "elapsed_s": 55.25,
+  "batches": 3000,
+  "mean_batch_size": 1.0,
+  "detector_ms_per_batch": 18.01,
+  "total_fps": 54.3,
+  "sources": {
+    "door": {
+      "frames_processed": 3000,
+      "fps": 54.3,
+      "frames_decoded": 9002,
+      "frames_dropped": 0,
+      "reconnects": 0,
+      "crossings": [
+        {
+          "t": 9.3,
+          "track_id": 2,
+          "direction": "in"
+        },
+        {
+          "t": 11.0,
+          "track_id": 3,
+          "direction": "in"
+        },
+        {
+          "t": 12.7,
+          "track_id": 4,
+          "direction": "in"
+        },
+        {
+          "t": 13.4,
+          "track_id": 6,
+          "direction": "in"
+        },
+        {
+          "t": 18.5,
+          "track_id": 8,
+          "direction": "in"
+        },
+        {
+          "t": 18.8,
+          "track_id": 10,
+          "direction": "in"
+        },
+        {
+          "t": 22.8,
+          "track_id": 23,
+          "direction": "in"
+        },
+        {
+          "t": 39.3,
+          "track_id": 29,
+          "direction": "in"
+        },
+        {
+          "t": 40.3,
+          "track_id": 31,
+          "direction": "in"
+        },
+        {
+          "t": 129.1,
+          "track_id": 54,
+          "direction": "in"
+        },
+        {
+          "t": 133.6,
+          "track_id": 54,
+          "direction": "out"
+        },
+        {
+          "t": 134.7,
+          "track_id": 56,
+          "direction": "in"
+        },
+        {
+          "t": 142.0,
+          "track_id": 54,
+          "direction": "in"
+        },
+        {
+          "t": 189.4,
+          "track_id": 66,
+          "direction": "in"
+        },
+        {
+          "t": 190.0,
+          "track_id": 65,
+          "direction": "in"
+        },
+        {
+          "t": 209.5,
+          "track_id": 115,
+          "direction": "in"
+        },
+        {
+          "t": 211.0,
+          "track_id": 120,
+          "direction": "in"
+        },
+        {
+          "t": 211.8,
+          "track_id": 125,
+          "direction": "in"
+        },
+        {
+          "t": 235.2,
+          "track_id": 144,
+          "direction": "out"
+        },
+        {
+          "t": 236.0,
+          "track_id": 145,
+          "direction": "out"
+        },
+        {
+          "t": 236.9,
+          "track_id": 157,
+          "direction": "out"
+        },
+        {
+          "t": 246.3,
+          "track_id": 182,
+          "direction": "in"
+        },
+        {
+          "t": 248.7,
+          "track_id": 186,
+          "direction": "in"
+        },
+        {
+          "t": 296.2,
+          "track_id": 222,
+          "direction": "in"
+        },
+        {
+          "t": 297.7,
+          "track_id": 231,
+          "direction": "in"
+        }
+      ],
+      "seconds": []
+    }
+  }
+}

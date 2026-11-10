@@ -1,0 +1,6 @@
+{"variant": "pytorch_mps", "ms_per_batch_of_2": 17.8, "fps": 112.4, "ref_boxes": 845, "boxes": 845, "matched_iou90": 845, "mean_abs_conf_diff": 0.0}
+{"variant": "pytorch_cpu", "ms_per_batch_of_2": 77.7, "fps": 25.7, "ref_boxes": 845, "boxes": 846, "matched_iou90": 845, "mean_abs_conf_diff": 0.0}
+{"variant": "ort_cpu_dynamic", "ms_per_batch_of_2": 131.9, "fps": 15.2, "ref_boxes": 845, "boxes": 846, "matched_iou90": 845, "mean_abs_conf_diff": 0.0, "providers": ["CPUExecutionProvider"]}
+{"variant": "ort_cpu_static_b2", "ms_per_batch_of_2": 130.1, "fps": 15.4, "ref_boxes": 845, "boxes": 846, "matched_iou90": 845, "mean_abs_conf_diff": 0.0, "providers": ["CPUExecutionProvider"]}
+{"variant": "ort_coreml_nn_static_b2", "ms_per_batch_of_2": 24.1, "fps": 83.1, "ref_boxes": 845, "boxes": 843, "matched_iou90": 841, "mean_abs_conf_diff": 0.002, "providers": ["CoreMLExecutionProvider", "CPUExecutionProvider"]}
+{"variant": "ort_coreml_mlprogram_static_b2", "ms_per_batch_of_2": 15.6, "fps": 128.5, "ref_boxes": 845, "boxes": 846, "matched_iou90": 845, "mean_abs_conf_diff": 0.0, "providers": ["CoreMLExecutionProvider", "CPUExecutionProvider"]}

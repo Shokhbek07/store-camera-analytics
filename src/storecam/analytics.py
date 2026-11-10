@@ -61,7 +61,7 @@ class SourceAnalytics:
         self.last_t = 0.0
         self.crossings: list[dict] = []
         self.seconds: list[SecondSample] = []
-        self.live = {"in": 0, "out": 0, "queue": 0, "staff_present": None}
+        self.live = {"in": 0, "out": 0, "queue": 0, "staff_present": None, "second": None}
         self.staff_ids: set[int] = set()  # tracks judged to be staff in the latest frame
 
     # --------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ class SourceAnalytics:
         waiting = empty and s.queue >= self.src.alerts.empty_counter.min_waiting
         row.empty += empty
         row.empty_waiting += waiting
-        self.live.update(queue=s.queue, staff_present=s.staff_present)
+        self.live.update(queue=s.queue, staff_present=s.staff_present, second=s.second)
         if self.queue_alert:
             for ev, a in self.queue_alert.update(s.second, s.queue >= self.src.alerts.queue.min_people, s.queue):
                 self._emit(ev, a)

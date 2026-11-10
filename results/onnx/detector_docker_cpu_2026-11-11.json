@@ -1,0 +1,35 @@
+[
+ {
+  "variant": "pytorch_cpu",
+  "ms_per_batch_of_2": 1674.6,
+  "fps": 1.2,
+  "ref_boxes": 430,
+  "boxes": 430,
+  "matched_iou90": 430,
+  "mean_abs_conf_diff": 0.0
+ },
+ {
+  "variant": "ort_cpu_dynamic",
+  "ms_per_batch_of_2": 497.3,
+  "fps": 4.0,
+  "ref_boxes": 430,
+  "boxes": 430,
+  "matched_iou90": 430,
+  "mean_abs_conf_diff": 0.0,
+  "providers": [
+   "CPUExecutionProvider"
+  ]
+ },
+ {
+  "variant": "ort_cpu_static_b2",
+  "ms_per_batch_of_2": 512.1,
+  "fps": 3.9,
+  "ref_boxes": 430,
+  "boxes": 430,
+  "matched_iou90": 430,
+  "mean_abs_conf_diff": 0.0,
+  "providers": [
+   "CPUExecutionProvider"
+  ]
+ }
+]

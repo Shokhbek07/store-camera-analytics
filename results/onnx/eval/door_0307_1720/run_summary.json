@@ -1,0 +1,91 @@
+{
+  "detector": {
+    "weights": "models/yolo26s_384x640_b2.onnx",
+    "imgsz": [
+      384,
+      640
+    ],
+    "device": "mps",
+    "precision": "FP32",
+    "runtime": "onnxruntime 1.31.1",
+    "execution_provider": "CoreMLExecutionProvider",
+    "export_batch": 2
+  },
+  "machine": {
+    "cpu": "Apple M4 Pro",
+    "platform": "macOS-15.7.7-arm64-arm-64bit"
+  },
+  "process_fps_target": 10.0,
+  "elapsed_s": 60.55,
+  "batches": 3000,
+  "mean_batch_size": 1.0,
+  "detector_ms_per_batch": 19.79,
+  "total_fps": 49.54,
+  "sources": {
+    "door": {
+      "frames_processed": 3000,
+      "fps": 49.54,
+      "frames_decoded": 9001,
+      "frames_dropped": 0,
+      "reconnects": 0,
+      "crossings": [
+        {
+          "t": 4.4,
+          "track_id": 9,
+          "direction": "out"
+        },
+        {
+          "t": 3.2,
+          "track_id": 2,
+          "direction": "out"
+        },
+        {
+          "t": 13.1,
+          "track_id": 1,
+          "direction": "out"
+        },
+        {
+          "t": 38.8,
+          "track_id": 64,
+          "direction": "out"
+        },
+        {
+          "t": 43.9,
+          "track_id": 19,
+          "direction": "out"
+        },
+        {
+          "t": 44.2,
+          "track_id": 4,
+          "direction": "out"
+        },
+        {
+          "t": 44.7,
+          "track_id": 5,
+          "direction": "out"
+        },
+        {
+          "t": 45.4,
+          "track_id": 75,
+          "direction": "out"
+        },
+        {
+          "t": 56.0,
+          "track_id": 7,
+          "direction": "out"
+        },
+        {
+          "t": 68.0,
+          "track_id": 149,
+          "direction": "out"
+        },
+        {
+          "t": 133.7,
+          "track_id": 152,
+          "direction": "out"
+        }
+      ],
+      "seconds": []
+    }
+  }
+}

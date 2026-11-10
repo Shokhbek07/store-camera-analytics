@@ -1,6 +1,6 @@
 # One command: two RTSP cameras made from the clips, and the service reading both on CPU.
 #   ./scripts/download.sh && docker compose up --build
-# Outputs: runs/docker/ (per-minute CSV per source, alerts.jsonl). Live status: http://127.0.0.1:8080/
+# Outputs: runs/docker/ (per-minute CSV per source, alerts.jsonl). Live page: http://127.0.0.1:8080/
 # Every port is published on 127.0.0.1 only.
 services:
   cameras:

@@ -16,6 +16,8 @@ On five licensed MEVA clips (D1), measured against hand labels:
   A second wrong alert, the attendant counted as a waiting customer, was removed by telling staff from customers by uniform colour and time behind the counter (bonus, D14), narrowly and with limits explained in E14.
 - Reproducible: a clean clone, the download script and `scripts/evaluate.py --rerun` give the same numbers (E13).
 - Speed on an Apple M4 Pro GPU: two streams in real time held 9.87 of the 10 FPS target each; processed as fast as possible, 2 streams reach 119 FPS and 4 reach 131 FPS in total (E11b).
+- An ONNX Runtime export of the detector (bonus) gave exactly the PyTorch results on all five clips and ran the detector about 12% faster on the Mac GPU through CoreML; on CPU in the Docker container it was about 3.4 times faster than PyTorch, measured under load (E15, D15).
+- A live page shows each camera's counts and open alerts, refreshed every second (bonus, D16).
 
 The weakest parts are the departure side of the door (5 of 13 events matched in time) and telling staff from customers.
 
@@ -67,15 +69,21 @@ The compose setup first built an 18 GB image and showed RTSP packet loss over UD
 Following the README from a clean clone found a download that could not resume and a reproducibility check that had reused cached runs; both were fixed and the numbers reproduced from scratch (E13).
 Uniform colour alone mostly removed customers in light coats from the queue; adding "has spent time behind the counter" kept the one real case and removed the wrong exclusions (E14, D14).
 
+**2026-11-11, ONNX Runtime and the live page.**
+The CoreML set-up that Ultralytics chooses computed in FP16, changed a few boxes and was slower than PyTorch; switching it to an FP32 MLProgram made the ONNX export both exact and faster (E15, D15).
+On the Mac CPU ONNX Runtime was slower than PyTorch, but in the Linux container it was about 3.4 times faster, which matters because the container has no GPU.
+The live page went on the existing endpoint as one self-contained page (D16).
+
 ## 4. What was built
 
 - `scripts/download.sh`: the five clips and the weights, checked by SHA-256 (D3).
 - `src/storecam/sources.py`: one reader thread per source; real-time pacing for files, reconnect with exponential backoff for streams (D5).
-- `src/storecam/detect.py`: YOLO26s batched across sources, one ByteTrack per source (D2).
+- `src/storecam/detect.py`: YOLO26s batched across sources, one ByteTrack per source (D2); PyTorch weights or an ONNX export run by ONNX Runtime (D15).
+- `scripts/export_onnx.py`: the ONNX exports (D15, E15).
 - `src/storecam/events.py`: door line counting, per-second zone sampling, alerts (D4).
 - `src/storecam/staff.py` and `scripts/calibrate_staff.py`: staff versus customer by uniform colour and time in the staff zone (D14).
 - `src/storecam/analytics.py`: per-minute CSV per source and alerts as JSON lines.
-- `src/storecam/service.py`: the main loop, a live JSON endpoint, face-pixelated annotated video (D10).
+- `src/storecam/service.py`: the main loop, the live page and JSON endpoint (`src/storecam/web.py`, D16), face-pixelated annotated video (D10).
 - `config.yaml`: every source, line, zone and threshold.
 - `scripts/label.py` and `scripts/evaluate.py`: labelling and comparison with the labels.
 - `Dockerfile`, `docker-compose.yml`, `docker/mediamtx.yml`: one-command run with two looping RTSP cameras, detector on CPU (D13, E12).
@@ -168,6 +176,11 @@ The real-time pair uses about a sixth of what the GPU can do, and batching makes
 On CPU alone two streams at 10 FPS just fit.
 These are from a quiet machine (E11b, `results/benchmark.json`).
 A first run under another project's CPU load reached about half to three quarters of these figures on the GPU and a third on CPU (E11a), which is worth knowing for any shared server.
+
+**ONNX Runtime export (bonus, E15).**
+On 40 pairs of real frames, the detector took 15.6 ms per pair as an ONNX export on the Mac GPU (ONNX Runtime with CoreML, FP32) against 17.8 ms in PyTorch, and found the same boxes; the full evaluation gave exactly the PyTorch results on all five clips.
+On CPU in the Docker container it took 497 ms per pair against 1675 ms for PyTorch, measured while another project loaded the machine heavily, so only the ratio of about 3.4 is meaningful.
+These were detector-only timings on a machine that was not quiet; the full benchmark above is still to be repeated with the ONNX export.
 
 ## 6. Known failure cases
 

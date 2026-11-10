@@ -246,3 +246,45 @@ The reference colour comes from `scripts/calibrate_staff.py`, which measures peo
 Removing `staff_appearance` from the config turns it off.
 
 **Limits** are listed in E14; the main one is that it inherits every ID switch of the tracker.
+
+## D15. Exported detector: ONNX Runtime, with CoreML on the Mac GPU
+
+Decided 2026-11-11, from E15.
+
+The brief offers "TensorRT or ONNX Runtime export, with FPS and accuracy against PyTorch" as a bonus.
+
+**Options considered.**
+
+- TensorRT: needs an NVIDIA GPU, which this machine does not have; it stays the plan for the 50-camera server (REPORT section 7).
+- A native CoreML export (`.mlpackage`): runs only on Apple hardware and is not ONNX Runtime; ONNX Runtime's CoreML execution provider reaches the same Apple GPU from the portable ONNX file.
+- An MLX port of YOLO26: its authors report 1.1 to 2.6 times PyTorch MPS on an M4 Pro, but it is a separate port of the model rather than an export, and the numbers are the vendor's own; not tried.
+- OpenVINO: aimed at Intel hardware; this machine and the Docker VM are ARM; not tried.
+- **ONNX Runtime, chosen:** one exported file runs on any CPU, on the Apple GPU through the CoreML execution provider, and on NVIDIA through the CUDA or TensorRT providers.
+
+**How it works.**
+`scripts/export_onnx.py` writes two exports with Ultralytics: one with any batch and image size, and one fixed at 384x640 (a 16:9 frame at 640 wide, padded as PyTorch pads it) and batch 2.
+Both keep the head and the outside NMS that the PyTorch run uses, so detections can match exactly.
+Setting `model.weights` to an `.onnx` file is the only change; `Detector` then runs it through ONNX Runtime and `run_summary.json` records the runtime and execution provider.
+On the Mac GPU, Ultralytics asks CoreML for its older NeuralNetwork format, which computed in FP16, changed a few boxes and was slower (E15); `Detector` rebuilds that session as an FP32 MLProgram on CPU and GPU.
+This reaches into one Ultralytics internal (the predictor's backend session), which is acceptable because the Ultralytics version is pinned; if a later version moves it, the service fails at start-up instead of running on a different setup silently.
+
+**Default.**
+`config.yaml` keeps the PyTorch weights for now: the ONNX export gave identical results and a somewhat faster detector on the Mac GPU, but the detector is not what limits two real-time streams there, and it adds an export step to the setup.
+Open: whether the Docker image (CPU only) should use the ONNX export by default, where E15 saw ONNX Runtime about 3.4 times faster than PyTorch under load; decided after the speed comparison is repeated on a quiet machine.
+
+## D16. Live page: a static page on the existing endpoint
+
+Decided 2026-11-11.
+
+The brief's last bonus is "a tiny web page or API endpoint showing live counts".
+The service already served live counts as JSON (D5).
+
+**Options considered.**
+
+- A dashboard framework (Streamlit, Gradio): another dependency and process for a few numbers.
+- Server push over WebSocket or server-sent events: more code on both sides, while a one-second refresh matches the one-second zone sampling.
+- A live video view: not needed to read counts, and it would show unblurred people from the cameras.
+- **One self-contained page served by the same small HTTP server, chosen:** `/` returns the page, which reads `/status.json` once a second and shows one card per camera (in, out, queue, staff at the counter, connection, open alerts with how long they have been open); no external files, so it also works offline.
+
+The page builds its content with text nodes only, so source names and values from the config cannot inject markup.
+The server still binds to 127.0.0.1 unless `--http-host` says otherwise (D13).

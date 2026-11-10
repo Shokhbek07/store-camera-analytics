@@ -374,3 +374,48 @@ The attendant's track broke two seconds after leaving the counter; the new track
 - A customer who wears the uniform colour and steps behind the counter for a second would be treated as staff.
 - The reference colour is per store and per uniform; it was measured on one clip and checked on two others from the same afternoon and camera, not under other lighting.
 - It tells roles apart by clothing and place only, and never identifies anyone.
+
+## E15. ONNX Runtime against PyTorch: accuracy and speed (2026-11-11)
+
+**Question:** does an ONNX export of the detector give the same results as PyTorch, and is it faster (a bonus in the brief)?
+
+**Setup.**
+Ultralytics 8.4.207 exported YOLO26s with onnx 1.23.2 (opset 18) and onnxslim 0.1.99; ONNX Runtime 1.31.1 ran it (`scripts/export_onnx.py`, D15).
+Both exports keep the same head and outside NMS as the PyTorch run.
+Detector-only timings below use 40 pairs of real frames (one counter frame and one door frame per batch, as in the service), after warm-up, through the service's own `Detector`, so letterboxing and NMS are included.
+They come from a first version of `scripts/compare_detectors.py`; the raw outputs are in `results/onnx/`.
+"Matching" boxes overlap a PyTorch MPS box with IoU of at least 0.9.
+The machine was not quiet: load average about 5, with another project's Docker VM using about one core.
+
+| Runtime and device | ms per batch of 2 | Boxes (PyTorch MPS: 845) | Matching PyTorch MPS | Mean score difference |
+|---|---|---|---|---|
+| PyTorch 2.15, MPS (reference) | 17.8 | 845 | 845 | 0 |
+| PyTorch, CPU | 77.7 | 846 | 845 | 0.0000 |
+| ONNX Runtime, CPU, any-size export | 131.9 | 846 | 845 | 0.0000 |
+| ONNX Runtime, CPU, 384x640 batch-2 export | 130.1 | 846 | 845 | 0.0000 |
+| ONNX Runtime, CoreML as Ultralytics sets it up (NeuralNetwork format) | 24.1 | 843 | 841 | 0.0020 |
+| ONNX Runtime, CoreML MLProgram on CPU and GPU (adopted) | 15.6 | 846 | 845 | 0.0000 |
+
+CoreML took 360 of the graph's 368 nodes, in 7 parts.
+Its NeuralNetwork format changed a few boxes (FP16 arithmetic) and was slower; the MLProgram format kept FP32 and was the fastest option measured, about 12% faster than PyTorch MPS.
+The model alone, without letterboxing and NMS, took 9.0 ms per batch of 2 as an MLProgram on CPU and GPU, 9.1 ms when CoreML may also use the Neural Engine, and 39.4 ms when limited to CPU and Neural Engine, with scores equal to the ONNX Runtime CPU run in all three.
+
+ONNX Runtime on the Mac CPU was slower than PyTorch on CPU, and more threads made it worse (ms per batch of 2): default 133.6, 2 threads 131.9, 4 threads 127.2, 6 threads 128.7, 8 threads 156.7, 10 threads 190.0, 14 threads 303.3.
+This was not investigated further, since the Mac runs the detector on its GPU.
+
+**Accuracy on the full evaluation.**
+`scripts/evaluate.py --rerun` with the 384x640 batch-2 export on CoreML (MLProgram) gave exactly the PyTorch results on all five clips: the same door crossings at the same times, the same per-minute rows, the same alerts and the same evaluation report, mark by mark.
+Only the wall-clock timestamps differ, because they record when the run happened.
+
+**Inside the Docker container (Linux, ARM, 10 CPUs, CPU only).**
+The same detector-only test with 20 frame pairs, while another project's test container used about 2.7 cores (load average 22), so these numbers are only good for comparing the three rows with each other:
+
+| Runtime | ms per batch of 2 | Boxes matching PyTorch CPU |
+|---|---|---|
+| PyTorch CPU | 1674.6 | 430 of 430 |
+| ONNX Runtime CPU, any-size export | 497.3 | 430 of 430 |
+| ONNX Runtime CPU, 384x640 batch-2 export | 512.1 | 430 of 430 |
+
+In the container ONNX Runtime was about 3.4 times faster than PyTorch, the opposite of the Mac CPU result.
+
+**Still to do:** the full `scripts/benchmark.py` comparison (two real-time streams, and throughput with 1, 2 and 4 streams) for both runtimes, on a quiet machine, and the container measurement again under no load.

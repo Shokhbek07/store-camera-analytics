@@ -12,7 +12,7 @@ from pathlib import Path
 
 import cv2
 
-from . import draw
+from . import draw, web
 from .analytics import SourceAnalytics
 from .config import Config
 from .detect import Detector, Tracker
@@ -54,10 +54,18 @@ class Service:
 
         class Handler(BaseHTTPRequestHandler):
             def do_GET(self):
-                body = json.dumps(service.status(), indent=2).encode()
+                path = self.path.split("?")[0]
+                if path == "/":
+                    body, kind = web.PAGE.encode(), "text/html; charset=utf-8"
+                elif path == "/status.json":
+                    body, kind = json.dumps(service.status(), indent=2).encode(), "application/json"
+                else:
+                    self.send_error(404)
+                    return
                 self.send_response(200)
-                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Type", kind)
                 self.send_header("Content-Length", str(len(body)))
+                self.send_header("Cache-Control", "no-store")
                 self.end_headers()
                 self.wfile.write(body)
 
@@ -66,7 +74,7 @@ class Service:
 
         server = ThreadingHTTPServer((self.http_host, self.http_port), Handler)
         threading.Thread(target=server.serve_forever, daemon=True, name="http").start()
-        log.info("live status on http://%s:%d/", self.http_host, self.http_port)
+        log.info("live page on http://%s:%d/ (JSON at /status.json)", self.http_host, self.http_port)
 
     # Main loop -----------------------------------------------------------------------
     def run(self) -> dict:

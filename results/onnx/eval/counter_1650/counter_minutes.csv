@@ -1,0 +1,6 @@
+source,minute,minute_start_video_s,minute_start_wall,in,out,queue_avg,queue_max,empty_counter_s,empty_counter_waiting_s,seconds_observed
+counter,0,0,2026-11-10T21:53:52+00:00,0,0,4.02,6,6,6,60
+counter,1,60,2026-11-10T21:54:52+00:00,0,0,2.9,4,4,4,60
+counter,2,120,2026-11-10T21:55:52+00:00,0,0,2.2,5,0,0,60
+counter,3,180,2026-11-10T21:56:52+00:00,0,0,2.08,4,2,2,60
+counter,4,240,2026-11-10T21:57:52+00:00,0,0,2.75,4,8,8,60

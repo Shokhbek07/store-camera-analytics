@@ -15,7 +15,8 @@ def main() -> None:
     run.add_argument("config", nargs="?", default="config.yaml")
     run.add_argument("--out", help="output directory (default: output_dir in the config)")
     run.add_argument("--save-video", action="store_true", help="write annotated, face-blurred video per source")
-    run.add_argument("--http", type=int, metavar="PORT", help="serve live counts and open alerts as JSON")
+    run.add_argument("--http", type=int, metavar="PORT",
+                     help="serve a live page at / and the counts and open alerts as JSON at /status.json")
     run.add_argument("--http-host", default="127.0.0.1",
                      help="address for --http (default 127.0.0.1; 0.0.0.0 only inside a container)")
     run.add_argument("--offline", action="store_true",

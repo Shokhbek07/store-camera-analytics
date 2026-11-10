@@ -1,0 +1,13 @@
+ONNX Runtime 1.31.1, models/yolo26s_384x640_b2.onnx, random input of shape (2, 3, 384, 640), model only.
+CPU execution provider, intra-op threads:
+threads=default 133.6 ms per batch of 2
+threads=2 131.9 ms per batch of 2
+threads=4 127.2 ms per batch of 2
+threads=6 128.7 ms per batch of 2
+threads=8 156.7 ms per batch of 2
+threads=10 190.0 ms per batch of 2
+threads=14 303.3 ms per batch of 2
+CoreML execution provider, MLProgram format, by compute units (score difference against the CPU provider):
+CPUAndGPU: load 0.5s, 9.0 ms per batch of 2, max |score diff| vs CPU 0.0000
+ALL: load 0.5s, 9.1 ms per batch of 2, max |score diff| vs CPU 0.0000
+CPUAndNeuralEngine: load 0.5s, 39.4 ms per batch of 2, max |score diff| vs CPU 0.0000
