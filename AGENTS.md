@@ -27,3 +27,19 @@ The README reports accuracy against hand labels and speed honestly, with known f
 
 Apple M4 Pro, 24 GB unified memory, macOS 15, no NVIDIA GPU; the detector runs on PyTorch MPS or CPU.
 Python 3.12 managed with `uv`.
+
+## State at the pause (2026-11-10)
+
+All required parts of the brief are done, measured and pushed; the last commit before the pause is 38e758d.
+Bonuses done: batched inference across streams, staff versus customer (D14, E14), and a JSON status endpoint (`--http`).
+`scripts/evaluate.py` reuses saved runs unless given `--rerun`; always pass `--rerun` after changing code or config.
+Local-only files (ignored by git): `runs/review/review.md` (29 queue marks waiting for Shokhbek's review, rebuilt by `scripts/review_sheet.py`) and `runs/staff_analysis/` (the scratch analysis behind E14).
+
+## Next steps, in order
+
+1. ONNX Runtime export, a brief bonus: export YOLO26s to ONNX, let `Detector.describe()` handle non-PyTorch weights, compare FPS against PyTorch on a quiet machine and accuracy with `scripts/evaluate.py --rerun`, and record it as D15 and E15. Compare the CPU and CoreML execution providers on the Mac, and check whether it speeds up the Docker CPU run (about 5 FPS per stream, E12).
+2. A tiny live web page on top of the existing JSON endpoint, a brief bonus.
+3. Possibly door departures: only 5 of 13 hand-labelled departures are matched on door_0307_1720.
+4. Shokhbek reviews `runs/review/review.md`; then update the labels and results, and say in REPORT.md what the review changed.
+5. A final read-through of README.md and REPORT.md against `results/`.
+6. Draft the submission email for Shokhbek to send; the agent never sends it.
