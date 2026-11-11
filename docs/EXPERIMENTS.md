@@ -681,4 +681,15 @@ So 10 FPS on this CPU needs a cheaper detector.
 YOLO26n misses the attendant often enough to raise three wrong empty-counter alerts, and loses departures; YOLO26s at 480 px loses door matches on both clips and raises the queue error on Shokhbek's marks from 0.55 to 0.73.
 Both would buy container speed with accuracy, so the evaluated model stays everywhere, and the 10 FPS target is met where it was designed to be: on a GPU (the Mac's here, E11b; NVIDIA on a server, REPORT section 7).
 
-**Still to do:** 6 against 8 threads on a quiet machine, three alternating pairs; adopt 6 in the container only if it is faster in every pair with other containers under half a core in every run (bar set before the run).
+**6 against 8 threads on a quiet machine.**
+The bar, set before the run: adopt 6 threads in the container only if it is faster than 8 in every pair, with other containers under half a core in every run.
+`scripts/benchmark_docker.sh 60 3` started at 16:33 with other containers at 2 to 20% of one core in every run (`results/e21/docker_threads_6_vs_8_quiet_2026-11-11.json`):
+
+| Pair | 8 threads (default): FPS per stream, ms per batch | 6 threads: FPS per stream, ms per batch |
+|---|---|---|
+| 1 | 7.71, 6.93; 113 | 7.58, 6.79; 116 |
+| 2 | 6.91, 7.77; 111 | 7.51, 6.86; 114 |
+| 3 | 7.71, 6.91; 112 | 7.67, 6.94; 116 |
+
+Eight threads was 2 to 3% faster on the detector in every pair and the frame rates were the same within noise, so 6 threads did not meet the bar and the default stays; `model.cpu_threads` remains as an option for other machines.
+These runs also repeat the quiet container speed of E15: about 7.6 and 6.9 FPS per stream.

@@ -80,7 +80,7 @@ Over two hours of waiting for a quiet machine ended in a burst of load from anot
 A clean container run at 07:21, with other containers idle, then showed PyTorch about 1.4 times faster than the export there, so the Docker image keeps PyTorch (D15).
 At Shokhbek's request, replaying the saved tracks with rules closer to his counting rule found that counting people only after 2 s in the queue zone halved the error on his marks; it was kept by a bar set before the results were seen (E19, D18).
 Imitating a slow machine offline at 5 FPS showed that keeping lost tracks for real seconds instead of frames made no measurable difference, so the tracker was left as it is, and that the counts hold up at half the frame rate (E20).
-PyTorch's thread count cannot bring the CPU-only container to 10 FPS, since the detector alone allows about 8.4 per stream there, and the two cheaper detectors that could, YOLO26n and a 480 px input, both lost accuracy (YOLO26n raised three wrong empty-counter alerts), so the evaluated model stays (E21).
+PyTorch's thread count cannot bring the CPU-only container to 10 FPS, since the detector alone allows about 8.4 per stream there, and the two cheaper detectors that could, YOLO26n and a 480 px input, both lost accuracy (YOLO26n raised three wrong empty-counter alerts), so the evaluated model stays; on a quiet machine 6 threads was no faster than Ultralytics' default of 8 (E21).
 Reading the code for the live review found that in the slow CPU-only container a late doorway exit could add a second row for a minute already written; a minute now waits while such an exit is pending, which left the offline results unchanged (E18).
 
 ## 4. What was built
