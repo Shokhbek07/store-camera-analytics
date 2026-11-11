@@ -1,0 +1,35 @@
+# Lint and unit tests on every push. The tests need no video or weights.
+# Installs from uv.lock like the Dockerfile: everything except PyTorch's CUDA packages, then the
+# CPU build of the same locked PyTorch, so the runner does not download several GB it never uses.
+name: tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.7"
+      - name: System libraries OpenCV needs
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libgl1 libglib2.0-0
+      - name: Install from the lock file, with CPU-only PyTorch
+        run: |
+          uv python install 3.12
+          uv export --frozen --no-hashes --no-emit-project \
+            | grep -v -E '^(torch|torchvision|triton|cuda-|nvidia-(cu|nccl|nvjitlink|nvshmem|nvtx))' > /tmp/req.txt
+          uv venv --python 3.12 .venv
+          uv pip install --python .venv/bin/python --no-deps -r /tmp/req.txt
+          uv pip install --python .venv/bin/python --no-deps --index-url https://download.pytorch.org/whl/cpu \
+            torch==2.15.0 torchvision==0.29.2
+          uv pip install --python .venv/bin/python --no-deps -e .
+          uv pip check --python .venv/bin/python
+      - run: .venv/bin/ruff check .
+      - run: .venv/bin/pytest -q
+        env:
+          YOLO_CONFIG_DIR: ${{ runner.temp }}/ultralytics
