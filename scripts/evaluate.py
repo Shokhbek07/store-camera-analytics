@@ -61,6 +61,16 @@ def match_events(hand: list[dict], system: list[dict]) -> tuple[int, int, int]:
     return tp, len(system) - tp, len(hand) - tp
 
 
+def queue_stats(hand: list[int], errs: list[int]) -> dict:
+    return {
+        "marks": len(errs),
+        "mae": round(sum(abs(e) for e in errs) / len(errs), 3),
+        "bias": round(sum(errs) / len(errs), 3),
+        "exact": sum(1 for e in errs if e == 0),
+        "hand_mean": round(sum(hand) / len(hand), 2),
+    }
+
+
 def overlap(a0, a1, b0, b1) -> bool:
     return min(a1, b1) > max(a0, b0)
 
@@ -125,15 +135,16 @@ def compare(report, stem, who, suffix, s, run_dir, duration) -> None:
         pairs = [(h, per_s[int(h["t"])]) for h in hand if int(h["t"]) in per_s]
         if pairs:
             errs = [sysq - h["queue"] for h, (sysq, _) in pairs]
+            rounds: dict[str, list] = {}  # labelling rounds: "first" chose the queue rule, "blind review" tests it
+            for (h, _), e in zip(pairs, errs, strict=True):
+                if "round" in h:
+                    rounds.setdefault(h["round"], []).append((h["queue"], e))
             report["queue"].append(
                 {
                     "clip": stem,
                     "labeller": who,
-                    "marks": len(pairs),
-                    "mae": round(sum(abs(e) for e in errs) / len(errs), 3),
-                    "bias": round(sum(errs) / len(errs), 3),
-                    "exact": sum(1 for e in errs if e == 0),
-                    "hand_mean": round(sum(h["queue"] for h, _ in pairs) / len(pairs), 2),
+                    **queue_stats([h["queue"] for h, _ in pairs], errs),
+                    "by_round": {r: queue_stats(*zip(*v, strict=True)) for r, v in rounds.items()},
                     # staff presence was not marked in every round (null)
                     "staff_marks": sum(1 for h, _ in pairs if h.get("staff_present") is not None),
                     "staff_agreement": sum(1 for h, (_, st) in pairs if st == h.get("staff_present")),

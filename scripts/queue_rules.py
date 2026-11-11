@@ -8,6 +8,8 @@
 The replay reproduces the full evaluation closely but not exactly (a few seconds differ), so a
 chosen rule is then checked with `scripts/evaluate.py --rerun`.
 
+Shokhbek's marks are scored per labelling round: "first" chose the rules, "blind review" tests them (E22).
+
 Usage: uv run python scripts/queue_rules.py [--dump] [--set e16|e19] [--out FILE]
   --set e16 (default): every rule on the old zone, then zones with and without duplicate boxes.
   --set e19: on the chosen zone with duplicate boxes left out, rules for people queuing (E19).
@@ -163,8 +165,11 @@ def score(zone, rule, src) -> dict:
             path = Path(f"labels/queue_{clip}{suffix}")
             if path.exists():
                 marks = [m for m in json.loads(path.read_text())["labels"] if int(m["t"]) in per_s]
-                out["mae"][f"{clip} {who}"] = round(sum(abs(per_s[int(m["t"])] - m["queue"]) for m in marks)
-                                                    / len(marks), 2)
+                groups = defaultdict(list)  # Shokhbek's marks per labelling round (E22)
+                for m in marks:
+                    groups[f"{clip} {who}" + (f" {m['round']}" if "round" in m else "")].append(m)
+                for key, ms in groups.items():
+                    out["mae"][key] = round(sum(abs(per_s[int(m["t"])] - m["queue"]) for m in ms) / len(ms), 2)
         expected = [a for a in json.loads(Path(f"labels/alerts_{clip}.claude.json").read_text())["labels"]
                     if a["kind"] == "queue"]
         overlaps = lambda a, b: min(a["end"] or 300, b[1]) > max(a["start"], b[0])  # noqa: E731

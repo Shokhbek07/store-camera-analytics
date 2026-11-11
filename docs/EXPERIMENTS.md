@@ -619,7 +619,7 @@ The full `scripts/evaluate.py --rerun` with the rule in the service (`zones.queu
 Longer waits lost more people who had just joined the queue, and "standing still" also dropped people moving up in the line.
 
 **Limits.**
-The 2 s was picked among four waits on the same 11 marks, from one clip and one labeller, so it is fitted to them; there are no other marks of Shokhbek's counting rule to check it on.
+The 2 s was picked among four waits on the same 11 marks, from one clip and one labeller, so it is fitted to them; there were no other marks of Shokhbek's counting rule to check it on until his blind review (E22).
 The result also leans on which labelling rule is right for the brief; Claude's labels have not yet been reviewed by Shokhbek, which may move them towards his rule.
 
 ## E20. Should the tracker keep lost tracks for real seconds? (2026-11-11)
@@ -712,3 +712,40 @@ The other E19 candidates are scored on the 19 marks for information only; none i
 
 **Method.**
 `scripts/queue_rules.py --set e19` replays the saved tracks with each rule and now scores Shokhbek's marks per round as well; the adopted configuration is then checked with the full `scripts/evaluate.py --rerun`.
+
+**Result.**
+Replay of the saved tracks, error in people per mark (`results/queue_rules_e22.json`):
+
+| Rule (on top of the current zone and duplicate boxes) | First marks, `counter_1650` (11, chose the rule) | Blind, `counter_1650` (12) | Blind, `counter_1720` (7) | All 19 blind marks |
+|---|---|---|---|---|
+| none (as after E16) | 1.00 | 0.92 | 0.29 | 0.68 |
+| at least 2 s in the zone (D18) | 0.55 | 0.83 | 0.14 | 0.58 |
+| at least 3 s in the zone | 0.55 | 0.67 | 0.14 | 0.47 |
+| at least 5 s in the zone | 0.73 | 0.67 | 0.43 | 0.58 |
+| at least 8 s in the zone | 0.82 | 0.67 | 0.86 | 0.74 |
+| standing still (< 0.3 box heights per s) | 0.73 | 0.58 | 0.14 | 0.42 |
+| standing still (< 0.5 box heights per s) | 0.82 | 0.75 | 0.14 | 0.53 |
+| 3 s in the zone and standing still (< 0.5) | 0.55 | 0.67 | 0.14 | 0.47 |
+
+D18 passed its bar: on the 19 blind marks the service with the 2 s rule is off by 0.58 people per mark against 0.68 without it (11 people in total against 13), with 10 exact against 8; the full `scripts/evaluate.py --rerun` gives the same.
+The gain is much smaller than on the marks that chose the rule (1.00 to 0.55), as expected of a choice fitted to 11 marks.
+Where the 11 people of error are:
+
+- 4 at the first second of a clip (0:00 of both clips), where nobody has yet been in view for 2 s, so the rule counts 0 where Shokhbek counted 3 and 1; a running service has this only for 2 s after it starts or reconnects.
+  Without the two 0:00 marks the error is 0.41 with the rule and 0.65 without.
+- 6 on `counter_1650` from 3:50 to 4:40, one too many at each mark: a woman standing in the zone looking away from the counter, whom Shokhbek left out because she showed "no intention for queue" (his note); she stands there for long, so no time or movement rule can leave her out.
+- 1 at `counter_1650` 0:20, someone standing far behind the line, whom Shokhbek did not count.
+
+Two other rules did better on the blind marks, "at least 3 s" (0.47) and "standing still (< 0.3)" (0.42), and over all 30 of Shokhbek's marks "at least 3 s" would edge out 2 s (0.50 against 0.57).
+Neither is adopted, as the bar set out: choosing one on these marks would leave no marks to test it on, and the difference is 2 or 3 people over 19 marks.
+
+Shokhbek's blind counts also measure the two labelling rules again: Claude's labels match his on 7 of the 19 marks and are higher on the other 12 (by 0.63 on average), never lower, the same pattern as on his first 11 marks (E7: 4 of 11, +0.82).
+So the review did not change Claude's labels, which record a different rule (everyone inside the outline); his counts were added as his own labels instead (`labels/queue_counter_1650.json`, `labels/queue_counter_1720.json`, `round: "blind review"`).
+
+**Limits.**
+19 marks from two clips and one labeller, picked where Claude and the system disagreed, so the error on them is not an estimate for a whole clip.
+The largest remaining error is intention, not time: telling someone facing the counter from someone standing nearby would need body direction, for example from a pose model's shoulder and hip points, which was not tried.
+
+**Found while checking.**
+The tracker numbers tracks from 1 again after a reconnect, but the analytics kept the per-track queue time and staff colour votes, so a new person could inherit an earlier person's time in the queue zone or their staff status.
+`SourceAnalytics.on_reconnect` now drops all per-track state, with a test; the evaluation clips have no reconnects, so their numbers do not change.

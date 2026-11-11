@@ -31,19 +31,50 @@
   {
    "clip": "counter_1650",
    "labeller": "shokhbek",
-   "marks": 11,
-   "mae": 0.545,
-   "bias": 0.545,
-   "exact": 6,
-   "hand_mean": 1.73,
+   "marks": 23,
+   "mae": 0.696,
+   "bias": 0.435,
+   "exact": 10,
+   "hand_mean": 1.48,
+   "by_round": {
+    "blind review": {
+     "marks": 12,
+     "mae": 0.833,
+     "bias": 0.333,
+     "exact": 4,
+     "hand_mean": 1.25
+    },
+    "first": {
+     "marks": 11,
+     "mae": 0.545,
+     "bias": 0.545,
+     "exact": 6,
+     "hand_mean": 1.73
+    }
+   },
+   "staff_marks": 11,
    "staff_agreement": 10,
    "per_mark": [
+    {
+     "t": 0,
+     "hand": 3,
+     "system": 0,
+     "hand_staff": null,
+     "system_staff": true
+    },
     {
      "t": 10,
      "hand": 3,
      "system": 4,
      "hand_staff": true,
      "system_staff": false
+    },
+    {
+     "t": 20,
+     "hand": 3,
+     "system": 4,
+     "hand_staff": null,
+     "system_staff": true
     },
     {
      "t": 30,
@@ -67,6 +98,13 @@
      "system_staff": true
     },
     {
+     "t": 80,
+     "hand": 2,
+     "system": 2,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
      "t": 90,
      "hand": 2,
      "system": 2,
@@ -78,6 +116,13 @@
      "hand": 2,
      "system": 2,
      "hand_staff": true,
+     "system_staff": true
+    },
+    {
+     "t": 120,
+     "hand": 1,
+     "system": 1,
+     "hand_staff": null,
      "system_staff": true
     },
     {
@@ -102,6 +147,13 @@
      "system_staff": true
     },
     {
+     "t": 180,
+     "hand": 2,
+     "system": 2,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
      "t": 190,
      "hand": 2,
      "system": 2,
@@ -114,6 +166,55 @@
      "system": 2,
      "hand_staff": true,
      "system_staff": true
+    },
+    {
+     "t": 220,
+     "hand": 1,
+     "system": 1,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
+     "t": 230,
+     "hand": 0,
+     "system": 1,
+     "hand_staff": null,
+     "system_staff": false
+    },
+    {
+     "t": 240,
+     "hand": 0,
+     "system": 1,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
+     "t": 250,
+     "hand": 0,
+     "system": 1,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
+     "t": 260,
+     "hand": 1,
+     "system": 2,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
+     "t": 270,
+     "hand": 1,
+     "system": 2,
+     "hand_staff": null,
+     "system_staff": false
+    },
+    {
+     "t": 280,
+     "hand": 1,
+     "system": 2,
+     "hand_staff": null,
+     "system_staff": true
     }
    ]
   },
@@ -125,6 +226,8 @@
    "bias": -0.4,
    "exact": 17,
    "hand_mean": 2.4,
+   "by_round": {},
+   "staff_marks": 30,
    "staff_agreement": 27,
    "per_mark": [
     {
@@ -341,12 +444,85 @@
   },
   {
    "clip": "counter_1720",
+   "labeller": "shokhbek",
+   "marks": 7,
+   "mae": 0.143,
+   "bias": -0.143,
+   "exact": 6,
+   "hand_mean": 2.57,
+   "by_round": {
+    "blind review": {
+     "marks": 7,
+     "mae": 0.143,
+     "bias": -0.143,
+     "exact": 6,
+     "hand_mean": 2.57
+    }
+   },
+   "staff_marks": 0,
+   "staff_agreement": 0,
+   "per_mark": [
+    {
+     "t": 0,
+     "hand": 1,
+     "system": 0,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
+     "t": 10,
+     "hand": 2,
+     "system": 2,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
+     "t": 20,
+     "hand": 3,
+     "system": 3,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
+     "t": 130,
+     "hand": 4,
+     "system": 4,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
+     "t": 160,
+     "hand": 3,
+     "system": 3,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
+     "t": 200,
+     "hand": 3,
+     "system": 3,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
+     "t": 250,
+     "hand": 2,
+     "system": 2,
+     "hand_staff": null,
+     "system_staff": true
+    }
+   ]
+  },
+  {
+   "clip": "counter_1720",
    "labeller": "claude",
    "marks": 30,
    "mae": 0.367,
    "bias": -0.367,
    "exact": 20,
    "hand_mean": 3.63,
+   "by_round": {},
+   "staff_marks": 30,
    "staff_agreement": 29,
    "per_mark": [
     {
@@ -569,6 +745,8 @@
    "bias": -0.067,
    "exact": 28,
    "hand_mean": 0.47,
+   "by_round": {},
+   "staff_marks": 30,
    "staff_agreement": 26,
    "per_mark": [
     {
@@ -887,10 +1065,17 @@
  "labeller_agreement": [
   {
    "clip": "counter_1650",
-   "marks": 11,
-   "exact": 4,
-   "mean_claude_minus_shokhbek": 0.818,
-   "mean_abs_difference": 0.818
+   "marks": 23,
+   "exact": 6,
+   "mean_claude_minus_shokhbek": 0.826,
+   "mean_abs_difference": 0.826
+  },
+  {
+   "clip": "counter_1720",
+   "marks": 7,
+   "exact": 5,
+   "mean_claude_minus_shokhbek": 0.286,
+   "mean_abs_difference": 0.286
   }
  ]
 }

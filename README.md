@@ -6,7 +6,7 @@ Store camera analytics: people counting at a door, queue and counter monitoring,
 
 Work in progress for the Safia AI team case study (deadline 2026-11-12); the repository is pushed as the work goes so its history shows the process.
 
-Status, 2026-11-11: the service, door counting, zones, alerts, multi-stream reconnect, the Docker setup and the evaluation are working and measured (results below), plus the bonuses: batched inference, staff versus customer, an ONNX Runtime export and a live page; Shokhbek's review of Claude's queue labels is still to come.
+Status, 2026-11-11: the service, door counting, zones, alerts, multi-stream reconnect, the Docker setup and the evaluation are working and measured (results below), plus the bonuses: batched inference, staff versus customer, an ONNX Runtime export and a live page; Shokhbek's blind count of the queue marks under review tested the 2 s queue rule on marks it was not chosen on (E22).
 The full report, including the process and who did what, is `REPORT.md`; the options considered for every choice are in `docs/DECISIONS.md`, and every test run is in `docs/EXPERIMENTS.md`.
 
 Built with Claude Code as an AI coding assistant; the brief allows AI tools.
@@ -87,7 +87,7 @@ Measured on the MEVA clips below against hand labels; full tables, method and fa
 |---|---|
 | Door, arrival clip, hand vs system IN/OUT | 22/3 vs 21/4 (19 of 25 events matched within 2 s) |
 | Door, departure clip, hand vs system IN/OUT | 0/13 vs 0/11 (5 of 13 events matched within 2 s) |
-| Queue length MAE at 10 s marks | 0.55 (Shokhbek, 11 marks); 0.53, 0.37, 0.07 (Claude, 30 marks on each of 3 clips); people count once they have been in the queue zone for 2 s, Shokhbek's rule, while Claude also counted people walking in (E19) |
+| Queue length MAE at 10 s marks | 0.55 (Shokhbek, 11 marks); 0.53, 0.37, 0.07 (Claude, 30 marks on each of 3 clips); people count once they have been in the queue zone for 2 s, Shokhbek's rule, while Claude also counted people walking in (E19); on 19 hard marks Shokhbek counted blind, not used to choose the rule, 0.58 against 0.68 without it (E22) |
 | Queue alerts | 3 of 3 expected found (two merged into one), 0 wrong; the last wrong one, a seated man on the zone's edge, was removed by redrawing that edge, chosen on the same clips (E16) |
 | Staff versus customer (bonus) | uniform colour plus time behind the counter; left the attendant out of the queue when they walked through it, with one 1 s mistake after an ID switch (E14) |
 | ONNX Runtime export (bonus) | identical results to PyTorch on all five clips; with 2 streams on the Mac GPU the service ran at 127 against 109 FPS (medians of 3 alternating runs), slower with 1 stream (the batch-2 export pads it) and 2.8 times slower on the Mac CPU; in Docker on CPU faster than PyTorch only while other projects loaded the machine (1.2 to 3.4 times), and 1.4 times slower on a quiet machine, so Docker keeps PyTorch (E15) |
@@ -101,6 +101,7 @@ Times are positions in the clip; the full list with causes is `REPORT.md` sectio
 - **Attendant lost at the edge of the counter view** (`counter_1650` 0:09 to 0:14, 1:06 to 1:09, 4:28 to 4:35; `counter_1720` 1:04, 2:29): the staff zone reads empty, so the per-minute "empty counter seconds" overstate; the 10 s alert delay absorbs it.
 - **Staff counted as a customer after an ID switch** (`counter_1735` 2:35 to 2:45, and a customer left out for 1 s at 4:34): the staff rule only holds while the tracker keeps one ID per person (E14).
 - **People on the queue zone's edges** (`counter_1650` 4:10 to 4:48): a seated man on the edge raised a wrong queue alert until the edge was moved in front of the chairs (E16); chairs move, so zones need checking when furniture does.
+- **Standing in the queue zone without queuing** (`counter_1650` 3:50 to 4:40): a woman looking away from the counter is counted, as no time or movement rule can tell she is not waiting (E22).
 - **Departures in a crowd** (`door_0307_1720`): people who waited on the mats were counted 30 to 40 s early (0:03, 0:04, 0:13), and of a group leaving at 0:42 to 0:54 fewer were counted, and earlier, as the tracker lost them in the doorway (E9).
 - **Flip-flops at the door line** (track 216 at 4:45.7, track 19 at 0:40.9 to 0:43.2): a partly hidden box moves the foot point across the line; the 40 px band and 4-frame confirmation remove most, not all.
 - **A whiteboard hides lower bodies** in the counter view, so foot points sit too high, and **stair traffic** at the left end of the door line can be counted as door traffic.

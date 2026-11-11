@@ -12,7 +12,8 @@ On five licensed MEVA clips (D1), measured against hand labels:
   On two clips not used for tuning the count error fell from 4 to 1 and from 6 to 3 (E10).
 - Queue length: mean absolute error 0.55 people against Shokhbek's 11 marks, and 0.53, 0.37 and 0.07 against Claude's 30 marks on each of the three counter clips.
   The service counts people who have been in the queue zone for at least 2 s, as Shokhbek counted people queuing, which halved the error on his marks and raised it on Claude's, who counted everyone inside the zone (E19, D18).
-  The two labellers themselves differ by 0.82 on average on the marks they share, so the reference is not much sharper than the system.
+  On 19 harder marks that Shokhbek counted blind afterwards, not used to choose the rule, it still helped, by less: 0.58 against 0.68 without it (E22).
+  The two labellers themselves differ by 0.70 people on average on the 30 marks they share, Claude never lower, so the reference is not much sharper than the system.
 - Alerts: every expected queue alert was raised (two of them merged into one) and no alert is wrong.
   A wrong queue alert came from a man seated at a table with his feet on the queue zone's edge; moving the edge in front of the chairs and counting one box per person removed it and halved the queue error against Claude's marks (E16, D17), chosen on the same clips, so with that caveat.
   A wrong empty-counter alert, the attendant counted as a waiting customer, was removed by telling staff from customers by uniform colour and time behind the counter (bonus, D14), narrowly and with limits explained in E14.
@@ -82,6 +83,7 @@ At Shokhbek's request, replaying the saved tracks with rules closer to his count
 Imitating a slow machine offline at 5 FPS showed that keeping lost tracks for real seconds instead of frames made no measurable difference, so the tracker was left as it is, and that the counts hold up at half the frame rate (E20).
 PyTorch's thread count cannot bring the CPU-only container to 10 FPS, since the detector alone allows about 8.4 per stream there, and the two cheaper detectors that could, YOLO26n and a 480 px input, both lost accuracy (YOLO26n raised three wrong empty-counter alerts), so the evaluated model stays; on a quiet machine 6 threads was no faster than Ultralytics' default of 8 (E21).
 Reading the code for the live review found that in the slow CPU-only container a late doorway exit could add a second row for a minute already written; a minute now waits while such an exit is pending, which left the offline results unchanged (E18).
+Shokhbek then counted the 19 review marks he had not marked, on a sheet that showed no other count; on these marks, not used to choose it, the 2 s rule still lowered the error, from 0.68 to 0.58, and looking at the remaining errors turned up a reconnect bug: a new track reusing an old ID could inherit that person's queue time or staff status, now fixed (E22).
 
 ## 4. What was built
 
@@ -133,17 +135,23 @@ The queue zone count is the median of the frames in each second (D4), leaving ou
 
 | Clip | Labeller | Marks | MAE | Mean error (system minus hand) | Exactly right | Mean queue |
 |---|---|---|---|---|---|---|
-| `counter_1650` | Shokhbek | 11 (0:10 to 3:30) | 0.55 | +0.55 | 6 | 1.7 |
+| `counter_1650` | Shokhbek, first marks (chose the 2 s rule) | 11 (0:10 to 3:30) | 0.55 | +0.55 | 6 | 1.7 |
+| `counter_1650` | Shokhbek, blind review | 12 (0:00 to 4:40) | 0.83 | +0.33 | 4 | 1.25 |
+| `counter_1720` | Shokhbek, blind review | 7 (0:00 to 4:10) | 0.14 | -0.14 | 6 | 2.57 |
 | `counter_1650` | Claude | 30 (0:00 to 4:50) | 0.53 | -0.40 | 17 | 2.4 |
 | `counter_1720` | Claude | 30 | 0.37 | -0.37 | 20 | 3.6 |
 | `counter_1735` | Claude | 30 | 0.07 | -0.07 | 28 | 0.5 |
 
-The system never counts fewer people than Shokhbek, and now mostly fewer than Claude.
+Apart from the first second of each clip, the system never counts fewer people than Shokhbek, and now mostly fewer than Claude.
 Before E16 the extra people were mostly on the zone's edges (a man seated at a table on the top edge, people at the coffee table) or walking through it, and one person was sometimes counted twice through a duplicate box; moving the top edge in front of the chairs and leaving duplicate boxes out halved the error against Claude's marks (E16, D17).
-On the 11 marks both labellers share, they agree exactly on 4 and Claude counts 0.82 more on average; the difference is the counting rule: Claude counted everyone standing inside the zone outline, Shokhbek counted the people who were queuing (E7).
+On Shokhbek's first 11 marks the two labellers agree exactly on 4 and Claude counts 0.82 more on average, and on his 19 blind marks they agree on 7 and Claude counts 0.63 more, never fewer; the difference is the counting rule: Claude counted everyone standing inside the zone outline, Shokhbek counted the people who were queuing (E7).
 So "queue length" depends on the counting rule almost as much as on the detector.
 The brief's queue is people waiting, which is Shokhbek's rule, so the service now counts only people who have stayed in the zone for 2 s (D18): against his marks the error fell from 1.00 to 0.55, with 5 of the 11 marks closer and none further, while against Claude's it rose from 0.37, 0.17 and 0.00 to 0.53, 0.37 and 0.07, because Claude also counted people still walking in (E19).
-The 2 s was chosen among 2, 3, 5 and 8 s on the same 11 marks, with the bar for keeping a rule set before the results were seen, but there are no other marks to check it on.
+The 2 s was chosen among 2, 3, 5 and 8 s on the same 11 marks, with the bar for keeping a rule set before the results were seen.
+Shokhbek then counted 19 more marks blind, without seeing any other count: the hard ones, where Claude and an earlier version of the system disagreed, so their error is not an estimate for a whole clip.
+There the rule still helped, by less: 0.58 people per mark against 0.68 without it, with 10 exact against 8 (E22).
+Of its 11 people of error there, 4 are at 0:00, the first second of each clip, before anyone has been in view for 2 s, and 6 are one woman standing in the zone looking away from the counter, whom Shokhbek left out and no time rule can (failure case 8).
+Two other rules did better on these marks (3 s, and standing still), but adopting one on them would leave nothing to test it on, so neither was (E22).
 `counter_1735` is quiet (half a person on average), so its 0.00 shows that empty and near-empty scenes are handled, not that the hard case is solved.
 
 Whether staff was present agreed with the labels at 10 of 11, 27 of 30, 29 of 30 and 26 of 30 marks.
@@ -237,6 +245,9 @@ Times are positions in the clip (minutes:seconds).
    They crossed the line long before they left; the doorway region now counts them when they vanish in the doorway, but those counts land at the moment the tracker drops them, not when they actually leave (E9).
 7. **Stair traffic.**
    The left end of the door line reaches over the stair landing, so people walking between the downstairs and upstairs flights can be counted as door traffic (E3; noticed by Shokhbek while labelling).
+8. **Standing in the queue zone without queuing.**
+   On `counter_1650` from 3:50 to 4:40 a woman stands inside the queue zone looking away from the counter; Shokhbek left her out as not intending to queue, but the system counts her, since she stays far longer than 2 s (E22).
+   Telling which way someone faces, for example from a pose model's shoulder and hip points, could catch this; it was not tried.
 
 ## 7. Scaling to about 50 cameras on one GPU server
 
@@ -286,6 +297,7 @@ Where Shokhbek took part, from the record of the work (dates in Tashkent time):
 - **Scope.** Once the requirements were met he asked to keep researching improvements (2026-11-10), which led to the staff rule (D14), the ONNX Runtime export (D15), the live page (D16) and the queue fix (D17).
 - **Decisions before leaving the machine (2026-11-11).** He chose to review Claude's queue labels himself, to have the speed comparison run under load if the machine never became quiet, to have Docker use the ONNX export if it proved much faster on CPU, and to keep improving in the meantime.
 - **Before leaving again (2026-11-11, about noon).** He chose three more experiments: a queue rule closer to his own counting rule (people queuing rather than everyone in the zone), the container's frame rate, and the tracker's lost-track time in seconds; and no release tag.
-- **Review.** Claude's queue labels have not been reviewed by Shokhbek yet; what his review changes will be recorded here.
+- **Review (2026-11-11, evening).** He counted the 19 marks of the review sheet that he had not marked before, on a copy Claude made without any other count, and wrote a note for each person he left out, for example a woman "looking to other side with no intention for queue".
+  His counts were added as his own labels rather than replacing Claude's, since the two follow different counting rules, and they tested the 2 s queue rule on marks it was not chosen on (E22).
 
-Which labels came from whom is recorded in the label files themselves and in E7.
+Which labels came from whom is recorded in the label files themselves and in E7 and E22.
