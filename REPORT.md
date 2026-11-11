@@ -112,10 +112,10 @@ Who labelled what is recorded in each file under `labels/` and in E7.
 Hand counts by Shokhbek, from a key press each time someone crossed the inner edge of the entrance mats (D7, D9).
 A system event is "matched" when a hand event in the same direction lies within 2 s.
 
-| Clip | Hand IN/OUT | System IN/OUT | Matched within 2 s | Extra | Missed |
-|---|---|---|---|---|---|
-| `door_0309_1010` (arrivals) | 22 / 3 | 21 / 4 | 19 | 6 | 6 |
-| `door_0307_1720` (departures) | 0 / 13 | 0 / 11 | 5 | 6 | 8 |
+| Clip | Hand IN/OUT | System IN/OUT | Error IN/OUT (system minus hand) | Matched within 2 s | Extra | Missed |
+|---|---|---|---|---|---|---|
+| `door_0309_1010` (arrivals) | 22 / 3 | 21 / 4 | -1 / +1 | 19 | 6 | 6 |
+| `door_0307_1720` (departures) | 0 / 13 | 0 / 11 | 0 / -2 | 5 | 6 | 8 |
 
 The totals are close, but on the departure clip they are close partly by luck: only 5 of the 13 departures are matched within 2 s, and widening the window to 5 or 10 s still matches only 8 (the same matching as `evaluate.py` with the window changed).
 Three system counts come 30 to 40 s early (0:03, 0:04 and 0:13), from people who stepped onto the mats and waited there before leaving (failure case 6).
