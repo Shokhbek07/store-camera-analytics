@@ -79,6 +79,7 @@ The last wrong queue alert turned out to come from a seated man on the zone's ed
 Over two hours of waiting for a quiet machine ended in a burst of load from another project halfway through the speed comparison, so the benchmark was changed to alternate the two runtimes in short runs, three times each, and to record the load with every run (E15).
 A clean container run at 07:21, with other containers idle, then showed PyTorch about 1.4 times faster than the export there, so the Docker image keeps PyTorch (D15).
 At Shokhbek's request, replaying the saved tracks with rules closer to his counting rule found that counting people only after 2 s in the queue zone halved the error on his marks; it was kept by a bar set before the results were seen (E19, D18).
+Imitating a slow machine offline at 5 FPS showed that keeping lost tracks for real seconds instead of frames made no measurable difference, so the tracker was left as it is, and that the counts hold up at half the frame rate (E20).
 Reading the code for the live review found that in the slow CPU-only container a late doorway exit could add a second row for a minute already written; a minute now waits while such an exit is pending, which left the offline results unchanged (E18).
 
 ## 4. What was built
