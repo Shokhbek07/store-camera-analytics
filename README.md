@@ -37,7 +37,7 @@ uv run storecam run --offline        # every sampled frame, as fast as possible 
 uv run storecam run --http 8765      # also serve a live page at http://127.0.0.1:8765/ (JSON at /status.json)
 uv run storecam run --save-video     # also write annotated video with faces pixelated
 uv run storecam run --url counter=rtsp://127.0.0.1:8554/counter   # swap a source's address, keep its zones
-uv run pytest                        # unit tests for counting, zones, alerts, staff and the live endpoint
+uv run pytest                        # unit tests for counting, zones, alerts, minute rows, staff, the CLI and the live endpoint
 ```
 
 Outputs go to `runs/out/`: `<source>_minutes.csv` per source, `alerts.jsonl`, and `run_summary.json` with speeds.

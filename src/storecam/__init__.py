@@ -53,6 +53,13 @@ def main() -> None:
         from .service import Service
         if args.weights:
             cfg.model.weights = args.weights
+        # A missing file would otherwise look like a camera that is down: retried forever.
+        missing = [s.url for s in cfg.sources if "://" not in s.url and not Path(s.url).is_file()]
+        if missing:
+            p.error(f"video not found: {', '.join(missing)}; run ./scripts/download.sh first (README, Setup)")
+        if not Path(cfg.model.weights).is_file():
+            how = "uv run storecam export-onnx" if cfg.model.weights.endswith(".onnx") else "./scripts/download.sh"
+            p.error(f"weights not found: {cfg.model.weights}; run {how} first")
         if args.offline:
             for s in cfg.sources:
                 s.realtime = False
