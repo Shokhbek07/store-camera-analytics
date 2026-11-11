@@ -72,9 +72,17 @@ class SourceAnalytics:
         return self.rows[minute]
 
     def _write_rows(self, upto_t: float | None) -> None:
-        """Write finished minutes; zone seconds arrive about a second late, so wait 2 s."""
+        """Write finished minutes, once nothing can still land in them.
+
+        Zone seconds arrive about a second late, so a minute waits 2 s; a doorway exit is counted
+        at the time its track was last seen, when the tracker drops the track, so a minute also
+        waits while such a track is lost (E18).
+        """
+        if upto_t is not None:
+            pending = [t for line in self.lines if (t := line.earliest_pending_exit()) is not None]
+            upto_t = min([upto_t - 2, *pending])
         for minute in sorted(self.rows):
-            if upto_t is not None and (minute + 1) * 60 + 2 > upto_t:
+            if upto_t is not None and (minute + 1) * 60 > upto_t:
                 break
             self._writer.writerow(self.rows.pop(minute).as_dict(self.src.name))
         self._csv.flush()

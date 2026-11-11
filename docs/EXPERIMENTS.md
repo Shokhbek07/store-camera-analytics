@@ -529,3 +529,28 @@ The low-confidence stage changed little: a few short gaps in staff presence clos
 `model.conf` stays at 0.25.
 The attendant's longer gaps (6 to 9 s, failure case 1) are detections missed altogether: listing the saved tracks during the gaps (`counter_1650` 0:09 to 0:14 and 4:28 to 4:35, `counter_1735` 0:02 to 0:10 and 1:45 to 1:50, `counter_1720` 2:29 to 2:31) shows no box in the staff zone at all, and each gap ends when the attendant's box reappears at the very edge of the frame (left edge at x -14 to 5, partly outside the picture), usually under a new track ID.
 Since even boxes down to 0.1 confidence did not fill these gaps, the limit is the camera view, which cuts the attendant off, not a threshold.
+
+## E18. A doorway exit could land in a minute row already written (2026-11-11)
+
+**Question:** found while reading the code for the live review: can the per-minute CSV get two rows for one minute?
+
+A doorway exit (E9) is counted when the tracker drops a lost track, but at the time the track was last seen, so its minute is known only seconds later.
+Minute rows were written once the video clock was 2 s past the minute's end.
+ByteTrack keeps a lost track for a number of frames (`lost_seconds` times the target 10 FPS, so 15 frames), which is 1.6 s of video offline but 3 s at the 5 FPS of the CPU-only container (E12) and 7.5 s at 2 FPS under load (E15).
+So in the container a person last seen in the doorway just before a minute's end could be counted after that minute's row was written, and a second row for the same minute appeared with only that exit in it.
+
+**Test.**
+`tests/test_analytics.py` feeds a track at 2 FPS that is last seen in the doorway at 59 s and dropped at 66.5 s.
+Before the fix the CSV had the rows `0, 0, 1`, the second `0` holding the exit; the Docker runs so far were too short and had too few doorway exits to show it.
+
+**Options.**
+Counting the exit at the moment the track is dropped would move event times away from when the person was last seen and change the evaluation.
+Writing rows later by a fixed margin could still lose the race, because the tracker's buffer is in frames and its length in seconds depends on the frame rate reached.
+Rewriting rows already written would break the append-only CSV.
+Chosen: a minute's row waits while any lost track could still be counted as a doorway exit inside it (`LineCounter.earliest_pending_exit`), which removes the race and keeps event times.
+
+**Result.**
+The test now gives one row per minute with the exit in minute 0, and a second test checks that a person who stays visible holds no row back.
+Offline at 10 FPS a track is dropped 1.6 s after it was last seen, inside the existing 2 s wait, so `scripts/evaluate.py --rerun` gave the same outputs as before (only wall-clock timestamps differ).
+
+A related limit stays: `lost_seconds` is converted to frames at the target frame rate, so when the service runs slower, as in the container, a lost track is kept longer in seconds than configured.

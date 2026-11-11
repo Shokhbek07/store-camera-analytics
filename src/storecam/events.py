@@ -113,13 +113,25 @@ class LineCounter:
                 events.append(self._count(tid, "in" if cand > 0 else "out", t))
         return events
 
+    def _may_exit(self, tid: int, p: Point) -> bool:
+        """Whether `forget` would count this track as leaving through the door if it vanished now."""
+        return (self.door_region is not None and tid not in self.counted and tid not in self.born_in_door
+                and point_in_polygon(p, self.door_region))
+
+    def earliest_pending_exit(self) -> float | None:
+        """Earliest last-seen time at which a doorway exit may still be counted, or None.
+
+        Such an exit is counted only when the tracker drops the track, but at the time it was last
+        seen, so per-minute rows up to that time must wait (seconds later at a low frame rate).
+        """
+        return min((t for tid, (p, t) in self.last.items() if self._may_exit(tid, p)), default=None)
+
     def forget(self, alive: set[int]) -> list[Crossing]:
         """Drop state for tracks the tracker has removed; may count an exit through the door."""
         events = []
         for tid in [tid for tid in self.last if tid not in alive]:
             p, t = self.last.pop(tid)
-            if (self.door_region and tid not in self.counted and tid not in self.born_in_door
-                    and point_in_polygon(p, self.door_region)):
+            if self._may_exit(tid, p):
                 events.append(self._count(tid, "out", t))
             self.counted.discard(tid)
             self.born_in_door.discard(tid)
