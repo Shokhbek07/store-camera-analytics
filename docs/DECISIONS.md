@@ -335,5 +335,5 @@ Up to 1 s outside the zone keeps the time, so a foot point that jumps for a fram
 A queue alert starts about 2 s later, and a new arrival appears in the live queue count 2 s after reaching the zone.
 Against Claude's marks, which count people walking in, the error rose (0.37, 0.17 and 0.00 to 0.53, 0.37 and 0.07).
 The 2 s is fitted to 11 marks from one clip (E19, Limits).
-On 19 marks Shokhbek counted blind afterwards, not used to choose it, the rule still helped, by less: 0.58 people per mark against 0.68 without it (E22).
+On 19 marks Shokhbek counted blind afterwards, not used to choose it, the rule still helped, by less: 0.58 people per mark against 0.68 without it, and 0.54 against 0.73 once he had counted the 7 remaining 10 s marks of `counter_1650` too (E22).
 It also undercounts for the first 2 s after a start or reconnect, when nobody has yet been in view for 2 s.

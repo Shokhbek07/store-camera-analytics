@@ -749,3 +749,17 @@ The largest remaining error is intention, not time: telling someone facing the c
 **Found while checking.**
 The tracker numbers tracks from 1 again after a reconnect, but the analytics kept the per-track queue time and staff colour votes, so a new person could inherit an earlier person's time in the queue zone or their staff status.
 `SourceAnalytics.on_reconnect` now drops all per-track state, with a test; the evaluation clips have no reconnects, so their numbers do not change.
+
+**Completing the 10 s series (2026-11-12).**
+The brief asks for hand counts every 10 s, and Shokhbek's marks still left 7 of the 30 on `counter_1650` empty (0:40, 1:00, 1:40, 2:20, 2:40, 3:20 and 4:50), the ones where Claude and the earlier system had agreed.
+He counted them the same way, blind (`round: "blind fill"`), so that clip now has his count every 10 s for its whole 5 minutes; nothing was chosen on them.
+
+| Shokhbek's marks | Marks | 2 s rule (D18) | No dwell rule (as after E16) |
+|---|---|---|---|
+| Blind fill, `counter_1650` | 7 | 0.43 | 0.86 |
+| All of `counter_1650`, every 10 s | 30 | 0.63 | 0.93 |
+| Not used to choose the rule (blind review and fill, both clips) | 26 | 0.54 | 0.73 |
+
+The 2 s rule is off by one person at 3 of the 7 (0:40, 2:20, 4:50, one too many each), and the system without it at 6.
+Claude's labels match his on 1 of the 7 and are higher on the other 6.
+The no-dwell column scores the committed evaluation run from before E19 (commit 01af4cd) against the same marks.

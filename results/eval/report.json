@@ -31,11 +31,11 @@
   {
    "clip": "counter_1650",
    "labeller": "shokhbek",
-   "marks": 23,
-   "mae": 0.696,
-   "bias": 0.435,
-   "exact": 10,
-   "hand_mean": 1.48,
+   "marks": 30,
+   "mae": 0.633,
+   "bias": 0.433,
+   "exact": 14,
+   "hand_mean": 1.57,
    "by_round": {
     "blind review": {
      "marks": 12,
@@ -50,6 +50,13 @@
      "bias": 0.545,
      "exact": 6,
      "hand_mean": 1.73
+    },
+    "blind fill": {
+     "marks": 7,
+     "mae": 0.429,
+     "bias": 0.429,
+     "exact": 4,
+     "hand_mean": 1.86
     }
    },
    "staff_marks": 11,
@@ -84,10 +91,24 @@
      "system_staff": true
     },
     {
+     "t": 40,
+     "hand": 3,
+     "system": 4,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
      "t": 50,
      "hand": 2,
      "system": 4,
      "hand_staff": true,
+     "system_staff": true
+    },
+    {
+     "t": 60,
+     "hand": 2,
+     "system": 2,
+     "hand_staff": null,
      "system_staff": true
     },
     {
@@ -112,6 +133,13 @@
      "system_staff": true
     },
     {
+     "t": 100,
+     "hand": 2,
+     "system": 2,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
      "t": 110,
      "hand": 2,
      "system": 2,
@@ -133,10 +161,24 @@
      "system_staff": true
     },
     {
+     "t": 140,
+     "hand": 1,
+     "system": 2,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
      "t": 150,
      "hand": 0,
      "system": 1,
      "hand_staff": true,
+     "system_staff": true
+    },
+    {
+     "t": 160,
+     "hand": 2,
+     "system": 2,
+     "hand_staff": null,
      "system_staff": true
     },
     {
@@ -158,6 +200,13 @@
      "hand": 2,
      "system": 2,
      "hand_staff": true,
+     "system_staff": true
+    },
+    {
+     "t": 200,
+     "hand": 2,
+     "system": 2,
+     "hand_staff": null,
      "system_staff": true
     },
     {
@@ -211,6 +260,13 @@
     },
     {
      "t": 280,
+     "hand": 1,
+     "system": 2,
+     "hand_staff": null,
+     "system_staff": true
+    },
+    {
+     "t": 290,
      "hand": 1,
      "system": 2,
      "hand_staff": null,
@@ -1065,10 +1121,10 @@
  "labeller_agreement": [
   {
    "clip": "counter_1650",
-   "marks": 23,
-   "exact": 6,
-   "mean_claude_minus_shokhbek": 0.826,
-   "mean_abs_difference": 0.826
+   "marks": 30,
+   "exact": 7,
+   "mean_claude_minus_shokhbek": 0.833,
+   "mean_abs_difference": 0.833
   },
   {
    "clip": "counter_1720",

@@ -2,7 +2,7 @@
  "video": "data/meva/counter_1650.avi",
  "mode": "queue",
  "labeller": "shokhbek",
- "method": "Counted by Shokhbek: people waiting at the counter or being served there, with their feet inside the queue outline; not staff, people at the side tables, or people walking through. round=first: marked with scripts/label.py every 20 s from 0:10 to 3:30 (2026-11-08). round=blind review: counted on 2026-11-11 from the frames of runs/review (scripts/review_sheet.py), the 10 s marks where Claude's label differed from the system at the time, on a sheet showing no other count; staff presence was not marked there (null).",
+ "method": "Counted by Shokhbek: people waiting at the counter or being served there, with their feet inside the queue outline; not staff, people at the side tables, or people walking through. round=first: marked with scripts/label.py every 20 s from 0:10 to 3:30 (2026-11-08). round=blind review: counted on 2026-11-11 from the frames of runs/review (scripts/review_sheet.py), the 10 s marks where Claude's label differed from the system at the time, on a sheet showing no other count; staff presence was not marked there (null). round=blind fill: the 7 remaining 10 s marks, counted on 2026-11-12 the same way, so this clip has Shokhbek's count every 10 s for its whole 5 minutes.",
  "labels": [
   {
    "t": 0,
@@ -31,10 +31,22 @@
    "round": "first"
   },
   {
+   "t": 40,
+   "queue": 3,
+   "staff_present": null,
+   "round": "blind fill"
+  },
+  {
    "t": 50,
    "queue": 2,
    "staff_present": true,
    "round": "first"
+  },
+  {
+   "t": 60,
+   "queue": 2,
+   "staff_present": null,
+   "round": "blind fill"
   },
   {
    "t": 70,
@@ -56,6 +68,13 @@
    "round": "first"
   },
   {
+   "t": 100,
+   "queue": 2,
+   "staff_present": null,
+   "round": "blind fill",
+   "note": "the other woman below is not in the queue"
+  },
+  {
    "t": 110,
    "queue": 2,
    "staff_present": true,
@@ -75,10 +94,23 @@
    "round": "first"
   },
   {
+   "t": 140,
+   "queue": 1,
+   "staff_present": null,
+   "round": "blind fill",
+   "note": "the leg of the woman is shown but she is not in the queue"
+  },
+  {
    "t": 150,
    "queue": 0,
    "staff_present": true,
    "round": "first"
+  },
+  {
+   "t": 160,
+   "queue": 2,
+   "staff_present": null,
+   "round": "blind fill"
   },
   {
    "t": 170,
@@ -97,6 +129,12 @@
    "queue": 2,
    "staff_present": true,
    "round": "first"
+  },
+  {
+   "t": 200,
+   "queue": 2,
+   "staff_present": null,
+   "round": "blind fill"
   },
   {
    "t": 210,
@@ -151,6 +189,12 @@
    "staff_present": null,
    "round": "blind review",
    "note": "other woman is looking to other side with no intention for queue"
+  },
+  {
+   "t": 290,
+   "queue": 1,
+   "staff_present": null,
+   "round": "blind fill"
   }
  ]
 }
