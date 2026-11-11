@@ -1,7 +1,7 @@
 # storecam - project memory
 
 Safia AI team, ML Engineer hiring round, stage 2: the "Store camera analytics" case study.
-Deadline: Thursday 2026-11-12, 23:59 Tashkent time.
+Deadline: Thursday 2026-11-12, 15:00 Tashkent time, as Shokhbek set it (the invitation email says 23:59).
 Submission: reply to the invitation email with a public GitHub repository link and a short explanation of decisions.
 
 ## Intended outcome
