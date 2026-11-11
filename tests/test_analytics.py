@@ -61,3 +61,17 @@ def test_a_reconnect_does_not_hand_queue_time_to_a_new_track_with_a_reused_id(tm
     by_second = {s.second: s.queue for s in a.seconds}
     assert by_second[9] == 1
     assert by_second[20] == 0  # in the zone for under 2 s
+
+
+def test_duplicate_box_threshold_comes_from_the_config(tmp_path):
+    full, upper = (60, 0, 140, 190), (105, 10, 155, 100)  # upper box 70% inside the full one
+
+    def queue_at_0(inside):
+        zones = Zones(queue=[(0, 0), (200, 0), (200, 200), (0, 200)], duplicate_inside=inside)
+        a = SourceAnalytics(Source(name="counter", url="x.mp4", zones=zones), tmp_path, io.StringIO())
+        a.update(0.0, 1000.0, {1: full, 2: upper}, {1, 2})
+        a.finish()
+        return a.seconds[0].queue
+
+    assert queue_at_0(0.85) == 2
+    assert queue_at_0(0.6) == 1

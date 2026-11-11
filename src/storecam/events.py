@@ -155,15 +155,12 @@ class SecondSample:
     staff_present: bool
 
 
-DUPLICATE_INSIDE = 0.85  # share of a box inside another for it to count as a duplicate (E16)
-
-
-def duplicate_boxes(boxes: dict[int, tuple[float, float, float, float]]) -> set[int]:
+def duplicate_boxes(boxes: dict[int, tuple[float, float, float, float]], inside: float = 0.85) -> set[int]:
     """Ids of boxes that are most likely part of another person's box.
 
     The detector sometimes reports one person twice: a full box and a smaller upper-body box
     inside it, which overlap too little for non-maximum suppression to merge (E16). A box counts
-    as a duplicate when at least DUPLICATE_INSIDE of it lies inside a larger box that reaches
+    as a duplicate when at least `inside` of it (zones.duplicate_inside) lies inside a larger box that reaches
     lower in the frame. A person standing behind someone usually shows above them, so is kept.
     """
     dup = set()
@@ -174,7 +171,7 @@ def duplicate_boxes(boxes: dict[int, tuple[float, float, float, float]]) -> set[
                 continue
             iw = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
             ih = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
-            if iw * ih >= DUPLICATE_INSIDE * area:
+            if iw * ih >= inside * area:
                 dup.add(i)
                 break
     return dup

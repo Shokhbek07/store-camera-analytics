@@ -13,15 +13,15 @@
     "platform": "macOS-15.7.7-arm64-arm-64bit"
   },
   "process_fps_target": 10.0,
-  "elapsed_s": 63.29,
+  "elapsed_s": 44.39,
   "batches": 3000,
   "mean_batch_size": 1.0,
-  "detector_ms_per_batch": 18.04,
-  "total_fps": 47.4,
+  "detector_ms_per_batch": 12.25,
+  "total_fps": 67.59,
   "sources": {
     "counter": {
       "frames_processed": 3000,
-      "fps": 47.4,
+      "fps": 67.59,
       "frames_decoded": 9001,
       "frames_dropped": 0,
       "reconnects": 0,

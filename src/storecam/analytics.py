@@ -40,13 +40,14 @@ class MinuteRow:
 class SourceAnalytics:
     def __init__(self, source: Source, out_dir: Path, alerts_file):
         self.src = source
-        self.lines = [LineCounter(dl.a, dl.b, dl.inside, dl.band_px, dl.min_frames, door_region=dl.door_region)
+        self.lines = [LineCounter(dl.a, dl.b, dl.inside, dl.band_px, dl.min_frames, dl.extent_margin, dl.door_region)
                       for dl in source.door_lines]
         z = source.zones
         self.zones = ZoneSampler(z.queue, z.staff) if z.queue else None
-        self.dwell = Dwell(z.queue, z.queue_min_dwell_s) if z.queue and z.queue_min_dwell_s else None
+        self.dwell = (Dwell(z.queue, z.queue_min_dwell_s, z.queue_dwell_grace_s)
+                      if z.queue and z.queue_min_dwell_s else None)
         sa = source.staff_appearance
-        self.staff = (StaffClassifier(sa.lab, sa.max_distance, z.staff, sa.min_zone_seconds)
+        self.staff = (StaffClassifier(sa.lab, sa.max_distance, z.staff, sa.min_zone_seconds, sa.window)
                       if sa and z.queue and z.staff else None)
         qa, ea = source.alerts.queue, source.alerts.empty_counter
         self.queue_alert = AlertTracker("queue", qa.min_seconds, qa.clear_seconds) if z.queue else None
@@ -123,10 +124,11 @@ class SourceAnalytics:
                     self.live["out"] += 1
                 self.crossings.append({"t": round(c.t, 2), "track_id": c.track_id, "direction": c.direction})
         if self.zones is not None:
+            z = self.src.zones
             if self.staff is not None and image is not None:
                 self.staff_ids = self.staff.update(image, tracks, t)
                 self.staff.forget(alive)
-            left_out = self.staff_ids | duplicate_boxes(tracks)  # staff (D14), duplicate boxes (D17)
+            left_out = self.staff_ids | duplicate_boxes(tracks, z.duplicate_inside)  # staff (D14), duplicates (D17)
             if self.dwell is not None:
                 left_out |= self.dwell.update(feet, t)  # not in the zone long enough yet (D18)
                 self.dwell.forget(alive)

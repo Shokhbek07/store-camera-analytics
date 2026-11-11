@@ -42,6 +42,8 @@ class DoorLine(Strict):
     inside: Point  # any point on the inside of the door; sets the IN direction
     band_px: float = Field(20, ge=0)  # dead band on each side of the line
     min_frames: int = Field(2, ge=1)  # frames beyond the band before a side counts
+    # How far beyond either end of the line a foot point still counts, as a share of its length.
+    extent_margin: float = Field(0.1, ge=0)
     # Optional doorway polygon on the outside of the line: tracks born there start outside, and
     # tracks that vanish there without having been counted count as OUT (E9).
     door_region: list[Point] | None = None
@@ -53,6 +55,11 @@ class Zones(Strict):
     # Count a person in the queue only after this long in the queue zone, so people walking
     # through are left out (E19); 0 counts everyone in the zone.
     queue_min_dwell_s: float = Field(0, ge=0)
+    # Time outside the zone that does not restart that wait (a step out, a jumping foot point).
+    queue_dwell_grace_s: float = Field(1.0, ge=0)
+    # A box at least this share inside a larger box that reaches lower is the same person
+    # twice and is not counted (E16).
+    duplicate_inside: float = Field(0.85, gt=0, le=1)
 
     @model_validator(mode="after")
     def _polygons(self):
@@ -90,6 +97,7 @@ class StaffAppearance(Strict):
     lab: tuple[float, float, float]  # OpenCV Lab, 0..255 per channel
     max_distance: float = Field(12, gt=0)
     min_zone_seconds: float = Field(1.0, ge=0)  # time a track must have spent in the staff zone
+    window: int = Field(20, ge=1)  # a track is staff if most of its last `window` torso colours match
 
 
 class Source(Strict):
