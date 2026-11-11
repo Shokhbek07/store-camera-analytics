@@ -1,0 +1,356 @@
+{
+ "method": "PyTorch run then ONNX run, back to back; load average 3.7 at the start, 7.1 between the two and 38.6 at the end, so the two are not comparable (E15)",
+ "rows": [
+  {
+   "run": "first, 05:08 to 05:14",
+   "streams": 2,
+   "device": "mps",
+   "realtime": true,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1197,
+   "total_fps": 19.71,
+   "mean_batch": 1.18,
+   "detector_ms_per_batch": 19.39,
+   "per_stream_fps": [
+    9.85,
+    9.86
+   ],
+   "dropped": [
+    18,
+    17
+   ]
+  },
+  {
+   "run": "first, 05:08 to 05:14",
+   "streams": 1,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1214,
+   "total_fps": 80.06,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 10.5,
+   "per_stream_fps": [
+    80.06
+   ],
+   "dropped": [
+    0
+   ]
+  },
+  {
+   "run": "first, 05:08 to 05:14",
+   "streams": 2,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1214,
+   "total_fps": 103.83,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 17.08,
+   "per_stream_fps": [
+    51.91,
+    51.91
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "run": "first, 05:08 to 05:14",
+   "streams": 4,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1214,
+   "total_fps": 116.66,
+   "mean_batch": 4.0,
+   "detector_ms_per_batch": 29.77,
+   "per_stream_fps": [
+    29.18,
+    29.18,
+    29.15,
+    29.15
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "run": "first, 05:08 to 05:14",
+   "streams": 1,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 19.3,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 49.69,
+   "per_stream_fps": [
+    19.3
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "run": "first, 05:08 to 05:14",
+   "streams": 2,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 21.59,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 89.86,
+   "per_stream_fps": [
+    10.81,
+    10.78
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "run": "first, 05:08 to 05:14",
+   "streams": 4,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 24.67,
+   "mean_batch": 3.99,
+   "detector_ms_per_batch": 156.89,
+   "per_stream_fps": [
+    6.19,
+    6.16,
+    6.16,
+    6.16
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "run": "second, 05:14 to 05:20",
+   "streams": 2,
+   "device": "mps",
+   "realtime": true,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 20.0,
+   "mean_batch": 1.57,
+   "detector_ms_per_batch": 23.7,
+   "per_stream_fps": [
+    10.0,
+    10.0
+   ],
+   "dropped": [
+    1,
+    0
+   ]
+  },
+  {
+   "run": "second, 05:14 to 05:20",
+   "streams": 1,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 70.44,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 12.23,
+   "per_stream_fps": [
+    70.44
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "run": "second, 05:14 to 05:20",
+   "streams": 2,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 90.07,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 19.25,
+   "per_stream_fps": [
+    45.03,
+    45.03
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "run": "second, 05:14 to 05:20",
+   "streams": 4,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 129.16,
+   "mean_batch": 4.0,
+   "detector_ms_per_batch": 26.5,
+   "per_stream_fps": [
+    32.29,
+    32.29,
+    32.29,
+    32.29
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "run": "second, 05:14 to 05:20",
+   "streams": 1,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 7.56,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 130.05,
+   "per_stream_fps": [
+    7.56
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "run": "second, 05:14 to 05:20",
+   "streams": 2,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 9.35,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 210.75,
+   "per_stream_fps": [
+    4.67,
+    4.67
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "run": "second, 05:14 to 05:20",
+   "streams": 4,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 6.51,
+   "mean_batch": 3.95,
+   "detector_ms_per_batch": 600.97,
+   "per_stream_fps": [
+    1.65,
+    1.62,
+    1.62,
+    1.62
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1382 @@
+{
+ "method": "each configuration run 3 times per weights, alternating order; medians below",
+ "medians": [
+  {
+   "config": "realtime_2",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "repeats": 3,
+   "total_fps": 19.99,
+   "slowest_stream_fps": 9.98,
+   "detector_ms_per_batch": 21.68,
+   "load_1min": [
+    12.6,
+    6.4,
+    4.2
+   ]
+  },
+  {
+   "config": "realtime_2",
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeats": 3,
+   "total_fps": 20.0,
+   "slowest_stream_fps": 9.99,
+   "detector_ms_per_batch": 21.45,
+   "load_1min": [
+    6.7,
+    5.6,
+    3.4
+   ]
+  },
+  {
+   "config": "mps_1",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "repeats": 3,
+   "total_fps": 82.09,
+   "slowest_stream_fps": 82.09,
+   "detector_ms_per_batch": 10.21,
+   "load_1min": [
+    12.8,
+    4.5,
+    5.0
+   ]
+  },
+  {
+   "config": "mps_1",
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeats": 3,
+   "total_fps": 70.84,
+   "slowest_stream_fps": 70.84,
+   "detector_ms_per_batch": 12.2,
+   "load_1min": [
+    8.7,
+    5.8,
+    4.5
+   ]
+  },
+  {
+   "config": "mps_2",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "repeats": 3,
+   "total_fps": 108.98,
+   "slowest_stream_fps": 54.49,
+   "detector_ms_per_batch": 16.15,
+   "load_1min": [
+    4.6,
+    4.5,
+    3.7
+   ]
+  },
+  {
+   "config": "mps_2",
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeats": 3,
+   "total_fps": 127.14,
+   "slowest_stream_fps": 63.57,
+   "detector_ms_per_batch": 13.57,
+   "load_1min": [
+    4.0,
+    3.4,
+    4.9
+   ]
+  },
+  {
+   "config": "mps_4",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "repeats": 3,
+   "total_fps": 118.14,
+   "slowest_stream_fps": 29.51,
+   "detector_ms_per_batch": 29.23,
+   "load_1min": [
+    4.3,
+    7.5,
+    6.0
+   ]
+  },
+  {
+   "config": "mps_4",
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeats": 3,
+   "total_fps": 125.34,
+   "slowest_stream_fps": 31.32,
+   "detector_ms_per_batch": 27.21,
+   "load_1min": [
+    3.9,
+    7.0,
+    6.2
+   ]
+  },
+  {
+   "config": "cpu_1",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "repeats": 3,
+   "total_fps": 21.39,
+   "slowest_stream_fps": 21.39,
+   "detector_ms_per_batch": 44.67,
+   "load_1min": [
+    5.3,
+    6.0,
+    5.9
+   ]
+  },
+  {
+   "config": "cpu_1",
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeats": 3,
+   "total_fps": 7.68,
+   "slowest_stream_fps": 7.68,
+   "detector_ms_per_batch": 128.05,
+   "load_1min": [
+    5.5,
+    6.0,
+    6.0
+   ]
+  },
+  {
+   "config": "cpu_2",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "repeats": 3,
+   "total_fps": 15.23,
+   "slowest_stream_fps": 7.6,
+   "detector_ms_per_batch": 128.18,
+   "load_1min": [
+    8.1,
+    10.8,
+    10.8
+   ]
+  },
+  {
+   "config": "cpu_2",
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeats": 3,
+   "total_fps": 12.98,
+   "slowest_stream_fps": 6.49,
+   "detector_ms_per_batch": 150.57,
+   "load_1min": [
+    6.6,
+    7.4,
+    10.2
+   ]
+  },
+  {
+   "config": "cpu_4",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "repeats": 3,
+   "total_fps": 14.9,
+   "slowest_stream_fps": 3.72,
+   "detector_ms_per_batch": 261.93,
+   "load_1min": [
+    21.1,
+    17.2,
+    15.4
+   ]
+  },
+  {
+   "config": "cpu_4",
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeats": 3,
+   "total_fps": 12.28,
+   "slowest_stream_fps": 3.06,
+   "detector_ms_per_batch": 317.86,
+   "load_1min": [
+    16.6,
+    16.7,
+    14.4
+   ]
+  }
+ ],
+ "rows": [
+  {
+   "config": "realtime_2",
+   "repeat": 0,
+   "load_1min_start": 12.6,
+   "load_1min_end": 6.7,
+   "streams": 2,
+   "device": "mps",
+   "realtime": true,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1197,
+   "total_fps": 19.58,
+   "mean_batch": 1.65,
+   "detector_ms_per_batch": 21.68,
+   "per_stream_fps": [
+    9.78,
+    9.8
+   ],
+   "dropped": [
+    13,
+    12
+   ]
+  },
+  {
+   "config": "realtime_2",
+   "repeat": 0,
+   "load_1min_start": 6.7,
+   "load_1min_end": 5.6,
+   "streams": 2,
+   "device": "mps",
+   "realtime": true,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 19.99,
+   "mean_batch": 1.53,
+   "detector_ms_per_batch": 20.57,
+   "per_stream_fps": [
+    10.01,
+    9.98
+   ],
+   "dropped": [
+    0,
+    2
+   ]
+  },
+  {
+   "config": "realtime_2",
+   "repeat": 1,
+   "load_1min_start": 5.6,
+   "load_1min_end": 6.4,
+   "streams": 2,
+   "device": "mps",
+   "realtime": true,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 20.02,
+   "mean_batch": 1.75,
+   "detector_ms_per_batch": 21.45,
+   "per_stream_fps": [
+    10.01,
+    10.01
+   ],
+   "dropped": [
+    0,
+    0
+   ]
+  },
+  {
+   "config": "realtime_2",
+   "repeat": 1,
+   "load_1min_start": 6.4,
+   "load_1min_end": 4.2,
+   "streams": 2,
+   "device": "mps",
+   "realtime": true,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1214,
+   "total_fps": 20.01,
+   "mean_batch": 1.55,
+   "detector_ms_per_batch": 21.87,
+   "per_stream_fps": [
+    10.01,
+    10.0
+   ],
+   "dropped": [
+    0,
+    1
+   ]
+  },
+  {
+   "config": "realtime_2",
+   "repeat": 2,
+   "load_1min_start": 4.2,
+   "load_1min_end": 3.4,
+   "streams": 2,
+   "device": "mps",
+   "realtime": true,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1214,
+   "total_fps": 19.99,
+   "mean_batch": 1.46,
+   "detector_ms_per_batch": 20.72,
+   "per_stream_fps": [
+    10.01,
+    9.98
+   ],
+   "dropped": [
+    0,
+    2
+   ]
+  },
+  {
+   "config": "realtime_2",
+   "repeat": 2,
+   "load_1min_start": 3.4,
+   "load_1min_end": 12.8,
+   "streams": 2,
+   "device": "mps",
+   "realtime": true,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 20.0,
+   "mean_batch": 1.58,
+   "detector_ms_per_batch": 27.54,
+   "per_stream_fps": [
+    10.01,
+    9.99
+   ],
+   "dropped": [
+    0,
+    1
+   ]
+  },
+  {
+   "config": "mps_1",
+   "repeat": 0,
+   "load_1min_start": 12.8,
+   "load_1min_end": 8.7,
+   "streams": 1,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1229,
+   "total_fps": 84.07,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 10.12,
+   "per_stream_fps": [
+    84.07
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "mps_1",
+   "repeat": 0,
+   "load_1min_start": 8.7,
+   "load_1min_end": 5.8,
+   "streams": 1,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 70.88,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 12.2,
+   "per_stream_fps": [
+    70.88
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "mps_1",
+   "repeat": 1,
+   "load_1min_start": 5.8,
+   "load_1min_end": 4.5,
+   "streams": 1,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 70.84,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 12.12,
+   "per_stream_fps": [
+    70.84
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "mps_1",
+   "repeat": 1,
+   "load_1min_start": 4.5,
+   "load_1min_end": 5.0,
+   "streams": 1,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1256,
+   "total_fps": 82.09,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 10.21,
+   "per_stream_fps": [
+    82.09
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "mps_1",
+   "repeat": 2,
+   "load_1min_start": 5.0,
+   "load_1min_end": 4.5,
+   "streams": 1,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1273,
+   "total_fps": 80.72,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 10.36,
+   "per_stream_fps": [
+    80.72
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "mps_1",
+   "repeat": 2,
+   "load_1min_start": 4.5,
+   "load_1min_end": 4.6,
+   "streams": 1,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 69.36,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 12.35,
+   "per_stream_fps": [
+    69.36
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "mps_2",
+   "repeat": 0,
+   "load_1min_start": 4.6,
+   "load_1min_end": 4.0,
+   "streams": 2,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1273,
+   "total_fps": 106.32,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 16.58,
+   "per_stream_fps": [
+    53.16,
+    53.16
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "mps_2",
+   "repeat": 0,
+   "load_1min_start": 4.0,
+   "load_1min_end": 3.4,
+   "streams": 2,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 127.14,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 13.57,
+   "per_stream_fps": [
+    63.57,
+    63.57
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "mps_2",
+   "repeat": 1,
+   "load_1min_start": 3.4,
+   "load_1min_end": 4.5,
+   "streams": 2,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 128.93,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 13.34,
+   "per_stream_fps": [
+    64.47,
+    64.47
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "mps_2",
+   "repeat": 1,
+   "load_1min_start": 4.5,
+   "load_1min_end": 3.7,
+   "streams": 2,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1271,
+   "total_fps": 109.25,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 16.14,
+   "per_stream_fps": [
+    54.62,
+    54.62
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "mps_2",
+   "repeat": 2,
+   "load_1min_start": 3.7,
+   "load_1min_end": 4.9,
+   "streams": 2,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1271,
+   "total_fps": 108.98,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 16.15,
+   "per_stream_fps": [
+    54.49,
+    54.49
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "mps_2",
+   "repeat": 2,
+   "load_1min_start": 4.9,
+   "load_1min_end": 4.3,
+   "streams": 2,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 125.12,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 13.75,
+   "per_stream_fps": [
+    62.56,
+    62.56
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "mps_4",
+   "repeat": 0,
+   "load_1min_start": 4.3,
+   "load_1min_end": 3.9,
+   "streams": 4,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1271,
+   "total_fps": 117.97,
+   "mean_batch": 4.0,
+   "detector_ms_per_batch": 29.23,
+   "per_stream_fps": [
+    29.51,
+    29.51,
+    29.48,
+    29.48
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "config": "mps_4",
+   "repeat": 0,
+   "load_1min_start": 3.9,
+   "load_1min_end": 7.0,
+   "streams": 4,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 93.13,
+   "mean_batch": 4.0,
+   "detector_ms_per_batch": 36.69,
+   "per_stream_fps": [
+    23.3,
+    23.3,
+    23.27,
+    23.27
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "config": "mps_4",
+   "repeat": 1,
+   "load_1min_start": 7.0,
+   "load_1min_end": 7.5,
+   "streams": 4,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 129.43,
+   "mean_batch": 4.0,
+   "detector_ms_per_batch": 26.28,
+   "per_stream_fps": [
+    32.37,
+    32.37,
+    32.33,
+    32.37
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "config": "mps_4",
+   "repeat": 1,
+   "load_1min_start": 7.5,
+   "load_1min_end": 6.0,
+   "streams": 4,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1271,
+   "total_fps": 118.14,
+   "mean_batch": 4.0,
+   "detector_ms_per_batch": 29.29,
+   "per_stream_fps": [
+    29.54,
+    29.54,
+    29.54,
+    29.51
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "config": "mps_4",
+   "repeat": 2,
+   "load_1min_start": 6.0,
+   "load_1min_end": 6.2,
+   "streams": 4,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": 1271,
+   "total_fps": 118.87,
+   "mean_batch": 4.0,
+   "detector_ms_per_batch": 29.05,
+   "per_stream_fps": [
+    29.74,
+    29.71,
+    29.71,
+    29.71
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "config": "mps_4",
+   "repeat": 2,
+   "load_1min_start": 6.2,
+   "load_1min_end": 5.3,
+   "streams": 4,
+   "device": "mps",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CoreMLExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 125.34,
+   "mean_batch": 4.0,
+   "detector_ms_per_batch": 27.21,
+   "per_stream_fps": [
+    31.35,
+    31.35,
+    31.32,
+    31.32
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_1",
+   "repeat": 0,
+   "load_1min_start": 5.3,
+   "load_1min_end": 5.5,
+   "streams": 1,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 20.56,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 46.5,
+   "per_stream_fps": [
+    20.56
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "cpu_1",
+   "repeat": 0,
+   "load_1min_start": 5.5,
+   "load_1min_end": 6.0,
+   "streams": 1,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 7.7,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 127.73,
+   "per_stream_fps": [
+    7.7
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "cpu_1",
+   "repeat": 1,
+   "load_1min_start": 6.0,
+   "load_1min_end": 6.0,
+   "streams": 1,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 7.68,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 128.05,
+   "per_stream_fps": [
+    7.68
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "cpu_1",
+   "repeat": 1,
+   "load_1min_start": 6.0,
+   "load_1min_end": 5.9,
+   "streams": 1,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 21.39,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 44.67,
+   "per_stream_fps": [
+    21.39
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "cpu_1",
+   "repeat": 2,
+   "load_1min_start": 5.9,
+   "load_1min_end": 6.0,
+   "streams": 1,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 21.45,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 44.52,
+   "per_stream_fps": [
+    21.45
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "cpu_1",
+   "repeat": 2,
+   "load_1min_start": 6.0,
+   "load_1min_end": 8.1,
+   "streams": 1,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 7.61,
+   "mean_batch": 1.0,
+   "detector_ms_per_batch": 129.17,
+   "per_stream_fps": [
+    7.61
+   ],
+   "dropped": [
+    1
+   ]
+  },
+  {
+   "config": "cpu_2",
+   "repeat": 0,
+   "load_1min_start": 8.1,
+   "load_1min_end": 6.6,
+   "streams": 2,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 21.43,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 90.66,
+   "per_stream_fps": [
+    10.71,
+    10.71
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_2",
+   "repeat": 0,
+   "load_1min_start": 6.6,
+   "load_1min_end": 7.4,
+   "streams": 2,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 14.74,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 132.89,
+   "per_stream_fps": [
+    7.37,
+    7.37
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_2",
+   "repeat": 1,
+   "load_1min_start": 7.4,
+   "load_1min_end": 10.8,
+   "streams": 2,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 12.98,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 150.57,
+   "per_stream_fps": [
+    6.49,
+    6.49
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_2",
+   "repeat": 1,
+   "load_1min_start": 10.8,
+   "load_1min_end": 10.8,
+   "streams": 2,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 11.88,
+   "mean_batch": 1.99,
+   "detector_ms_per_batch": 164.9,
+   "per_stream_fps": [
+    5.96,
+    5.92
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_2",
+   "repeat": 2,
+   "load_1min_start": 10.8,
+   "load_1min_end": 10.2,
+   "streams": 2,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 15.23,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 128.18,
+   "per_stream_fps": [
+    7.63,
+    7.6
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_2",
+   "repeat": 2,
+   "load_1min_start": 10.2,
+   "load_1min_end": 21.1,
+   "streams": 2,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 9.6,
+   "mean_batch": 2.0,
+   "detector_ms_per_batch": 204.47,
+   "per_stream_fps": [
+    4.8,
+    4.8
+   ],
+   "dropped": [
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_4",
+   "repeat": 0,
+   "load_1min_start": 21.1,
+   "load_1min_end": 16.6,
+   "streams": 4,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 14.9,
+   "mean_batch": 3.97,
+   "detector_ms_per_batch": 261.93,
+   "per_stream_fps": [
+    3.75,
+    3.72,
+    3.72,
+    3.72
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_4",
+   "repeat": 0,
+   "load_1min_start": 16.6,
+   "load_1min_end": 16.7,
+   "streams": 4,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 13.96,
+   "mean_batch": 3.97,
+   "detector_ms_per_batch": 279.52,
+   "per_stream_fps": [
+    3.51,
+    3.48,
+    3.48,
+    3.48
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_4",
+   "repeat": 1,
+   "load_1min_start": 16.7,
+   "load_1min_end": 17.2,
+   "streams": 4,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 11.83,
+   "mean_batch": 3.98,
+   "detector_ms_per_batch": 330.73,
+   "per_stream_fps": [
+    2.97,
+    2.97,
+    2.94,
+    2.94
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_4",
+   "repeat": 1,
+   "load_1min_start": 17.2,
+   "load_1min_end": 15.4,
+   "streams": 4,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 9.8,
+   "mean_batch": 3.96,
+   "detector_ms_per_batch": 399.27,
+   "per_stream_fps": [
+    2.47,
+    2.44,
+    2.44,
+    2.44
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_4",
+   "repeat": 2,
+   "load_1min_start": 15.4,
+   "load_1min_end": 14.4,
+   "streams": 4,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0",
+   "execution_provider": null,
+   "imgsz": 640,
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 16.85,
+   "mean_batch": 3.99,
+   "detector_ms_per_batch": 231.7,
+   "per_stream_fps": [
+    4.22,
+    4.22,
+    4.19,
+    4.22
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "config": "cpu_4",
+   "repeat": 2,
+   "load_1min_start": 14.4,
+   "load_1min_end": 17.3,
+   "streams": 4,
+   "device": "cpu",
+   "realtime": false,
+   "weights": "models/yolo26s_384x640_b2.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "execution_provider": "CPUExecutionProvider",
+   "imgsz": [
+    384,
+    640
+   ],
+   "precision": "FP32",
+   "gpu_memory_mb": null,
+   "total_fps": 12.28,
+   "mean_batch": 3.97,
+   "detector_ms_per_batch": 317.86,
+   "per_stream_fps": [
+    3.09,
+    3.06,
+    3.06,
+    3.06
+   ],
+   "dropped": [
+    1,
+    1,
+    1,
+    1
+   ]
+  }
+ ]
+}

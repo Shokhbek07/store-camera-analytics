@@ -47,6 +47,8 @@ Outputs go to `runs/out/`: `<source>_minutes.csv` per source, `alerts.jsonl`, an
 ```sh
 uv run python scripts/evaluate.py --rerun     # runs every clip offline, compares with labels/, writes results/eval/report.json
 uv run python scripts/benchmark.py            # speed: 2 streams in real time, then 1, 2 and 4 streams on GPU and CPU
+uv run python scripts/benchmark.py --compare models/yolo26s.pt,models/yolo26s_384x640_b2.onnx --realtime-seconds 60 --seconds 30   # both runtimes in turn, 3 repeats (E15)
+./scripts/benchmark_docker.sh 120 3           # the same in the Docker container, CPU only
 uv run python scripts/calibrate_staff.py counter data/meva/counter_1650.avi   # the staff uniform colour in config.yaml
 uv run storecam export-onnx && uv run python scripts/compare_detectors.py   # ONNX Runtime against PyTorch (E15)
 ```
@@ -86,7 +88,7 @@ Measured on the MEVA clips below against hand labels; full tables, method and fa
 | Queue length MAE at 10 s marks | 1.00 (Shokhbek, 11 marks); 0.37, 0.17, 0.00 (Claude, 30 marks on each of 3 clips) |
 | Queue alerts | 3 of 3 expected found (two merged into one), 0 wrong; the last wrong one, a seated man on the zone's edge, was removed by redrawing that edge, chosen on the same clips (E16) |
 | Staff versus customer (bonus) | uniform colour plus time behind the counter; left the attendant out of the queue when they walked through it, with one 1 s mistake after an ID switch (E14) |
-| ONNX Runtime export (bonus) | identical results to PyTorch on all five clips; detector 15.6 ms against 17.8 ms per pair of frames on the Mac GPU, and about 3.4 times faster than PyTorch on CPU in Docker, both from single runs on a machine that was not quiet (E15); the full benchmark is still to be repeated |
+| ONNX Runtime export (bonus) | identical results to PyTorch on all five clips; with 2 streams on the Mac GPU the service ran at 127 against 109 FPS (medians of 3 alternating runs), slower with 1 stream (the batch-2 export pads it) and 2.8 times slower on the Mac CPU; in Docker on CPU 1.7 to 2.6 times faster than PyTorch, measured under heavy load from other projects (E15) |
 | Empty-counter alerts | none expected, 0 wrong with the staff rule (1 wrong without it) |
 | Speed, Apple M4 Pro GPU (MPS), YOLO26s 640 px FP32, 1164 MB GPU memory | 2 streams in real time: 9.87 FPS each against a 10 FPS target; as fast as possible: 97 / 119 / 131 FPS total for 1 / 2 / 4 streams; CPU only: 23 / 24 / 28 |
 

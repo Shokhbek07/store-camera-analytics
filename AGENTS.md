@@ -34,13 +34,16 @@ All required parts of the brief are done, measured and pushed.
 Bonuses done: batched inference across streams, staff versus customer (D14, E14), the ONNX Runtime export (D15, E15) and the live page (D16).
 The last wrong queue alert was removed by moving the queue zone's top edge in front of the chairs and leaving duplicate boxes out of the queue count (D17, E16); `scripts/queue_rules.py` replays saved tracks to try queue rules quickly.
 `scripts/evaluate.py` reuses saved runs unless given `--rerun`; always pass `--rerun` after changing code or config.
+Load on this machine comes in bursts from other projects' containers; compare speeds with `scripts/benchmark.py --compare` or `scripts/benchmark_docker.sh <seconds> <repeats>`, which alternate the runtimes and record the load per run.
 Local-only files (ignored by git): `runs/review/review.md` (29 queue marks waiting for Shokhbek's review, rebuilt by `scripts/review_sheet.py`), `runs/staff_analysis/` (the scratch analysis behind E14) and `runs/onnx/` (the ONNX evaluation run behind E15).
 
 ## Next steps, in order
 
 Door departures were looked at again on 2026-11-11 and left as they are: the misses are tracking in a crowd at the doorway and people waiting on the mats, 960 px did not help (E9), and with one departure clip any new rule would be tuned on the clip it is measured on (REPORT 5.1).
 
-1. On a quiet machine (check `uptime` and other projects' containers first, never stop them): `scripts/benchmark.py` for the PyTorch weights and with `--weights models/yolo26s_384x640_b2.onnx --out results/benchmark_onnx.json`, plus the detector-only container comparison; update E15, REPORT 5.4 and the README row, and settle the open question in D15 (ONNX by default in Docker).
+1. The Mac speed comparison is done with alternating runs (E15); the container comparison so far ran only under heavy load.
+   On a quiet machine (host load below 4 and other projects' containers idle in `docker stats`; never stop them), run `./scripts/benchmark_docker.sh 90 2`, update E15, REPORT 5.4 and the README row, and settle the open question in D15.
+   If ONNX Runtime is much faster per stream there, Shokhbek approved making docker compose use the any-size export by default (a one-shot export service the main service waits for); otherwise keep PyTorch.
 2. Shokhbek reviews `runs/review/review.md`; then update the labels and results, and say in REPORT.md what the review changed.
 3. A final read-through of README.md and REPORT.md against `results/`.
 4. Draft the submission email for Shokhbek to send; the agent never sends it.

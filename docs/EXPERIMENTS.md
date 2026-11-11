@@ -419,7 +419,46 @@ The same detector-only test with 20 frame pairs, while another project's test co
 
 In the container ONNX Runtime was about 3.4 times faster than PyTorch, the opposite of the Mac CPU result.
 
-**Still to do:** the full `scripts/benchmark.py` comparison (two real-time streams, and throughput with 1, 2 and 4 streams) for both runtimes, on a quiet machine, and the container measurement again under no load.
+**The whole service, first attempt: back to back.**
+After waiting over two hours for a quiet machine, `scripts/benchmark.py` ran once with the PyTorch weights and then once with the 384x640 batch-2 export, from 05:08.
+The 1-minute load average was 3.7 at the start, 7.1 between the two runs and 38.6 at the end, when another project restarted its containers, so the second run saw far more load than the first and the two cannot be compared (`results/onnx/benchmark_mac_back_to_back_2026-11-11.json`).
+On this machine the load comes in bursts from other projects' builds and test runs, so waiting for one long quiet window does not work reliably.
+
+**The whole service, alternating runs (Mac).**
+`scripts/benchmark.py --compare` now runs every configuration with each runtime in turn, three times, swapping which goes first on each repeat, so both runtimes see the same background load, and records the 1-minute load average at the start and end of every run.
+Real-time runs were 60 s and as-fast-as-possible runs 30 s, from 05:22 to 05:47, with the load between 3.4 and 21 (mostly 4 to 8 on the GPU rows); medians of three (`results/onnx/benchmark_mac_alternating_2026-11-11.json`):
+
+| Configuration | PyTorch total FPS | ONNX Runtime total FPS | Detector ms per batch, PyTorch / ONNX |
+|---|---|---|---|
+| 2 streams in real time (target 10 each) | 20.0 (slowest stream 9.98) | 20.0 (slowest stream 9.99) | 21.7 / 21.5 |
+| 1 stream, GPU | 82.1 | 70.8 | 10.2 / 12.2 |
+| 2 streams, GPU | 109.0 | 127.1 | 16.2 / 13.6 |
+| 4 streams, GPU | 118.1 | 125.3 | 29.2 / 27.2 |
+| 1 stream, CPU | 21.4 | 7.7 | 44.7 / 128.1 |
+| 2 streams, CPU | 15.2 | 13.0 | 128.2 / 150.6 |
+| 4 streams, CPU | 14.9 | 12.3 | 261.9 / 317.9 |
+
+- Two real-time streams: both runtimes keep up; the detector is not the limit here, so the export changes nothing for the service's own use on this Mac.
+- Two streams on the GPU, the service's normal batch: ONNX Runtime was faster in all three repeats (125 to 129 against 106 to 109 FPS), about 17%.
+- One stream on the GPU: ONNX Runtime was slower, because the batch-2 export pads a single frame to a batch of two (Ultralytics' backend pads short batches and splits long ones), so it computes twice the images.
+- Four streams: about 6% faster with the export (one ONNX repeat dropped to 93 FPS when the load rose to 7).
+- CPU: ONNX Runtime was 2.8 times slower with one stream, steadily across repeats, as in the detector-only test above; the rows with 2 and 4 streams ran under load 7 to 21, vary between repeats by up to a factor of 1.8, and PyTorch was ahead in two of the three pairs of each, so they say little beyond that.
+
+**The service in the Docker container, alternating runs, under load.**
+`scripts/benchmark_docker.sh 120 3` ran the real service in the container, reading the two RTSP cameras in real time for 120 s, with the PyTorch weights and the any-size export in turn, three times, swapping the order.
+Other projects' backend test containers were using about 7.5 of the Docker VM's 10 CPUs at the same time (load 11 to 14 on the host), so these are measurements under heavy load (`results/onnx/benchmark_docker_alternating_under_load_2026-11-11.json`):
+
+| Repeat | PyTorch FPS per stream (counter, door) | ONNX Runtime FPS per stream | Detector ms per batch, PyTorch / ONNX |
+|---|---|---|---|
+| 1 | 1.50, 1.44 | 2.48, 2.33 | 635 / 378 |
+| 2 | 0.82, 0.80 | 1.92, 1.78 | 1153 / 491 |
+| 3 | 0.89, 0.85 | 2.28, 2.15 | 1074 / 415 |
+
+ONNX Runtime was faster in every pair, by 1.7 to 2.6 times, but both are far below the 4.7 to 5.4 FPS per stream that PyTorch reached in the container on a quiet machine (E12).
+The ratio was 3.4 at load 22 (above) and 1.7 to 2.6 at load 11 to 14, so it shrinks as the load falls: PyTorch's CPU threads seem to suffer more from sharing the CPUs than ONNX Runtime's.
+So these runs do not show how much faster the export is on a quiet machine, which is what decides the Docker default (D15).
+
+**Still to do:** the container comparison on a quiet machine.
 
 ## E16. The last wrong queue alert, and duplicate boxes (2026-11-11)
 
