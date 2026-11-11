@@ -220,7 +220,7 @@ A GPU server would use a CUDA base image and the default wheels instead (REPORT 
 
 **Why CPU.**
 Docker on macOS runs a Linux VM with no access to the Apple GPU, so in this setup the detector runs on CPU.
-In the container this reaches about 5 FPS per stream against the 10 FPS target (E12), so compose is the easy, portable demo and the native GPU run is the one that meets the target on this Mac.
+In the container this reaches about 5 to 7 FPS per stream against the 10 FPS target (E12, E15), so compose is the easy, portable demo and the native GPU run is the one that meets the target on this Mac.
 
 **Network.**
 Every published port is bound to 127.0.0.1, and the cameras are local files, so nothing leaves the machine.
@@ -270,10 +270,10 @@ This reaches into one Ultralytics internal (the predictor's backend session), wh
 
 **Default.**
 `config.yaml` keeps the PyTorch weights: the ONNX export gave identical results, and with two streams on the Mac GPU the whole service ran about 17% faster with it, but both runtimes keep up with two real-time streams there, the export is slower for a single stream (the fixed batch-2 export pads it), and it adds an export step to the setup (E15).
-Open: whether the Docker image (CPU only) should use the any-size ONNX export by default.
-In the container the export was 1.2 to 2.6 times faster than PyTorch while other projects loaded the machine, the ratio growing with the load, but the one quiet PyTorch run (222 ms per batch) was faster than every ONNX run so far (about 305 ms, under some load) (E15).
-Shokhbek decided on 2026-11-11 to switch only if a run on a quiet machine confirms a large gain; that has not happened, so the image keeps PyTorch, and a quiet ONNX run is still to come.
-On a server shared with other work, the export's steadiness under load would be a reason to choose it.
+Docker image (CPU only):
+In the container the export was 1.2 to 3.4 times faster than PyTorch while other projects loaded the machine, the ratio growing with the load, but on a quiet machine PyTorch was about 1.4 times faster (119 against 168 ms per batch, medians of three alternating pairs, E15).
+Shokhbek decided on 2026-11-11 to switch only if a run on a quiet machine confirmed a large gain; it did not, so the Docker image keeps PyTorch (settled 2026-11-11).
+On a server shared with other work, the export's steadiness under load (168 to 491 ms per batch across all container runs, against PyTorch's 119 to 1153 ms) would be a reason to choose it; `--weights models/yolo26s_dynamic.onnx` switches a container run without rebuilding.
 
 ## D16. Live page: a static page on the existing endpoint
 

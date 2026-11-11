@@ -1,0 +1,102 @@
+{
+ "method": "scripts/benchmark_docker.sh 60 3: the service in the container reading two RTSP cameras in real time for 60 s, PyTorch and the any-size ONNX export in turn, order alternating, 3 repeats",
+ "conditions": "quiet: started at 07:21 when host load was 3.8 and other containers used 6.5% of one core; other containers used 1 to 4% at the start and end of every run (other_containers_cpu_pct); the host load of 5 to 9 during the runs is this benchmark's own container",
+ "rows": [
+  {
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "repeat": 1,
+   "load_1min_start": 5.1,
+   "other_containers_cpu_pct": [
+    1,
+    2
+   ],
+   "per_stream_fps": {
+    "counter": 5.51,
+    "door": 5.14
+   },
+   "detector_ms_per_batch": 161.17,
+   "mean_batch": 1.93
+  },
+  {
+   "weights": "models/yolo26s_dynamic.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeat": 1,
+   "load_1min_start": 5.9,
+   "other_containers_cpu_pct": [
+    2,
+    4
+   ],
+   "per_stream_fps": {
+    "counter": 5.13,
+    "door": 4.29
+   },
+   "detector_ms_per_batch": 168.65,
+   "mean_batch": 1.83
+  },
+  {
+   "weights": "models/yolo26s_dynamic.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeat": 2,
+   "load_1min_start": 7.0,
+   "other_containers_cpu_pct": [
+    3,
+    2
+   ],
+   "per_stream_fps": {
+    "counter": 5.16,
+    "door": 4.33
+   },
+   "detector_ms_per_batch": 168.08,
+   "mean_batch": 1.84
+  },
+  {
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "repeat": 2,
+   "load_1min_start": 9.2,
+   "other_containers_cpu_pct": [
+    4,
+    2
+   ],
+   "per_stream_fps": {
+    "counter": 7.43,
+    "door": 6.73
+   },
+   "detector_ms_per_batch": 118.96,
+   "mean_batch": 1.91
+  },
+  {
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "repeat": 3,
+   "load_1min_start": 7.2,
+   "other_containers_cpu_pct": [
+    2,
+    3
+   ],
+   "per_stream_fps": {
+    "counter": 7.38,
+    "door": 6.61
+   },
+   "detector_ms_per_batch": 119.13,
+   "mean_batch": 1.9
+  },
+  {
+   "weights": "models/yolo26s_dynamic.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeat": 3,
+   "load_1min_start": 7.6,
+   "other_containers_cpu_pct": [
+    4,
+    3
+   ],
+   "per_stream_fps": {
+    "counter": 5.22,
+    "door": 4.38
+   },
+   "detector_ms_per_batch": 167.76,
+   "mean_batch": 1.84
+  }
+ ]
+}

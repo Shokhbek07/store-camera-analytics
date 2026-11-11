@@ -6,3 +6,4 @@
 - `benchmark_mac_alternating_2026-11-11.json`: `scripts/benchmark.py --compare` with both runtimes in turn, 3 repeats, the load recorded per run, medians at the top (E15).
 - `benchmark_docker_alternating_under_load_2026-11-11.json`: `scripts/benchmark_docker.sh 120 3` in the container, both runtimes in turn, while other projects' containers used about 7.5 of the VM's 10 CPUs (E15).
 - `benchmark_docker_alternating_0658_2026-11-11.json`: the same from a quiet start at 06:58, 90 s runs, 2 repeats; another project's test run started during the first ONNX run, so only the first PyTorch run was quiet (E15).
+- `benchmark_docker_alternating_quiet_2026-11-11.json`: the same on a quiet machine at 07:21, 60 s runs, 3 repeats, other containers at 1 to 4% of one core in every run; PyTorch was about 1.4 times faster (E15).

@@ -17,7 +17,7 @@ On five licensed MEVA clips (D1), measured against hand labels:
   A wrong empty-counter alert, the attendant counted as a waiting customer, was removed by telling staff from customers by uniform colour and time behind the counter (bonus, D14), narrowly and with limits explained in E14.
 - Reproducible: a clean clone, the download script and `scripts/evaluate.py --rerun` give the same numbers (E13).
 - Speed on an Apple M4 Pro GPU: two streams in real time held 9.87 of the 10 FPS target each; processed as fast as possible, 2 streams reach 119 FPS and 4 reach 131 FPS in total (E11b).
-- An ONNX Runtime export of the detector (bonus) gave exactly the PyTorch results on all five clips; with two streams on the Mac GPU the whole service ran about 17% faster with it; in the CPU-only Docker container it was 1.2 to 2.6 times faster while other projects loaded the machine, but the one quiet PyTorch run was faster than any ONNX run so far (E15, D15).
+- An ONNX Runtime export of the detector (bonus) gave exactly the PyTorch results on all five clips; with two streams on the Mac GPU the whole service ran about 17% faster with it; in the CPU-only Docker container it was 1.2 to 3.4 times faster only while other projects loaded the machine, and about 1.4 times slower on a quiet machine, so Docker keeps PyTorch (E15, D15).
 - A live page shows each camera's counts and open alerts, refreshed every second (bonus, D16).
 
 The weakest parts are the departure side of the door (5 of 13 events matched in time) and telling staff from customers.
@@ -76,6 +76,7 @@ On the Mac CPU ONNX Runtime was slower than PyTorch, but in the Linux container 
 The live page went on the existing endpoint as one self-contained page (D16).
 The last wrong queue alert turned out to come from a seated man on the zone's edge, not the coffee table as the report had said; replaying saved tracks through candidate rules showed that only moving the edge removed it, and that leaving duplicate boxes out improved every labeller's error (E16, D17).
 Over two hours of waiting for a quiet machine ended in a burst of load from another project halfway through the speed comparison, so the benchmark was changed to alternate the two runtimes in short runs, three times each, and to record the load with every run (E15).
+A clean container run at 07:21, with other containers idle, then showed PyTorch about 1.4 times faster than the export there, so the Docker image keeps PyTorch (D15).
 Reading the code for the live review found that in the slow CPU-only container a late doorway exit could add a second row for a minute already written; a minute now waits while such an exit is pending, which left the offline results unchanged (E18).
 
 ## 4. What was built
@@ -200,9 +201,10 @@ For speed, the whole service ran with each runtime in turn, three times, swappin
 Both runtimes keep up with two real-time streams, so on this Mac the export does not change the service's own use.
 With two streams on the GPU, the service's normal batch, the export was faster in every repeat, by about 17%; with one stream it was slower, because the fixed batch-2 export pads a single frame to two.
 On the Mac CPU ONNX Runtime was 2.8 times slower than PyTorch.
+The PyTorch figures in this table are lower than in the first table of this section, which came from a quiet machine (E11b); compare rows within one table, not across them.
 In the Docker container (CPU only) the export was 1.7 to 2.6 times faster than PyTorch in three alternating pairs while other projects' test containers used about 7.5 of the VM's 10 CPUs, and 1.2 times faster under a lighter load of about 3.5 cores.
-But ONNX Runtime's time hardly changed with the load (about 305 ms per batch under the lighter load), while PyTorch's grew from 222 ms on a quiet machine to over 1000 ms: the export is steadier on a shared machine rather than faster, and the one quiet PyTorch run (4.2 and 3.9 FPS per stream) beat every ONNX run so far (at best 3.0 and 2.8, though none of them was on a quiet machine).
-These PyTorch figures are lower than the table above, which came from a quiet machine (E11b); compare rows within one table, not across them.
+But across all container runs ONNX Runtime took 168 to 491 ms per batch and PyTorch 119 to 1153 ms: the export is steadier on a shared machine rather than faster.
+On a quiet machine, in three alternating pairs, PyTorch reached 7.4 and 6.6 FPS per stream against 5.2 and 4.3 for the export (119 against 168 ms per batch), so the Docker image keeps PyTorch.
 
 ## 6. Known failure cases
 

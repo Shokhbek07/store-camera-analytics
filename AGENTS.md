@@ -41,9 +41,7 @@ Local-only files (ignored by git): `runs/review/review.md` (29 queue marks waiti
 
 Door departures were looked at again on 2026-11-11 and left as they are: the misses are tracking in a crowd at the doorway and people waiting on the mats, 960 px did not help (E9), and with one departure clip any new rule would be tuned on the clip it is measured on (REPORT 5.1).
 
-1. The Mac speed comparison is done with alternating runs (E15); the container comparison so far ran only under heavy load.
-   On a quiet machine (host load below 4 and other projects' containers idle in `docker stats`; never stop them), run `./scripts/benchmark_docker.sh 90 2`, update E15, REPORT 5.4 and the README row, and settle the open question in D15.
-   If ONNX Runtime is much faster per stream there, Shokhbek approved making docker compose use the any-size export by default (a one-shot export service the main service waits for); otherwise keep PyTorch.
+1. Done 2026-11-11: the speed comparison (E15). On a quiet machine PyTorch was about 1.4 times faster than the ONNX export in the container, so Docker keeps PyTorch (D15 settled); the Mac keeps PyTorch too.
 2. Shokhbek reviews `runs/review/review.md`; then update the labels and results, and say in REPORT.md what the review changed.
 3. A final read-through of README.md and REPORT.md against `results/`.
 4. Draft the submission email for Shokhbek to send; the agent never sends it.

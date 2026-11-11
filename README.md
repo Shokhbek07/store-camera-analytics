@@ -65,7 +65,7 @@ docker compose up --build
 
 This starts two RTSP cameras (MediaMTX looping two clips) and the service reading both, writing to `runs/docker/`, with the live page at http://127.0.0.1:8080/ (JSON at /status.json).
 Every port is bound to 127.0.0.1.
-Docker on macOS cannot use the Apple GPU, so here the detector runs on CPU at about 5 FPS per stream, half the target; the native run above uses the GPU (E12, D13).
+Docker on macOS cannot use the Apple GPU, so here the detector runs on CPU at about 5 to 7 FPS per stream, below the 10 FPS target (E12, E15); the native run above uses the GPU (E12, D13).
 Stop the camera container (`docker compose stop cameras`, then `start`) to watch the service reconnect.
 
 ## Run with ONNX Runtime (bonus)
@@ -88,7 +88,7 @@ Measured on the MEVA clips below against hand labels; full tables, method and fa
 | Queue length MAE at 10 s marks | 1.00 (Shokhbek, 11 marks); 0.37, 0.17, 0.00 (Claude, 30 marks on each of 3 clips) |
 | Queue alerts | 3 of 3 expected found (two merged into one), 0 wrong; the last wrong one, a seated man on the zone's edge, was removed by redrawing that edge, chosen on the same clips (E16) |
 | Staff versus customer (bonus) | uniform colour plus time behind the counter; left the attendant out of the queue when they walked through it, with one 1 s mistake after an ID switch (E14) |
-| ONNX Runtime export (bonus) | identical results to PyTorch on all five clips; with 2 streams on the Mac GPU the service ran at 127 against 109 FPS (medians of 3 alternating runs), slower with 1 stream (the batch-2 export pads it) and 2.8 times slower on the Mac CPU; in Docker on CPU faster than PyTorch only while other projects loaded the machine (1.2 to 2.6 times); the one quiet PyTorch run beat every ONNX run so far, so Docker keeps PyTorch (E15) |
+| ONNX Runtime export (bonus) | identical results to PyTorch on all five clips; with 2 streams on the Mac GPU the service ran at 127 against 109 FPS (medians of 3 alternating runs), slower with 1 stream (the batch-2 export pads it) and 2.8 times slower on the Mac CPU; in Docker on CPU faster than PyTorch only while other projects loaded the machine (1.2 to 3.4 times), and 1.4 times slower on a quiet machine, so Docker keeps PyTorch (E15) |
 | Empty-counter alerts | none expected, 0 wrong with the staff rule (1 wrong without it) |
 | Speed, Apple M4 Pro GPU (MPS), YOLO26s 640 px FP32, 1164 MB GPU memory | 2 streams in real time: 9.87 FPS each against a 10 FPS target; as fast as possible: 97 / 119 / 131 FPS total for 1 / 2 / 4 streams; CPU only: 23 / 24 / 28 |
 

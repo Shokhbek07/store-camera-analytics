@@ -473,7 +473,24 @@ Under the same moderate load (repeat 2) ONNX Runtime was 1.2 times faster, again
 ONNX Runtime's time hardly moved with the load (305 and 306 ms), while PyTorch's went from 222 to 368 ms and to over 1000 ms under heavy load: the large ratios measure how badly PyTorch's CPU threads cope with sharing the CPUs, not a faster model.
 `scripts/benchmark_docker.sh` now also records the CPU use of every other container at the start and end of each run, so a run like these can be labelled from its own record.
 
-**Still to do:** an ONNX Runtime run in the container on a quiet machine, to compare with the quiet PyTorch run.
+**The container on a quiet machine (07:21).**
+The watcher's next quiet window gave a clean run: `scripts/benchmark_docker.sh 60 3`, with other containers at 1 to 4% of one core at the start and end of every run; the host load of 5 to 9 during the runs is this benchmark's own container (`results/onnx/benchmark_docker_alternating_quiet_2026-11-11.json`):
+
+| Repeat | Order | PyTorch FPS per stream (counter, door) | ONNX Runtime FPS per stream | Detector ms per batch, PyTorch / ONNX |
+|---|---|---|---|---|
+| 1 | PyTorch first | 5.51, 5.14 | 5.13, 4.29 | 161 / 169 |
+| 2 | ONNX first | 7.43, 6.73 | 5.16, 4.33 | 119 / 168 |
+| 3 | PyTorch first | 7.38, 6.61 | 5.22, 4.38 | 119 / 168 |
+
+On a quiet machine PyTorch was faster in the container: medians of 119 against 168 ms per batch, and 7.4 and 6.6 against 5.2 and 4.3 FPS per stream.
+PyTorch's first run was slower (161 ms), likely a first-run effect after the image build; ONNX Runtime gave the same time in all three.
+Neither reaches the 10 FPS target on CPU.
+PyTorch also did better here than in E12 (4.7 to 5.4 FPS per stream with default threads); E12's runs did not record the other containers' load, so the two are not directly comparable.
+
+**Conclusion.**
+The large container speed-ups of ONNX Runtime (1.2 to 3.4 times) appeared only while other projects loaded the machine and grew with the load; on a quiet machine PyTorch was about 1.4 times faster.
+Across all the container runs ONNX Runtime took 168 to 491 ms per batch (a factor of 2.9) and PyTorch 119 to 1153 ms (a factor of 9.7), so the export is the steadier choice on a shared machine, and the slower one on a quiet machine.
+The Docker image keeps PyTorch (D15).
 
 ## E16. The last wrong queue alert, and duplicate boxes (2026-11-11)
 
