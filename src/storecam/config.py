@@ -45,6 +45,9 @@ class DoorLine(Strict):
 class Zones(Strict):
     queue: list[Point] | None = None
     staff: list[Point] | None = None
+    # Count a person in the queue only after this long in the queue zone, so people walking
+    # through are left out (E19); 0 counts everyone in the zone.
+    queue_min_dwell_s: float = Field(0, ge=0)
 
     @model_validator(mode="after")
     def _polygons(self):

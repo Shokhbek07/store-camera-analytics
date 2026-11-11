@@ -1,4 +1,4 @@
-from storecam.events import AlertTracker, LineCounter, ZoneSampler, duplicate_boxes, point_in_polygon
+from storecam.events import AlertTracker, Dwell, LineCounter, ZoneSampler, duplicate_boxes, point_in_polygon
 
 # A horizontal door line from (0, 100) to (200, 100); inside is below it (larger y).
 LINE = dict(a=(0, 100), b=(200, 100), inside=(100, 150), band=10, min_frames=2)
@@ -179,3 +179,34 @@ def test_person_behind_who_shows_above_is_not_a_duplicate():
 
 def test_two_people_side_by_side_are_not_duplicates():
     assert duplicate_boxes({1: (100, 100, 200, 400), 2: (190, 110, 290, 410)}) == set()
+
+
+ZONE = [(0, 0), (100, 0), (100, 100), (0, 100)]
+
+
+def test_dwell_leaves_people_out_until_they_have_stayed_long_enough():
+    d = Dwell(ZONE, min_seconds=2)
+    assert d.update({1: (50, 50)}, 0.0) == {1}
+    assert d.update({1: (50, 50)}, 1.9) == {1}
+    assert d.update({1: (50, 50)}, 2.0) == set()
+
+
+def test_dwell_ignores_people_outside_the_zone():
+    assert Dwell(ZONE, min_seconds=2).update({1: (150, 50)}, 0.0) == set()
+
+
+def test_dwell_keeps_the_time_through_a_brief_step_out_and_restarts_after_a_long_one():
+    d = Dwell(ZONE, min_seconds=2, grace=1.0)
+    d.update({1: (50, 50)}, 0.0)
+    d.update({1: (150, 50)}, 0.5)  # out for 0.5 s: time kept
+    assert d.update({1: (50, 50)}, 2.0) == set()
+    d.update({1: (150, 50)}, 3.0)
+    d.update({1: (150, 50)}, 4.5)  # out for 1.5 s: time restarts
+    assert d.update({1: (50, 50)}, 5.0) == {1}
+
+
+def test_dwell_forgets_dead_tracks():
+    d = Dwell(ZONE, min_seconds=2)
+    d.update({1: (50, 50), 2: (50, 50)}, 0.0)
+    d.forget({2})
+    assert set(d.entered) == {2} and set(d.last_in) == {2}

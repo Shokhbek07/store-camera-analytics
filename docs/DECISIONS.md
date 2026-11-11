@@ -314,3 +314,24 @@ The last wrong queue alert (`counter_1650`, 4:14 to 4:47) came from a man seated
 Both were chosen on the clips they are measured on; the edge is justified by the furniture and the duplicate rule by what it removes, but there is no held-out counter clip.
 Chairs move, so a zone drawn once can drift out of date and should be checked when the furniture changes.
 A person almost completely hidden behind another, with the visible part inside the front person's box, would be treated as a duplicate.
+
+## D18. A person counts in the queue after 2 s in the queue zone
+
+Decided 2026-11-11, from E19, after Shokhbek asked for a rule closer to his counting.
+
+**Options considered** (all replayed on the saved tracks, E19).
+
+- Count everyone in the zone (as before): matches Claude's labelling rule, but counts people walking through or just arriving, which the brief's "people waiting" does not mean.
+- Count people standing still: closer to Claude's marks than the time rules, but no better than 0.73 on Shokhbek's, and it drops people moving up in the line.
+- Count people after 3, 5 or 8 s in the zone: no better than 2 s on Shokhbek's marks and worse on Claude's, as longer waits miss people who just joined.
+- A queue as a chain of people from the counter: needs spacing thresholds that change with perspective; not tried.
+- **Count a person after 2 s in the queue zone, chosen:** the smallest wait with the lowest error on Shokhbek's marks (1.00 to 0.55), passing a bar set before the results were seen, with every expected alert still found and none wrong.
+
+**How it works.**
+`Dwell` in `src/storecam/events.py` records when each track's foot point entered the queue zone and leaves the track out of the count until it has been there `zones.queue_min_dwell_s` seconds (2 in `config.yaml` for the counter; 0 counts everyone).
+Up to 1 s outside the zone keeps the time, so a foot point that jumps for a frame does not restart it.
+
+**Cost.**
+A queue alert starts about 2 s later, and a new arrival appears in the live queue count 2 s after reaching the zone.
+Against Claude's marks, which count people walking in, the error rose (0.37, 0.17 and 0.00 to 0.53, 0.37 and 0.07).
+The 2 s is fitted to 11 marks from one clip (E19, Limits).

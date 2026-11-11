@@ -10,7 +10,8 @@ On five licensed MEVA clips (D1), measured against hand labels:
 
 - Door: 21 in and 4 out against 22 and 3 hand-counted on the arrival clip, and 0 in and 11 out against 0 and 13 on the departure clip.
   On two clips not used for tuning the count error fell from 4 to 1 and from 6 to 3 (E10).
-- Queue length: mean absolute error 1.00 people against Shokhbek's 11 marks, and 0.37, 0.17 and 0.00 against Claude's 30 marks on each of the three counter clips.
+- Queue length: mean absolute error 0.55 people against Shokhbek's 11 marks, and 0.53, 0.37 and 0.07 against Claude's 30 marks on each of the three counter clips.
+  The service counts people who have been in the queue zone for at least 2 s, as Shokhbek counted people queuing, which halved the error on his marks and raised it on Claude's, who counted everyone inside the zone (E19, D18).
   The two labellers themselves differ by 0.82 on average on the marks they share, so the reference is not much sharper than the system.
 - Alerts: every expected queue alert was raised (two of them merged into one) and no alert is wrong.
   A wrong queue alert came from a man seated at a table with his feet on the queue zone's edge; moving the edge in front of the chairs and counting one box per person removed it and halved the queue error against Claude's marks (E16, D17), chosen on the same clips, so with that caveat.
@@ -77,6 +78,7 @@ The live page went on the existing endpoint as one self-contained page (D16).
 The last wrong queue alert turned out to come from a seated man on the zone's edge, not the coffee table as the report had said; replaying saved tracks through candidate rules showed that only moving the edge removed it, and that leaving duplicate boxes out improved every labeller's error (E16, D17).
 Over two hours of waiting for a quiet machine ended in a burst of load from another project halfway through the speed comparison, so the benchmark was changed to alternate the two runtimes in short runs, three times each, and to record the load with every run (E15).
 A clean container run at 07:21, with other containers idle, then showed PyTorch about 1.4 times faster than the export there, so the Docker image keeps PyTorch (D15).
+At Shokhbek's request, replaying the saved tracks with rules closer to his counting rule found that counting people only after 2 s in the queue zone halved the error on his marks; it was kept by a bar set before the results were seen (E19, D18).
 Reading the code for the live review found that in the slow CPU-only container a late doorway exit could add a second row for a minute already written; a minute now waits while such an exit is pending, which left the offline results unchanged (E18).
 
 ## 4. What was built
@@ -85,7 +87,7 @@ Reading the code for the live review found that in the slow CPU-only container a
 - `src/storecam/sources.py`: one reader thread per source; real-time pacing for files, reconnect with exponential backoff for streams (D5).
 - `src/storecam/detect.py`: YOLO26s batched across sources, one ByteTrack per source (D2); PyTorch weights or an ONNX export run by ONNX Runtime (D15).
 - `src/storecam/export.py` (`storecam export-onnx`): the ONNX exports (D15, E15).
-- `src/storecam/events.py`: door line counting, per-second zone sampling, duplicate boxes, alerts (D4, D17).
+- `src/storecam/events.py`: door line counting, per-second zone sampling, duplicate boxes, time in the queue zone, alerts (D4, D17, D18).
 - `src/storecam/staff.py` and `scripts/calibrate_staff.py`: staff versus customer by uniform colour and time in the staff zone (D14).
 - `src/storecam/analytics.py`: per-minute CSV per source and alerts as JSON lines.
 - `src/storecam/service.py`: the main loop, the live page and JSON endpoint (`src/storecam/web.py`, D16), face-pixelated annotated video (D10).
@@ -125,19 +127,21 @@ The settings were chosen on these two clips (E9), so the same settings were chec
 
 ### 5.2 Queue length every 10 s
 
-The queue zone count is the median of the frames in each second (D4); the labels count customers waiting at or for the counter at each 10 s mark.
+The queue zone count is the median of the frames in each second (D4), leaving out staff (D14), duplicate boxes (D17) and anyone who has been in the zone for less than 2 s (D18); the labels count customers waiting at or for the counter at each 10 s mark.
 
 | Clip | Labeller | Marks | MAE | Mean error (system minus hand) | Exactly right | Mean queue |
 |---|---|---|---|---|---|---|
-| `counter_1650` | Shokhbek | 11 (0:10 to 3:30) | 1.00 | +1.00 | 4 | 1.7 |
-| `counter_1650` | Claude | 30 (0:00 to 4:50) | 0.37 | +0.10 | 20 | 2.4 |
-| `counter_1720` | Claude | 30 | 0.17 | -0.10 | 25 | 3.6 |
-| `counter_1735` | Claude | 30 | 0.00 | 0.00 | 30 | 0.5 |
+| `counter_1650` | Shokhbek | 11 (0:10 to 3:30) | 0.55 | +0.55 | 6 | 1.7 |
+| `counter_1650` | Claude | 30 (0:00 to 4:50) | 0.53 | -0.40 | 17 | 2.4 |
+| `counter_1720` | Claude | 30 | 0.37 | -0.37 | 20 | 3.6 |
+| `counter_1735` | Claude | 30 | 0.07 | -0.07 | 28 | 0.5 |
 
-The system never counts fewer people than Shokhbek.
+The system never counts fewer people than Shokhbek, and now mostly fewer than Claude.
 Before E16 the extra people were mostly on the zone's edges (a man seated at a table on the top edge, people at the coffee table) or walking through it, and one person was sometimes counted twice through a duplicate box; moving the top edge in front of the chairs and leaving duplicate boxes out halved the error against Claude's marks (E16, D17).
 On the 11 marks both labellers share, they agree exactly on 4 and Claude counts 0.82 more on average; the difference is the counting rule: Claude counted everyone standing inside the zone outline, Shokhbek counted the people who were queuing (E7).
-So "queue length" depends on the counting rule almost as much as on the detector, and the 1.00 against Shokhbek is the more conservative figure.
+So "queue length" depends on the counting rule almost as much as on the detector.
+The brief's queue is people waiting, which is Shokhbek's rule, so the service now counts only people who have stayed in the zone for 2 s (D18): against his marks the error fell from 1.00 to 0.55, with 5 of the 11 marks closer and none further, while against Claude's it rose from 0.37, 0.17 and 0.00 to 0.53, 0.37 and 0.07, because Claude also counted people still walking in (E19).
+The 2 s was chosen among 2, 3, 5 and 8 s on the same 11 marks, with the bar for keeping a rule set before the results were seen, but there are no other marks to check it on.
 `counter_1735` is quiet (half a person on average), so its 0.00 shows that empty and near-empty scenes are handled, not that the hard case is solved.
 
 Whether staff was present agreed with the labels at 10 of 11, 27 of 30, 29 of 30 and 26 of 30 marks.
@@ -156,9 +160,9 @@ A system alert is "found" when it overlaps an expected one.
 | `counter_1735` | queue | 0 | 0 | 0 | 0 | 0 |
 | `counter_1735` | empty counter | 0 | 0 | 0 | 0 | 0 |
 
-- `counter_1650`: the expected queue alerts at 0:00 to 0:30 and 0:40 to 1:50 were both covered by one system alert from 0:00 to 1:16 (peak 5), which bridged the short dip and ended about 34 s early.
+- `counter_1650`: the expected queue alerts at 0:00 to 0:30 and 0:40 to 1:50 were both covered by one system alert from 0:02 to 1:15 (peak 4), which bridged the short dip and ended about 35 s early.
   Before E16 a second system alert, 4:14 to 4:47 (peak 4), was wrong: the labels show 1 or 2 people waiting, and a man seated at a table with his feet on the zone's top edge was counted throughout; the edge now runs in front of the chairs (D17).
-- `counter_1720`: one expected alert, 0:20 to 4:20; the system raised it from 0:11 to 4:10 (peak 7).
+- `counter_1720`: one expected alert, 0:20 to 4:20; the system raised it from 0:13 to 4:10 (peak 6).
 - `counter_1735`: the attendant really did leave the counter from about 2:35 to 2:45, but nobody was waiting.
   Without the staff rule (D14) the system counted the attendant, crossing the queue zone, and a passer-by as waiting customers and raised a wrong empty-counter alert at 2:44.
   With it, the attendant is left out of the queue for the first two seconds, which keeps the condition under its 10 s threshold; the attendant's track then broke and the new track counted as a customer again, so this fix is narrow (E14).
@@ -279,6 +283,7 @@ Where Shokhbek took part, from the record of the work (dates in Tashkent time):
 - **Measurement.** He pointed out that other heavy jobs on the machine might be distorting the speed results, and later that the load had dropped, which led to the clean rerun in E11b (2026-11-10).
 - **Scope.** Once the requirements were met he asked to keep researching improvements (2026-11-10), which led to the staff rule (D14), the ONNX Runtime export (D15), the live page (D16) and the queue fix (D17).
 - **Decisions before leaving the machine (2026-11-11).** He chose to review Claude's queue labels himself, to have the speed comparison run under load if the machine never became quiet, to have Docker use the ONNX export if it proved much faster on CPU, and to keep improving in the meantime.
+- **Before leaving again (2026-11-11, about noon).** He chose three more experiments: a queue rule closer to his own counting rule (people queuing rather than everyone in the zone), the container's frame rate, and the tracker's lost-track time in seconds; and no release tag.
 - **Review.** Claude's queue labels have not been reviewed by Shokhbek yet; what his review changes will be recorded here.
 
 Which labels came from whom is recorded in the label files themselves and in E7.

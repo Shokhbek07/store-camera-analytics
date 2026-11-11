@@ -10,7 +10,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from .config import Source
-from .events import Alert, AlertTracker, LineCounter, SecondSample, ZoneSampler, duplicate_boxes
+from .events import Alert, AlertTracker, Dwell, LineCounter, SecondSample, ZoneSampler, duplicate_boxes
 from .staff import StaffClassifier
 
 CSV_FIELDS = ["source", "minute", "minute_start_video_s", "minute_start_wall", "in", "out", "queue_avg",
@@ -44,6 +44,7 @@ class SourceAnalytics:
                       for dl in source.door_lines]
         z = source.zones
         self.zones = ZoneSampler(z.queue, z.staff) if z.queue else None
+        self.dwell = Dwell(z.queue, z.queue_min_dwell_s) if z.queue and z.queue_min_dwell_s else None
         sa = source.staff_appearance
         self.staff = (StaffClassifier(sa.lab, sa.max_distance, z.staff, sa.min_zone_seconds)
                       if sa and z.queue and z.staff else None)
@@ -119,8 +120,11 @@ class SourceAnalytics:
             if self.staff is not None and image is not None:
                 self.staff_ids = self.staff.update(image, tracks, t)
                 self.staff.forget(alive)
-            dups = duplicate_boxes(tracks)
-            skip = [tid in self.staff_ids or tid in dups for tid in feet]
+            left_out = self.staff_ids | duplicate_boxes(tracks)  # staff (D14), duplicate boxes (D17)
+            if self.dwell is not None:
+                left_out |= self.dwell.update(feet, t)  # not in the zone long enough yet (D18)
+                self.dwell.forget(alive)
+            skip = [tid in left_out for tid in feet]
             for sample in self.zones.update(list(feet.values()), t, skip):
                 self._on_second(sample)
         self._row_for(t)  # a minute with no events still gets a row

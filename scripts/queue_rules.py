@@ -8,7 +8,9 @@
 The replay reproduces the full evaluation closely but not exactly (a few seconds differ), so a
 chosen rule is then checked with `scripts/evaluate.py --rerun`.
 
-Usage: uv run python scripts/queue_rules.py [--dump] [--out results/queue_rules.json]
+Usage: uv run python scripts/queue_rules.py [--dump] [--set e16|e19] [--out FILE]
+  --set e16 (default): every rule on the old zone, then zones with and without duplicate boxes.
+  --set e19: on the chosen zone with duplicate boxes left out, rules for people queuing (E19).
 """
 
 from __future__ import annotations
@@ -95,6 +97,13 @@ def duplicates(t, boxes, feet, zone, state):
     return {i for i, (tid, _) in enumerate(boxes) if tid in dup}
 
 
+def both(*rules):
+    """Leave out a box if any of the rules leaves it out; each rule keeps its own state."""
+    def rule(t, boxes, feet, zone, state):
+        return set().union(*(r(t, boxes, feet, zone, state.setdefault(k, {})) for k, r in enumerate(rules)))
+    return rule
+
+
 RULES = {
     "none": None,
     "at least 2 s in the zone": time_in_zone(2),
@@ -103,6 +112,17 @@ RULES = {
     "standing still (< 0.3 box heights/s)": standing_still(0.3),
     "standing still (< 0.5 box heights/s)": standing_still(0.5),
     "duplicate boxes left out": duplicates,
+}
+CHOSEN = "edge 730/725, in front of the chairs (chosen)"
+E19 = {  # on CHOSEN; duplicates are always left out, as in the service since E16
+    "duplicates (current)": duplicates,
+    "duplicates + at least 2 s in the zone": both(duplicates, time_in_zone(2)),
+    "duplicates + at least 3 s in the zone": both(duplicates, time_in_zone(3)),
+    "duplicates + at least 5 s in the zone": both(duplicates, time_in_zone(5)),
+    "duplicates + at least 8 s in the zone": both(duplicates, time_in_zone(8)),
+    "duplicates + standing still (< 0.3 box heights/s)": both(duplicates, standing_still(0.3)),
+    "duplicates + standing still (< 0.5 box heights/s)": both(duplicates, standing_still(0.5)),
+    "duplicates + 3 s in the zone + standing still (< 0.5)": both(duplicates, time_in_zone(3), standing_still(0.5)),
 }
 
 
@@ -158,6 +178,7 @@ def score(zone, rule, src) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dump", action="store_true")
+    ap.add_argument("--set", choices=["e16", "e19"], default="e16")
     ap.add_argument("--out")
     args = ap.parse_args()
     cfg = config.load("config.yaml")
@@ -165,10 +186,13 @@ def main() -> None:
     if args.dump or not (DUMP / f"{CLIPS[0]}.json").exists():
         dump(cfg)
     rows = []
-    trials = [(z, r) for r in RULES for z in list(ZONES)[:1]] + [(z, r) for z in list(ZONES)[1:]
-                                                                  for r in ("none", "duplicate boxes left out")]
-    for zname, rname in trials:
-        res = score(ZONES[zname], RULES[rname], src)
+    if args.set == "e19":
+        trials = [(CHOSEN, r, E19[r]) for r in E19]
+    else:
+        trials = [(z, r, RULES[r]) for r in RULES for z in list(ZONES)[:1]]
+        trials += [(z, r, RULES[r]) for z in list(ZONES)[1:] for r in ("none", "duplicate boxes left out")]
+    for zname, rname, rule in trials:
+        res = score(ZONES[zname], rule, src)
         rows.append({"zone": zname, "rule": rname, **res})
         mae = ", ".join(f"{k} {v}" for k, v in res["mae"].items())
         print(f"{zname} | {rname} | MAE {mae} | alerts {res['alerts_found']}/{res['alerts_expected']} found, "

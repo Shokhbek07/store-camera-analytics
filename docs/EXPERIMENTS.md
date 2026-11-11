@@ -586,3 +586,38 @@ The test now gives one row per minute with the exit in minute 0, and a second te
 Offline at 10 FPS a track is dropped 1.6 s after it was last seen, inside the existing 2 s wait, so `scripts/evaluate.py --rerun` gave the same outputs as before (only wall-clock timestamps differ).
 
 A related limit stays: `lost_seconds` is converted to frames at the target frame rate, so when the service runs slower, as in the container, a lost track is kept longer in seconds than configured.
+
+## E19. Counting people queuing rather than everyone in the zone (2026-11-11)
+
+**Question:** Shokhbek's queue marks count people who are queuing; Claude's count everyone standing inside the zone outline (E7).
+The brief's queue is people waiting, so can a rule bring the count closer to Shokhbek's marks on the zone chosen in E16?
+Shokhbek asked for this experiment.
+
+**Bar, set before the results were seen.**
+Keep a rule only if it lowers the error on Shokhbek's 11 marks by at least 0.2 people, still finds all 3 expected queue alerts, and raises no wrong one; report the change on Claude's marks either way, since the two labellers count different things.
+
+**Method.**
+`scripts/queue_rules.py --set e19` replays the saved tracks (E16) through the service's staff rule, per-second sampling and queue alert, with duplicate boxes always left out as in the service, adding one rule at a time (`results/queue_rules_e19.json`).
+"In the zone for N s" leaves a person out of the count until their foot point has been in the queue zone for N seconds, with up to 1 s outside allowed; "standing still" leaves out anyone moving faster than a share of their own box height per second.
+
+| Rule (on top of the current zone and duplicate boxes) | Shokhbek, `counter_1650` | Claude, `counter_1650` | Claude, `counter_1720` | Claude, `counter_1735` | Alerts found, wrong |
+|---|---|---|---|---|---|
+| none (as after E16) | 1.00 | 0.37 | 0.17 | 0.00 | 3 of 3, 0 |
+| at least 2 s in the zone | 0.55 | 0.53 | 0.37 | 0.07 | 3 of 3, 0 |
+| at least 3 s in the zone | 0.55 | 0.60 | 0.37 | 0.10 | 3 of 3, 0 |
+| at least 5 s in the zone | 0.73 | 0.70 | 0.70 | 0.13 | 3 of 3, 0 |
+| at least 8 s in the zone | 0.82 | 0.90 | 0.97 | 0.23 | 3 of 3, 0 |
+| standing still (< 0.3 box heights per s) | 0.73 | 0.50 | 0.27 | 0.10 | 3 of 3, 0 |
+| standing still (< 0.5 box heights per s) | 0.82 | 0.50 | 0.20 | 0.07 | 3 of 3, 0 |
+| 3 s in the zone and standing still (< 0.5) | 0.55 | 0.60 | 0.40 | 0.13 | 3 of 3, 0 |
+
+**Result.**
+"At least 2 s in the zone" passed the bar and is the smallest wait that reached the lowest error on Shokhbek's marks.
+On his marks 5 of 11 moved closer and none further (for example 2:30, where he counted nobody queuing: 3 before, 1 now), and the exact matches rose from 4 to 6.
+On Claude's marks the error rose on every clip, and the system now counts fewer people than Claude on average (by 0.40, 0.37 and 0.07), as expected from a rule that leaves out people still walking in.
+The full `scripts/evaluate.py --rerun` with the rule in the service (`zones.queue_min_dwell_s: 2`) gave the same errors as the replay; the queue alerts start 2 s later (0:02 instead of 0:00 on `counter_1650`, 0:13 instead of 0:11 on `counter_1720`) and peak one person lower, door counts and staff presence are unchanged.
+Longer waits lost more people who had just joined the queue, and "standing still" also dropped people moving up in the line.
+
+**Limits.**
+The 2 s was picked among four waits on the same 11 marks, from one clip and one labeller, so it is fitted to them; there are no other marks of Shokhbek's counting rule to check it on.
+The result also leans on which labelling rule is right for the brief; Claude's labels have not yet been reviewed by Shokhbek, which may move them towards his rule.

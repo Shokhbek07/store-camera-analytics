@@ -87,7 +87,7 @@ Measured on the MEVA clips below against hand labels; full tables, method and fa
 |---|---|
 | Door, arrival clip, hand vs system IN/OUT | 22/3 vs 21/4 (19 of 25 events matched within 2 s) |
 | Door, departure clip, hand vs system IN/OUT | 0/13 vs 0/11 (5 of 13 events matched within 2 s) |
-| Queue length MAE at 10 s marks | 1.00 (Shokhbek, 11 marks); 0.37, 0.17, 0.00 (Claude, 30 marks on each of 3 clips) |
+| Queue length MAE at 10 s marks | 0.55 (Shokhbek, 11 marks); 0.53, 0.37, 0.07 (Claude, 30 marks on each of 3 clips); people count once they have been in the queue zone for 2 s, Shokhbek's rule, while Claude also counted people walking in (E19) |
 | Queue alerts | 3 of 3 expected found (two merged into one), 0 wrong; the last wrong one, a seated man on the zone's edge, was removed by redrawing that edge, chosen on the same clips (E16) |
 | Staff versus customer (bonus) | uniform colour plus time behind the counter; left the attendant out of the queue when they walked through it, with one 1 s mistake after an ID switch (E14) |
 | ONNX Runtime export (bonus) | identical results to PyTorch on all five clips; with 2 streams on the Mac GPU the service ran at 127 against 109 FPS (medians of 3 alternating runs), slower with 1 stream (the batch-2 export pads it) and 2.8 times slower on the Mac CPU; in Docker on CPU faster than PyTorch only while other projects loaded the machine (1.2 to 3.4 times), and 1.4 times slower on a quiet machine, so Docker keeps PyTorch (E15) |

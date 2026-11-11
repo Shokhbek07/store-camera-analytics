@@ -1,0 +1,302 @@
+[
+ {
+  "zone": "edge 730/725, in front of the chairs (chosen)",
+  "rule": "duplicates (current)",
+  "mae": {
+   "counter_1650 shokhbek": 1.0,
+   "counter_1650 claude": 0.37,
+   "counter_1720 claude": 0.17,
+   "counter_1735 claude": 0.0
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     76,
+     5
+    ]
+   ],
+   "counter_1720": [
+    [
+     11,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 730/725, in front of the chairs (chosen)",
+  "rule": "duplicates + at least 2 s in the zone",
+  "mae": {
+   "counter_1650 shokhbek": 0.55,
+   "counter_1650 claude": 0.53,
+   "counter_1720 claude": 0.37,
+   "counter_1735 claude": 0.07
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     2,
+     75,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     14,
+     250,
+     6
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 730/725, in front of the chairs (chosen)",
+  "rule": "duplicates + at least 3 s in the zone",
+  "mae": {
+   "counter_1650 shokhbek": 0.55,
+   "counter_1650 claude": 0.6,
+   "counter_1720 claude": 0.37,
+   "counter_1735 claude": 0.1
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     3,
+     75,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     23,
+     169,
+     5
+    ],
+    [
+     176,
+     250,
+     4
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 730/725, in front of the chairs (chosen)",
+  "rule": "duplicates + at least 5 s in the zone",
+  "mae": {
+   "counter_1650 shokhbek": 0.73,
+   "counter_1650 claude": 0.7,
+   "counter_1720 claude": 0.7,
+   "counter_1735 claude": 0.13
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     5,
+     59,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     25,
+     143,
+     5
+    ],
+    [
+     148,
+     169,
+     3
+    ],
+    [
+     178,
+     194,
+     4
+    ],
+    [
+     199,
+     225,
+     4
+    ],
+    [
+     231,
+     250,
+     3
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 730/725, in front of the chairs (chosen)",
+  "rule": "duplicates + at least 8 s in the zone",
+  "mae": {
+   "counter_1650 shokhbek": 0.82,
+   "counter_1650 claude": 0.9,
+   "counter_1720 claude": 0.97,
+   "counter_1735 claude": 0.23
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     8,
+     59,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     43,
+     57,
+     4
+    ],
+    [
+     63,
+     126,
+     5
+    ],
+    [
+     132,
+     143,
+     4
+    ],
+    [
+     151,
+     169,
+     3
+    ],
+    [
+     181,
+     194,
+     4
+    ],
+    [
+     202,
+     225,
+     3
+    ],
+    [
+     234,
+     250,
+     3
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 730/725, in front of the chairs (chosen)",
+  "rule": "duplicates + standing still (< 0.3 box heights/s)",
+  "mae": {
+   "counter_1650 shokhbek": 0.73,
+   "counter_1650 claude": 0.5,
+   "counter_1720 claude": 0.27,
+   "counter_1735 claude": 0.1
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     2,
+     59,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     22,
+     248,
+     6
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 730/725, in front of the chairs (chosen)",
+  "rule": "duplicates + standing still (< 0.5 box heights/s)",
+  "mae": {
+   "counter_1650 shokhbek": 0.82,
+   "counter_1650 claude": 0.5,
+   "counter_1720 claude": 0.2,
+   "counter_1735 claude": 0.07
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     0,
+     75,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     11,
+     250,
+     7
+    ]
+   ],
+   "counter_1735": []
+  }
+ },
+ {
+  "zone": "edge 730/725, in front of the chairs (chosen)",
+  "rule": "duplicates + 3 s in the zone + standing still (< 0.5)",
+  "mae": {
+   "counter_1650 shokhbek": 0.55,
+   "counter_1650 claude": 0.6,
+   "counter_1720 claude": 0.4,
+   "counter_1735 claude": 0.13
+  },
+  "alerts_found": 3,
+  "alerts_expected": 3,
+  "alerts_wrong": 0,
+  "intervals": {
+   "counter_1650": [
+    [
+     3,
+     59,
+     4
+    ]
+   ],
+   "counter_1720": [
+    [
+     23,
+     168,
+     5
+    ],
+    [
+     176,
+     250,
+     4
+    ]
+   ],
+   "counter_1735": []
+  }
+ }
+]

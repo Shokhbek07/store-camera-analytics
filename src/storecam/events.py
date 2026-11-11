@@ -180,6 +180,37 @@ def duplicate_boxes(boxes: dict[int, tuple[float, float, float, float]]) -> set[
     return dup
 
 
+class Dwell:
+    """Tracks that have not yet stayed `min_seconds` in a zone, so a passer-by is not counted.
+
+    A track's time starts when its foot point first enters the zone and restarts if it has been
+    outside for more than `grace` seconds; a brief step out, or a frame where the foot point
+    jumps, keeps the time (E19).
+    """
+
+    def __init__(self, zone: list[Point], min_seconds: float, grace: float = 1.0):
+        self.zone, self.min_seconds, self.grace = zone, min_seconds, grace
+        self.entered: dict[int, float] = {}
+        self.last_in: dict[int, float] = {}
+
+    def update(self, feet: dict[int, Point], t: float) -> set[int]:
+        short = set()
+        for tid, p in feet.items():
+            if point_in_polygon(p, self.zone):
+                self.entered.setdefault(tid, t)
+                self.last_in[tid] = t
+            elif tid in self.last_in and t - self.last_in[tid] > self.grace:
+                self.entered.pop(tid, None)
+            if tid in self.entered and t - self.entered[tid] < self.min_seconds:
+                short.add(tid)
+        return short
+
+    def forget(self, alive: set[int]) -> None:
+        for d in (self.entered, self.last_in):
+            for tid in [tid for tid in d if tid not in alive]:
+                del d[tid]
+
+
 class ZoneSampler:
     """Reduces per-frame zone counts to one value per whole second.
 

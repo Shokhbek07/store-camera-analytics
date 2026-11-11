@@ -32,9 +32,9 @@
    "clip": "counter_1650",
    "labeller": "shokhbek",
    "marks": 11,
-   "mae": 1.0,
-   "bias": 1.0,
-   "exact": 4,
+   "mae": 0.545,
+   "bias": 0.545,
+   "exact": 6,
    "hand_mean": 1.73,
    "staff_agreement": 10,
    "per_mark": [
@@ -48,7 +48,7 @@
     {
      "t": 30,
      "hand": 2,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
@@ -62,7 +62,7 @@
     {
      "t": 70,
      "hand": 2,
-     "system": 4,
+     "system": 3,
      "hand_staff": true,
      "system_staff": true
     },
@@ -90,7 +90,7 @@
     {
      "t": 150,
      "hand": 0,
-     "system": 3,
+     "system": 1,
      "hand_staff": true,
      "system_staff": true
     },
@@ -104,7 +104,7 @@
     {
      "t": 190,
      "hand": 2,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
@@ -121,16 +121,16 @@
    "clip": "counter_1650",
    "labeller": "claude",
    "marks": 30,
-   "mae": 0.367,
-   "bias": 0.1,
-   "exact": 20,
+   "mae": 0.533,
+   "bias": -0.4,
+   "exact": 17,
    "hand_mean": 2.4,
    "staff_agreement": 27,
    "per_mark": [
     {
      "t": 0,
      "hand": 4,
-     "system": 5,
+     "system": 0,
      "hand_staff": true,
      "system_staff": true
     },
@@ -151,7 +151,7 @@
     {
      "t": 30,
      "hand": 2,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
@@ -172,14 +172,14 @@
     {
      "t": 60,
      "hand": 3,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 70,
      "hand": 4,
-     "system": 4,
+     "system": 3,
      "hand_staff": true,
      "system_staff": true
     },
@@ -200,7 +200,7 @@
     {
      "t": 100,
      "hand": 3,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
@@ -235,14 +235,14 @@
     {
      "t": 150,
      "hand": 1,
-     "system": 3,
+     "system": 1,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 160,
      "hand": 3,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
@@ -263,7 +263,7 @@
     {
      "t": 190,
      "hand": 3,
-     "system": 3,
+     "system": 2,
      "hand_staff": true,
      "system_staff": true
     },
@@ -284,7 +284,7 @@
     {
      "t": 220,
      "hand": 2,
-     "system": 2,
+     "system": 1,
      "hand_staff": true,
      "system_staff": true
     },
@@ -305,7 +305,7 @@
     {
      "t": 250,
      "hand": 1,
-     "system": 2,
+     "system": 1,
      "hand_staff": true,
      "system_staff": true
     },
@@ -343,16 +343,16 @@
    "clip": "counter_1720",
    "labeller": "claude",
    "marks": 30,
-   "mae": 0.167,
-   "bias": -0.1,
-   "exact": 25,
+   "mae": 0.367,
+   "bias": -0.367,
+   "exact": 20,
    "hand_mean": 3.63,
    "staff_agreement": 29,
    "per_mark": [
     {
      "t": 0,
      "hand": 1,
-     "system": 1,
+     "system": 0,
      "hand_staff": true,
      "system_staff": true
     },
@@ -366,21 +366,21 @@
     {
      "t": 20,
      "hand": 4,
-     "system": 4,
+     "system": 3,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 30,
      "hand": 6,
-     "system": 5,
+     "system": 4,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 40,
      "hand": 6,
-     "system": 6,
+     "system": 5,
      "hand_staff": true,
      "system_staff": true
     },
@@ -401,7 +401,7 @@
     {
      "t": 70,
      "hand": 5,
-     "system": 5,
+     "system": 4,
      "hand_staff": true,
      "system_staff": true
     },
@@ -422,14 +422,14 @@
     {
      "t": 100,
      "hand": 5,
-     "system": 5,
+     "system": 4,
      "hand_staff": true,
      "system_staff": true
     },
     {
      "t": 110,
      "hand": 5,
-     "system": 5,
+     "system": 4,
      "hand_staff": true,
      "system_staff": true
     },
@@ -492,7 +492,7 @@
     {
      "t": 200,
      "hand": 3,
-     "system": 4,
+     "system": 3,
      "hand_staff": true,
      "system_staff": true
     },
@@ -565,16 +565,16 @@
    "clip": "counter_1735",
    "labeller": "claude",
    "marks": 30,
-   "mae": 0.0,
-   "bias": 0.0,
-   "exact": 30,
+   "mae": 0.067,
+   "bias": -0.067,
+   "exact": 28,
    "hand_mean": 0.47,
    "staff_agreement": 26,
    "per_mark": [
     {
      "t": 0,
      "hand": 1,
-     "system": 1,
+     "system": 0,
      "hand_staff": true,
      "system_staff": true
     },
@@ -749,7 +749,7 @@
     {
      "t": 250,
      "hand": 1,
-     "system": 1,
+     "system": 0,
      "hand_staff": false,
      "system_staff": true
     },
@@ -796,9 +796,9 @@
    "wrong": 0,
    "system_intervals": [
     [
-     0,
-     76,
-     5
+     2,
+     75,
+     4
     ]
    ],
    "hand_intervals": [
@@ -835,9 +835,9 @@
    "wrong": 0,
    "system_intervals": [
     [
-     11,
+     13,
      250,
-     7
+     6
     ]
    ],
    "hand_intervals": [
