@@ -621,3 +621,26 @@ Longer waits lost more people who had just joined the queue, and "standing still
 **Limits.**
 The 2 s was picked among four waits on the same 11 marks, from one clip and one labeller, so it is fitted to them; there are no other marks of Shokhbek's counting rule to check it on.
 The result also leans on which labelling rule is right for the brief; Claude's labels have not yet been reviewed by Shokhbek, which may move them towards his rule.
+
+## E20. Should the tracker keep lost tracks for real seconds? (2026-11-11)
+
+**Question:** `tracker.lost_seconds` (1.5 s) becomes a number of frames at the target 10 FPS (15), so when the service runs slower, as at 5 to 7 FPS in the CPU-only container (E15), a lost track is kept for 2 to 3 s instead (E18).
+Would counting it in real seconds make the counts more accurate on a slow machine?
+Shokhbek asked for this experiment; the bar was to change the code only if it measurably helped.
+
+**Method.**
+A slow machine was imitated offline, where results are repeatable: `scripts/evaluate.py --rerun` with `process_fps: 5`, once with `lost_seconds: 1.5` (what a buffer in real seconds gives at 5 FPS) and once with `lost_seconds: 3.0` (15 frames at 5 FPS, what the frame count gives today on a machine reaching only 5 FPS), everything else as after E19 (`results/e20/`).
+
+| Measure | 10 FPS (as evaluated) | 5 FPS, lost track kept 1.5 s | 5 FPS, kept 3.0 s |
+|---|---|---|---|
+| Door, arrival clip, IN/OUT and matched within 2 s | 21/4, 19 | 21/4, 20 | 21/4, 20 |
+| Door, departure clip, IN/OUT and matched | 0/11, 5 | 0/12, 7 | 0/11, 6 |
+| Queue MAE: Shokhbek; Claude 1650, 1720, 1735 | 0.55; 0.53, 0.37, 0.07 | 0.55; 0.70, 0.37, 0.10 | 0.55; 0.70, 0.33, 0.10 |
+| Staff presence agreeing with the labels | 10, 27, 29, 26 | the same | the same |
+| Queue alerts found, wrong | 3 of 3, 0 | 3 of 3, 0 | 3 of 3, 0 |
+
+**Result.**
+At 5 FPS the two settings differ by one departure matched in favour of 1.5 s and one queue mark in favour of 3.0 s, so keeping lost tracks in real seconds makes no measurable difference here, and the code was left as it is; the setting's comment now says it is counted in frames.
+The timing problem it caused in the minute rows was fixed separately (E18).
+
+A side result: at half the frame rate the door counts held up (one more departure matched than at 10 FPS, within noise) and the queue error rose on one clip (0.53 to 0.70 against Claude's marks on `counter_1650`), so the service degrades gently at the 5 to 7 FPS of the CPU-only container, and counter cameras could run at a lower rate on a large site (REPORT section 7).

@@ -26,7 +26,10 @@ class TrackerConfig(Strict):
     track_low_thresh: float = 0.1
     new_track_thresh: float = 0.25
     match_thresh: float = 0.8
-    lost_seconds: float = Field(1.5, gt=0)  # keep a lost track this long before dropping it
+    # Keep a lost track this long before dropping it. ByteTrack counts it in frames at process_fps,
+    # so when the service runs slower a lost track is kept longer; at 5 FPS this made no
+    # measurable difference to the counts (E20).
+    lost_seconds: float = Field(1.5, gt=0)
     fuse_score: bool = True
 
 
