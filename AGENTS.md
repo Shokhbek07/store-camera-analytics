@@ -33,6 +33,7 @@ Python 3.12 managed with `uv`.
 All required parts of the brief are done, measured and pushed.
 Bonuses done: batched inference across streams, staff versus customer (D14, E14), the ONNX Runtime export (D15, E15) and the live page (D16).
 The last wrong queue alert was removed by moving the queue zone's top edge in front of the chairs and leaving duplicate boxes out of the queue count (D17, E16); `scripts/queue_rules.py` replays saved tracks to try queue rules quickly.
+A person counts in the queue only after 2 s in the queue zone (D18, E19), as Shokhbek counts people queuing; the tracker's frame-based lost time was kept (E20); the CPU-only container cannot reach 10 FPS without a cheaper detector, which lost accuracy, so the evaluated model and Ultralytics' 8 threads stay (E21).
 `scripts/evaluate.py` reuses saved runs unless given `--rerun`; always pass `--rerun` after changing code or config.
 Load on this machine comes in bursts from other projects' containers; compare speeds with `scripts/benchmark.py --compare` or `scripts/benchmark_docker.sh <seconds> <repeats>`, which alternate the runtimes and record the load per run.
 Local-only files (ignored by git): `runs/review/review.md` (29 queue marks waiting for Shokhbek's review, rebuilt by `scripts/review_sheet.py`), `runs/staff_analysis/` (the scratch analysis behind E14) `runs/onnx/` (the ONNX evaluation run behind E15) and `runs/live_review_prep.md` (a study guide for Shokhbek's live review: the path of a frame, where to change common things, expected questions).
