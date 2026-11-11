@@ -134,7 +134,9 @@ def compare(report, stem, who, suffix, s, run_dir, duration) -> None:
                     "bias": round(sum(errs) / len(errs), 3),
                     "exact": sum(1 for e in errs if e == 0),
                     "hand_mean": round(sum(h["queue"] for h, _ in pairs) / len(pairs), 2),
-                    "staff_agreement": sum(1 for h, (_, st) in pairs if st == h["staff_present"]),
+                    # staff presence was not marked in every round (null)
+                    "staff_marks": sum(1 for h, _ in pairs if h.get("staff_present") is not None),
+                    "staff_agreement": sum(1 for h, (_, st) in pairs if st == h.get("staff_present")),
                     "per_mark": [
                         {
                             "t": h["t"],

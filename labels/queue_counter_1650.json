@@ -1,61 +1,156 @@
 {
  "video": "data/meva/counter_1650.avi",
  "mode": "queue",
+ "labeller": "shokhbek",
+ "method": "Counted by Shokhbek: people waiting at the counter or being served there, with their feet inside the queue outline; not staff, people at the side tables, or people walking through. round=first: marked with scripts/label.py every 20 s from 0:10 to 3:30 (2026-11-08). round=blind review: counted on 2026-11-11 from the frames of runs/review (scripts/review_sheet.py), the 10 s marks where Claude's label differed from the system at the time, on a sheet showing no other count; staff presence was not marked there (null).",
  "labels": [
+  {
+   "t": 0,
+   "queue": 3,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "4th person is going somewhere else so it is not counted"
+  },
   {
    "t": 10,
    "queue": 3,
-   "staff_present": true
+   "staff_present": true,
+   "round": "first"
+  },
+  {
+   "t": 20,
+   "queue": 3,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "4th person is far behind so I would not count him as a person in the queue"
   },
   {
    "t": 30,
    "queue": 2,
-   "staff_present": true
+   "staff_present": true,
+   "round": "first"
   },
   {
    "t": 50,
    "queue": 2,
-   "staff_present": true
+   "staff_present": true,
+   "round": "first"
   },
   {
    "t": 70,
    "queue": 2,
-   "staff_present": true
+   "staff_present": true,
+   "round": "first"
+  },
+  {
+   "t": 80,
+   "queue": 2,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "2nd person is bit behind but still in a queue"
   },
   {
    "t": 90,
    "queue": 2,
-   "staff_present": true
+   "staff_present": true,
+   "round": "first"
   },
   {
    "t": 110,
    "queue": 2,
-   "staff_present": true
+   "staff_present": true,
+   "round": "first"
+  },
+  {
+   "t": 120,
+   "queue": 1,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "other people shown in the area are doint other stuff not in queue"
   },
   {
    "t": 130,
    "queue": 1,
-   "staff_present": true
+   "staff_present": true,
+   "round": "first"
   },
   {
    "t": 150,
    "queue": 0,
-   "staff_present": true
+   "staff_present": true,
+   "round": "first"
   },
   {
    "t": 170,
    "queue": 2,
-   "staff_present": true
+   "staff_present": true,
+   "round": "first"
+  },
+  {
+   "t": 180,
+   "queue": 2,
+   "staff_present": null,
+   "round": "blind review"
   },
   {
    "t": 190,
    "queue": 2,
-   "staff_present": true
+   "staff_present": true,
+   "round": "first"
   },
   {
    "t": 210,
    "queue": 1,
-   "staff_present": true
+   "staff_present": true,
+   "round": "first"
+  },
+  {
+   "t": 220,
+   "queue": 1,
+   "staff_present": null,
+   "round": "blind review"
+  },
+  {
+   "t": 230,
+   "queue": 0,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "there is a woman in area but she is just passing by"
+  },
+  {
+   "t": 240,
+   "queue": 0,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "there is a woman in area but she is just standing there looking to the other side"
+  },
+  {
+   "t": 250,
+   "queue": 0,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "there is a woman in area but she is just standing there looking to other side"
+  },
+  {
+   "t": 260,
+   "queue": 1,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "other woman is looking to other side with no intention to be in a queue"
+  },
+  {
+   "t": 270,
+   "queue": 1,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "other woman is looking to other side with no intention for queue"
+  },
+  {
+   "t": 280,
+   "queue": 1,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "other woman is looking to other side with no intention for queue"
   }
  ]
 }

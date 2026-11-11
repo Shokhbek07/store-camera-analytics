@@ -693,3 +693,22 @@ The bar, set before the run: adopt 6 threads in the container only if it is fast
 
 Eight threads was 2 to 3% faster on the detector in every pair and the frame rates were the same within noise, so 6 threads did not meet the bar and the default stays; `model.cpu_threads` remains as an option for other machines.
 These runs also repeat the quiet container speed of E15: about 7.6 and 6.9 FPS per stream.
+
+## E22. Does the 2 s queue rule hold on marks it was not chosen on? (2026-11-11)
+
+**Question:** the 2 s rule (D18) was picked on Shokhbek's 11 queue marks of `counter_1650` (E19), so its 0.55 error is fitted to them.
+Shokhbek then counted 19 more marks blind, without seeing Claude's or the system's numbers: 12 on `counter_1650` and 7 on `counter_1720`, his first marks of that clip.
+They were not used to choose anything, so they test the rule.
+
+**Which marks.**
+They are the 10 s marks where Claude's label differed from the system's count at the time the review sheet was made (`scripts/review_sheet.py`, 2026-11-10, before E16) and that Shokhbek had not marked.
+So they over-represent hard moments, and the error on them is not an estimate for a whole clip.
+Shokhbek counted them from the frames with the zones drawn on, on a copy of the sheet that showed only the clip, the time and the image, and wrote a note where he left someone out; staff presence was not marked.
+
+**Bar, set before the results were seen.**
+D18 holds if, on these 19 marks, the service with the 2 s rule has a lower mean absolute error than the same service without it (duplicate boxes left out, as after E16).
+If it does not, D18 is reverted and the report says so.
+The other E19 candidates are scored on the 19 marks for information only; none is adopted from them, so that they stay a test.
+
+**Method.**
+`scripts/queue_rules.py --set e19` replays the saved tracks with each rule and now scores Shokhbek's marks per round as well; the adopted configuration is then checked with the full `scripts/evaluate.py --rerun`.

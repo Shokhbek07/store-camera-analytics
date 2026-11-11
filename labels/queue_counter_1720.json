@@ -1,0 +1,52 @@
+{
+ "video": "data/meva/counter_1720.avi",
+ "mode": "queue",
+ "labeller": "shokhbek",
+ "method": "Counted by Shokhbek: people waiting at the counter or being served there, with their feet inside the queue outline; not staff, people at the side tables, or people walking through. round=first: marked with scripts/label.py every 20 s from 0:10 to 3:30 (2026-11-08). round=blind review: counted on 2026-11-11 from the frames of runs/review (scripts/review_sheet.py), the 10 s marks where Claude's label differed from the system at the time, on a sheet showing no other count; staff presence was not marked there (null).",
+ "labels": [
+  {
+   "t": 0,
+   "queue": 1,
+   "staff_present": null,
+   "round": "blind review"
+  },
+  {
+   "t": 10,
+   "queue": 2,
+   "staff_present": null,
+   "round": "blind review"
+  },
+  {
+   "t": 20,
+   "queue": 3,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "other woman is looking to other side with no intention"
+  },
+  {
+   "t": 130,
+   "queue": 4,
+   "staff_present": null,
+   "round": "blind review"
+  },
+  {
+   "t": 160,
+   "queue": 3,
+   "staff_present": null,
+   "round": "blind review"
+  },
+  {
+   "t": 200,
+   "queue": 3,
+   "staff_present": null,
+   "round": "blind review"
+  },
+  {
+   "t": 250,
+   "queue": 2,
+   "staff_present": null,
+   "round": "blind review",
+   "note": "other man is looking to other side"
+  }
+ ]
+}
