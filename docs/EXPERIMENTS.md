@@ -644,3 +644,41 @@ At 5 FPS the two settings differ by one departure matched in favour of 1.5 s and
 The timing problem it caused in the minute rows was fixed separately (E18).
 
 A side result: at half the frame rate the door counts held up (one more departure matched than at 10 FPS, within noise) and the queue error rose on one clip (0.53 to 0.70 against Claude's marks on `counter_1650`), so the service degrades gently at the 5 to 7 FPS of the CPU-only container, and counter cameras could run at a lower rate on a large site (REPORT section 7).
+
+## E21. Can the CPU-only container reach 10 FPS per stream? (2026-11-11)
+
+**Question:** in the container the service reaches 7.4 and 6.6 FPS per stream on a quiet machine (E15), below the 10 FPS target.
+Shokhbek asked whether PyTorch's thread count, which Ultralytics fixes at `min(8, cores - 1)` (8 in the 10-CPU VM), could leave enough CPU for video decoding to close the gap.
+`model.cpu_threads` (and `--cpu-threads`) now sets it, applied after Ultralytics sets its own; `run_summary.json` records it.
+
+**Thread counts, under load** (`scripts/benchmark_docker.sh 60 2` with 4, 6, 8 and 10 threads, order alternating; `results/e21/docker_threads_under_load_2026-11-11.json`).
+The watcher started it at 15:48 with the machine quiet, but other containers used up to 1.1 cores during the first repeat and 3.5 to 4.3 cores during the second:
+
+| Threads | Repeat 1, FPS per stream (ms per batch) | Other containers | Repeat 2, FPS per stream (ms per batch) | Other containers |
+|---|---|---|---|---|
+| 4 | 3.94, 3.43 (225) | 1 to 33% | 2.12, 1.90 (428) | 362 to 437% |
+| 6 | 4.07, 3.55 (219) | 41 to 51% | 1.03, 0.88 (882) | 348 to 414% |
+| 8 (default) | 3.74, 3.32 (240) | 23 to 112% | 1.89, 1.72 (480) | 404 to 429% |
+| 10 | 2.14, 2.41 (374) | 22 to 115% | 1.29, 0.98 (694) | 127 to 413% |
+
+Ten threads, as many as the VM's CPUs, was clearly worse in the first repeat: the detector then competes with the two video decoders.
+Between 4, 6 and 8 the differences are smaller than the effect of the changing load.
+
+**Why threads cannot reach the target.**
+On the quiet machine the detector alone took 119 ms per batch of two frames (E15), which caps the service at about 8.4 FPS per stream before decoding, tracking and the zone logic take their share; fewer threads can only shift CPU between the detector and the decoders.
+So 10 FPS on this CPU needs a cheaper detector.
+
+**Cheaper detectors, accuracy** (`scripts/evaluate.py --rerun`, offline on the Mac, so the numbers are repeatable; everything else as after E19; `results/e21/report_*.json`):
+
+| Measure | YOLO26s, 640 px (current) | YOLO26n, 640 px | YOLO26s, 480 px |
+|---|---|---|---|
+| Door, arrival clip, IN/OUT and matched within 2 s | 21/4, 19 | 22/4, 20 | 20/4, 17 |
+| Door, departure clip, IN/OUT and matched | 0/11, 5 | 0/8, 4 | 0/10, 4 |
+| Queue MAE: Shokhbek; Claude 1650, 1720, 1735 | 0.55; 0.53, 0.37, 0.07 | 0.64; 0.63, 0.33, 0.10 | 0.73; 0.53, 0.43, 0.07 |
+| Staff presence agreeing with the labels | 10, 27, 29, 26 | 8, 23, 20, 19 | 10, 27, 30, 25 |
+| Queue alerts found / wrong; wrong empty-counter alerts | 3 of 3 / 0; 0 | 3 of 3 / 0; 3 | 3 of 3 / 0; 0 |
+
+YOLO26n misses the attendant often enough to raise three wrong empty-counter alerts, and loses departures; YOLO26s at 480 px loses door matches on both clips and raises the queue error on Shokhbek's marks from 0.55 to 0.73.
+Both would buy container speed with accuracy, so the evaluated model stays everywhere, and the 10 FPS target is met where it was designed to be: on a GPU (the Mac's here, E11b; NVIDIA on a server, REPORT section 7).
+
+**Still to do:** 6 against 8 threads on a quiet machine, three alternating pairs; adopt 6 in the container only if it is faster in every pair with other containers under half a core in every run (bar set before the run).

@@ -1,0 +1,158 @@
+{
+ "method": "scripts/benchmark_docker.sh 60 2 with PyTorch at 4, 6, 8 (Ultralytics' default here) and 10 CPU threads, alternating order",
+ "conditions": "not quiet: started at 15:48 with host load 3.6, but other containers used up to 1.1 cores during repeat 1 and 3.5 to 4.3 cores during repeat 2 (other_containers_cpu_pct)",
+ "rows": [
+  {
+   "label": "t4",
+   "args": "--cpu-threads 4",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "cpu_threads": 4,
+   "repeat": 1,
+   "load_1min_start": 6.7,
+   "other_containers_cpu_pct": [
+    1,
+    33
+   ],
+   "per_stream_fps": {
+    "counter": 3.94,
+    "door": 3.43
+   },
+   "detector_ms_per_batch": 225.12,
+   "mean_batch": 1.87
+  },
+  {
+   "label": "t6",
+   "args": "--cpu-threads 6",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "cpu_threads": 6,
+   "repeat": 1,
+   "load_1min_start": 9.9,
+   "other_containers_cpu_pct": [
+    41,
+    51
+   ],
+   "per_stream_fps": {
+    "counter": 4.07,
+    "door": 3.55
+   },
+   "detector_ms_per_batch": 219.04,
+   "mean_batch": 1.87
+  },
+  {
+   "label": "t8",
+   "args": "--cpu-threads 8",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "cpu_threads": 8,
+   "repeat": 1,
+   "load_1min_start": 10.4,
+   "other_containers_cpu_pct": [
+    112,
+    23
+   ],
+   "per_stream_fps": {
+    "counter": 3.74,
+    "door": 3.32
+   },
+   "detector_ms_per_batch": 239.51,
+   "mean_batch": 1.89
+  },
+  {
+   "label": "t10",
+   "args": "--cpu-threads 10",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "cpu_threads": 10,
+   "repeat": 1,
+   "load_1min_start": 10.2,
+   "other_containers_cpu_pct": [
+    22,
+    115
+   ],
+   "per_stream_fps": {
+    "counter": 2.14,
+    "door": 2.41
+   },
+   "detector_ms_per_batch": 374.45,
+   "mean_batch": 1.89
+  },
+  {
+   "label": "t10",
+   "args": "--cpu-threads 10",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "cpu_threads": 10,
+   "repeat": 2,
+   "load_1min_start": 11.8,
+   "other_containers_cpu_pct": [
+    127,
+    413
+   ],
+   "per_stream_fps": {
+    "counter": 1.29,
+    "door": 0.98
+   },
+   "detector_ms_per_batch": 693.99,
+   "mean_batch": 1.76
+  },
+  {
+   "label": "t8",
+   "args": "--cpu-threads 8",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "cpu_threads": 8,
+   "repeat": 2,
+   "load_1min_start": 17.6,
+   "other_containers_cpu_pct": [
+    404,
+    429
+   ],
+   "per_stream_fps": {
+    "counter": 1.89,
+    "door": 1.72
+   },
+   "detector_ms_per_batch": 480.3,
+   "mean_batch": 1.91
+  },
+  {
+   "label": "t6",
+   "args": "--cpu-threads 6",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "cpu_threads": 6,
+   "repeat": 2,
+   "load_1min_start": 11.5,
+   "other_containers_cpu_pct": [
+    414,
+    348
+   ],
+   "per_stream_fps": {
+    "counter": 1.03,
+    "door": 0.88
+   },
+   "detector_ms_per_batch": 882.32,
+   "mean_batch": 1.85
+  },
+  {
+   "label": "t4",
+   "args": "--cpu-threads 4",
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "cpu_threads": 4,
+   "repeat": 2,
+   "load_1min_start": 14.7,
+   "other_containers_cpu_pct": [
+    362,
+    437
+   ],
+   "per_stream_fps": {
+    "counter": 2.12,
+    "door": 1.9
+   },
+   "detector_ms_per_batch": 428.21,
+   "mean_batch": 1.9
+  }
+ ]
+}
