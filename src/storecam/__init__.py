@@ -23,6 +23,7 @@ def main() -> None:
                      help="process every sampled frame as fast as possible instead of at real-time speed")
     run.add_argument("--max-seconds", type=float, help="stop after this many seconds")
     run.add_argument("--weights", help="replace model.weights from the config, e.g. an ONNX export")
+    run.add_argument("--cpu-threads", type=int, help="replace model.cpu_threads: PyTorch threads on CPU")
     prev = sub.add_parser("preview", help="draw each source's lines and zones on its first frame")
     prev.add_argument("config", nargs="?", default="config.yaml")
     prev.add_argument("--out", default="runs/preview")
@@ -53,6 +54,8 @@ def main() -> None:
         from .service import Service
         if args.weights:
             cfg.model.weights = args.weights
+        if args.cpu_threads:
+            cfg.model.cpu_threads = args.cpu_threads
         # A missing file would otherwise look like a camera that is down: retried forever.
         missing = [s.url for s in cfg.sources if "://" not in s.url and not Path(s.url).is_file()]
         if missing:

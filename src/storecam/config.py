@@ -19,6 +19,8 @@ class ModelConfig(Strict):
     imgsz: int = 640
     conf: float = Field(0.25, ge=0, le=1)
     device: str = "auto"  # auto picks cuda, then mps, then cpu
+    # PyTorch threads when the detector runs on CPU; None keeps Ultralytics' choice, min(8, cores - 1).
+    cpu_threads: int | None = Field(None, ge=1)
 
 
 class TrackerConfig(Strict):

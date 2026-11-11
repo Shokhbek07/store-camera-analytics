@@ -36,6 +36,10 @@ class Detector:
         self.half = self.device.startswith("cuda") and not self.onnx
         if self.onnx:
             self._setup_onnx()
+        elif self.device == "cpu" and cfg.cpu_threads:
+            # Ultralytics sets its own thread count when it loads the model on the first predict.
+            self([np.zeros((cfg.imgsz, cfg.imgsz, 3), np.uint8)])
+            torch.set_num_threads(cfg.cpu_threads)
 
     def _setup_onnx(self) -> None:
         """Ultralytics builds the ONNX Runtime session on the first predict. On the Mac GPU it asks CoreML
@@ -70,6 +74,8 @@ class Detector:
             return info
         info["runtime"] = f"pytorch {torch.__version__}"
         info["parameters_millions"] = round(sum(p.numel() for p in self.model.model.parameters()) / 1e6, 2)
+        if self.device == "cpu":
+            info["cpu_threads"] = torch.get_num_threads()
         if self.device == "mps":
             info["gpu_memory_mb"] = round(torch.mps.driver_allocated_memory() / 1e6)
         elif self.device.startswith("cuda"):
