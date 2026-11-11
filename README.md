@@ -6,7 +6,7 @@ Store camera analytics: people counting at a door, queue and counter monitoring,
 
 Work in progress for the Safia AI team case study (deadline 2026-11-12); the repository is pushed as the work goes so its history shows the process.
 
-Status, 2026-11-11: the service, door counting, zones, alerts, multi-stream reconnect, the Docker setup and the evaluation are working and measured (results below), plus the bonuses: batched inference, staff versus customer, an ONNX Runtime export and a live page; Shokhbek's blind count of the queue marks under review tested the 2 s queue rule on marks it was not chosen on (E22).
+Status, 2026-11-12: the service, door counting, zones, alerts, multi-stream reconnect, the Docker setup and the evaluation are working and measured (results below), plus the bonuses: batched inference, staff versus customer, an ONNX Runtime export and a live page; Shokhbek's own queue counts, every 10 s over a whole counter clip, tested the 2 s queue rule on marks it was not chosen on (E22).
 The full report, including the process and who did what, is `REPORT.md`; the options considered for every choice are in `docs/DECISIONS.md`, and every test run is in `docs/EXPERIMENTS.md`.
 
 Built with Claude Code as an AI coding assistant; the brief allows AI tools.

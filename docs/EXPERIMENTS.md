@@ -620,7 +620,7 @@ Longer waits lost more people who had just joined the queue, and "standing still
 
 **Limits.**
 The 2 s was picked among four waits on the same 11 marks, from one clip and one labeller, so it is fitted to them; there were no other marks of Shokhbek's counting rule to check it on until his blind review (E22).
-The result also leans on which labelling rule is right for the brief; Claude's labels have not yet been reviewed by Shokhbek, which may move them towards his rule.
+The result also leans on which labelling rule is right for the brief; Claude's labels had not yet been reviewed by Shokhbek at the time; his review (E22) kept the two rules apart and gave the 2 s rule marks it was not chosen on.
 
 ## E20. Should the tracker keep lost tracks for real seconds? (2026-11-11)
 
