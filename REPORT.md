@@ -94,6 +94,7 @@ Reading the code for the live review found that in the slow CPU-only container a
 - `Dockerfile`, `docker-compose.yml`, `docker/mediamtx.yml`: one-command run with two looping RTSP cameras, detector on CPU (D13, E12).
 - `scripts/benchmark.py` and `scripts/review_sheet.py`: speed measurements and a sheet for checking labels.
 - `scripts/queue_rules.py`: replays saved tracks through candidate queue rules and zones (E16).
+- `.github/workflows/tests.yml`: lint and the unit tests on every push, on Linux, installed from the lock file with CPU-only PyTorch.
 
 ## 5. Measurement
 

@@ -1,5 +1,7 @@
 # storecam
 
+[![tests](https://github.com/Shokhbek07/store-camera-analytics/actions/workflows/tests.yml/badge.svg)](https://github.com/Shokhbek07/store-camera-analytics/actions/workflows/tests.yml)
+
 Store camera analytics: people counting at a door, queue and counter monitoring, and alerts, over several video streams at once.
 
 Work in progress for the Safia AI team case study (deadline 2026-11-12); the repository is pushed as the work goes so its history shows the process.
