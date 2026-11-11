@@ -271,7 +271,9 @@ This reaches into one Ultralytics internal (the predictor's backend session), wh
 **Default.**
 `config.yaml` keeps the PyTorch weights: the ONNX export gave identical results, and with two streams on the Mac GPU the whole service ran about 17% faster with it, but both runtimes keep up with two real-time streams there, the export is slower for a single stream (the fixed batch-2 export pads it), and it adds an export step to the setup (E15).
 Open: whether the Docker image (CPU only) should use the any-size ONNX export by default.
-In the container the export was 1.7 to 2.6 times faster than PyTorch in three alternating pairs, but under heavy load from other projects, and the ratio grew with the load (E15); Shokhbek decided on 2026-11-11 to switch only if a run on a quiet machine confirms a large gain, so this waits for that run.
+In the container the export was 1.2 to 2.6 times faster than PyTorch while other projects loaded the machine, the ratio growing with the load, but the one quiet PyTorch run (222 ms per batch) was faster than every ONNX run so far (about 305 ms, under some load) (E15).
+Shokhbek decided on 2026-11-11 to switch only if a run on a quiet machine confirms a large gain; that has not happened, so the image keeps PyTorch, and a quiet ONNX run is still to come.
+On a server shared with other work, the export's steadiness under load would be a reason to choose it.
 
 ## D16. Live page: a static page on the existing endpoint
 
