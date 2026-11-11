@@ -458,7 +458,22 @@ ONNX Runtime was faster in every pair, by 1.7 to 2.6 times, but both are far bel
 The ratio was 3.4 at load 22 (above) and 1.7 to 2.6 at load 11 to 14, so it shrinks as the load falls: PyTorch's CPU threads seem to suffer more from sharing the CPUs than ONNX Runtime's.
 So these runs do not show how much faster the export is on a quiet machine, which is what decides the Docker default (D15).
 
-**Still to do:** the container comparison on a quiet machine.
+**The container again, from a quiet start (06:58).**
+A watcher waited for host load below 4 and other containers below half a core, then ran `scripts/benchmark_docker.sh 90 2`.
+Another project's backend test run started at 07:01:04, during the first ONNX run, and used about 3.5 cores until after the end, so only the first PyTorch run was quiet (`results/onnx/benchmark_docker_alternating_0658_2026-11-11.json`):
+
+| Repeat | Run | FPS per stream (counter, door) | Detector ms per batch | Conditions |
+|---|---|---|---|---|
+| 1 | PyTorch | 4.18, 3.91 | 222 | quiet |
+| 1 | ONNX Runtime | 3.03, 2.71 | 305 | the other test run started a minute in |
+| 2 | ONNX Runtime | 3.03, 2.77 | 306 | under that test run |
+| 2 | PyTorch | 2.54, 2.39 | 368 | under that test run |
+
+Under the same moderate load (repeat 2) ONNX Runtime was 1.2 times faster, against 1.7 to 2.6 under heavy load; quiet, PyTorch reached 222 ms per batch, faster than any ONNX run so far.
+ONNX Runtime's time hardly moved with the load (305 and 306 ms), while PyTorch's went from 222 to 368 ms and to over 1000 ms under heavy load: the large ratios measure how badly PyTorch's CPU threads cope with sharing the CPUs, not a faster model.
+`scripts/benchmark_docker.sh` now also records the CPU use of every other container at the start and end of each run, so a run like these can be labelled from its own record.
+
+**Still to do:** an ONNX Runtime run in the container on a quiet machine, to compare with the quiet PyTorch run.
 
 ## E16. The last wrong queue alert, and duplicate boxes (2026-11-11)
 

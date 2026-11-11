@@ -1,0 +1,54 @@
+{
+ "method": "scripts/benchmark_docker.sh 90 2: the service in the container reading two RTSP cameras in real time for 90 s, PyTorch and the any-size ONNX export in turn, order alternating",
+ "conditions": "started at 06:58 with host load 2.9 and other containers at 2.6% CPU; another project's backend test run (exovia-1111a2) started at 07:01:04, during the first ONNX run, and used about 3.5 cores until after the end, so only the first PyTorch run was quiet",
+ "rows": [
+  {
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "repeat": 1,
+   "load_1min_start": 4.3,
+   "per_stream_fps": {
+    "counter": 4.18,
+    "door": 3.91
+   },
+   "detector_ms_per_batch": 221.59,
+   "mean_batch": 1.94
+  },
+  {
+   "weights": "models/yolo26s_dynamic.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeat": 1,
+   "load_1min_start": 8.6,
+   "per_stream_fps": {
+    "counter": 3.03,
+    "door": 2.71
+   },
+   "detector_ms_per_batch": 305.35,
+   "mean_batch": 1.89
+  },
+  {
+   "weights": "models/yolo26s_dynamic.onnx",
+   "runtime": "onnxruntime 1.31.1",
+   "repeat": 2,
+   "load_1min_start": 12.3,
+   "per_stream_fps": {
+    "counter": 3.03,
+    "door": 2.77
+   },
+   "detector_ms_per_batch": 305.52,
+   "mean_batch": 1.91
+  },
+  {
+   "weights": "models/yolo26s.pt",
+   "runtime": "pytorch 2.15.0+cpu",
+   "repeat": 2,
+   "load_1min_start": 10.9,
+   "per_stream_fps": {
+    "counter": 2.54,
+    "door": 2.39
+   },
+   "detector_ms_per_batch": 367.56,
+   "mean_batch": 1.94
+  }
+ ]
+}
