@@ -417,7 +417,7 @@ The same detector-only test with 20 frame pairs, while another project's test co
 | ONNX Runtime CPU, any-size export | 497.3 | 430 of 430 |
 | ONNX Runtime CPU, 384x640 batch-2 export | 512.1 | 430 of 430 |
 
-In the container ONNX Runtime was about 3.4 times faster than PyTorch, the opposite of the Mac CPU result.
+Under that load ONNX Runtime was about 3.4 times faster than PyTorch in the container, the opposite of the Mac CPU result; the quiet runs further down show the gain came from the load.
 
 **The whole service, first attempt: back to back.**
 After waiting over two hours for a quiet machine, `scripts/benchmark.py` ran once with the PyTorch weights and then once with the 384x640 batch-2 export, from 05:08.

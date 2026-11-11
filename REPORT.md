@@ -72,7 +72,7 @@ Uniform colour alone mostly removed customers in light coats from the queue; add
 
 **2026-11-11, ONNX Runtime and the live page.**
 The CoreML set-up that Ultralytics chooses computed in FP16, changed a few boxes and was slower than PyTorch; switching it to an FP32 MLProgram made the ONNX export both exact and faster (E15, D15).
-On the Mac CPU ONNX Runtime was slower than PyTorch, but in the Linux container it was about 3.4 times faster, which matters because the container has no GPU.
+On the Mac CPU ONNX Runtime was slower than PyTorch, and in the Linux container it was about 3.4 times faster under another project's load, which looked important because the container has no GPU; the later quiet runs below showed that gain came from the load.
 The live page went on the existing endpoint as one self-contained page (D16).
 The last wrong queue alert turned out to come from a seated man on the zone's edge, not the coffee table as the report had said; replaying saved tracks through candidate rules showed that only moving the edge removed it, and that leaving duplicate boxes out improved every labeller's error (E16, D17).
 Over two hours of waiting for a quiet machine ended in a burst of load from another project halfway through the speed comparison, so the benchmark was changed to alternate the two runtimes in short runs, three times each, and to record the load with every run (E15).
