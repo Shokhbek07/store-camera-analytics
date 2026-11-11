@@ -97,8 +97,14 @@ class SourceAnalytics:
 
     # --------------------------------------------------------------------------------
     def on_reconnect(self) -> None:
+        """The tracker restarts at ID 1, so drop everything held per track ID."""
         for line in self.lines:
             line.reset()
+        if self.dwell is not None:
+            self.dwell.forget(set())
+        if self.staff is not None:
+            self.staff.forget(set())
+        self.staff_ids = set()
 
     def update(self, t: float, wall: float, tracks: dict[int, tuple], alive: set[int],
                image=None) -> None:

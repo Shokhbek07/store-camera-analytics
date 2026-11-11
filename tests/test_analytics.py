@@ -2,7 +2,7 @@ import csv
 import io
 
 from storecam.analytics import SourceAnalytics
-from storecam.config import DoorLine, Source
+from storecam.config import DoorLine, Source, Zones
 
 # Door line along y = 100, inside below it; the doorway region lies above it (outside).
 DOOR = DoorLine(a=(0, 100), b=(200, 100), inside=(100, 200), band_px=20, min_frames=2,
@@ -44,3 +44,20 @@ def test_minute_rows_are_not_held_back_by_tracks_that_are_still_visible(tmp_path
         a.update(t, 1000 + t, {1: feet_box(100, 150)}, {1})  # someone standing inside all along
         t += 0.5
     assert [r["minute"] for r in rows(tmp_path / "door_minutes.csv")] == ["0"]
+
+
+def test_a_reconnect_does_not_hand_queue_time_to_a_new_track_with_a_reused_id(tmp_path):
+    # After a reconnect the tracker starts again at ID 1, so ID 1 is a different person.
+    zones = Zones(queue=[(0, 0), (200, 0), (200, 200), (0, 200)], queue_min_dwell_s=2)
+    a = SourceAnalytics(Source(name="counter", url="x.mp4", zones=zones), tmp_path, io.StringIO())
+    t = 0.0
+    while t < 10.0:
+        a.update(t, 1000 + t, {1: feet_box(100, 100)}, {1})  # in the queue from 0 s
+        t += 0.5
+    a.on_reconnect()
+    for t in (20.0, 20.5, 21.0):  # a new person, also ID 1, just arrived in the zone
+        a.update(t, 1000 + t, {1: feet_box(100, 100)}, {1})
+    a.finish()
+    by_second = {s.second: s.queue for s in a.seconds}
+    assert by_second[9] == 1
+    assert by_second[20] == 0  # in the zone for under 2 s
